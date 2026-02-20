@@ -1,0 +1,453 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>South Barber - Admin Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <script src="{% static 'js/scripts.js' %}"></script>
+    <script src="{% static 'js/chart.min.js' %}"></script>
+    <script src="{% static 'js/script.js' %}"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Lexend:wght@300;400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                        <rect width="32" height="32" rx="8" fill="#E8968F"/>
+                        <path d="M16 8L20 12H18V20H14V12H12L16 8Z" fill="white"/>
+                        <rect x="10" y="22" width="12" height="2" rx="1" fill="white"/>
+                    </svg>
+                    <span>South Barber</span>
+                </div>
+                <button class="sidebar-toggle">
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                        <path d="M15 10L10 5L5 10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                </button>
+            </div>
+
+            <nav class="sidebar-nav">
+                <a href="dashboard.html" class="nav-item active">
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                        <rect x="3" y="3" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.5"/>
+                        <rect x="11" y="3" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.5"/>
+                        <rect x="3" y="11" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.5"/>
+                        <rect x="11" y="11" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.5"/>
+                    </svg>
+                    <span>Dashboard</span>
+                </a>
+                <a href="clients.html" class="nav-item">
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                        <circle cx="10" cy="7" r="3" stroke="currentColor" stroke-width="1.5"/>
+                        <path d="M4 17C4 14 6.5 12 10 12C13.5 12 16 14 16 17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                    </svg>
+                    <span>Clients</span>
+                </a>
+                <a href="visits.html" class="nav-item">
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                        <rect x="3" y="4" width="14" height="13" rx="2" stroke="currentColor" stroke-width="1.5"/>
+                        <path d="M7 2V5M13 2V5M3 8H17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                    </svg>
+                    <span>Visits</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                        <path d="M3 5L10 2L17 5V11C17 14.5 14 17 10 18C6 17 3 14.5 3 11V5Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+                        <path d="M10 7V11M10 14V14.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                    </svg>
+                    <span>Sales</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                        <path d="M3 8L10 3L17 8V16C17 16.5 16.5 17 16 17H4C3.5 17 3 16.5 3 16V8Z" stroke="currentColor" stroke-width="1.5"/>
+                        <path d="M13 17V10H7V17" stroke="currentColor" stroke-width="1.5"/>
+                    </svg>
+                    <span>Messaging</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                        <rect x="3" y="3" width="14" height="14" rx="2" stroke="currentColor" stroke-width="1.5"/>
+                        <path d="M7 7H13M7 10H13M7 13H10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                    </svg>
+                    <span>Reports</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                        <circle cx="10" cy="10" r="7" stroke="currentColor" stroke-width="1.5"/>
+                        <path d="M10 6V10L13 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                    </svg>
+                    <span>Settings</span>
+                </a>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="help-section">
+                    <p class="help-title">Need help?</p>
+                    <p class="help-text">Check our documentation or contact support.</p>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="header">
+                <div class="header-left">
+                    <h1 class="page-title">Dashboard</h1>
+                    <p class="page-subtitle">Welcome back! Here's what's happening today.</p>
+                </div>
+                <div class="header-right">
+                    <div class="search-box">
+                        <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+                            <circle cx="8" cy="8" r="5" stroke="currentColor" stroke-width="1.5"/>
+                            <path d="M12 12L15 15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                        </svg>
+                        <input type="text" placeholder="Search clients, visits...">
+                    </div>
+                    <button class="notification-btn">
+                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                            <path d="M10 3C7.5 3 5.5 5 5.5 7.5V10L4 12V13H16V12L14.5 10V7.5C14.5 5 12.5 3 10 3Z" stroke="currentColor" stroke-width="1.5"/>
+                            <path d="M8.5 16C8.5 17 9.5 18 10 18C10.5 18 11.5 17 11.5 16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                        </svg>
+                        <span class="notification-badge">1</span>
+                    </button>
+                    <div class="user-menu">
+                        {% if request.user.is_authenticated %}
+                        <div class="user-avatar">JD</div>
+                        <span class="user-name">
+                            <p>{{ user.username }}</p>
+                            {% if request.user.is_superuser %}
+                            
+                            <span>Administrator </span>
+                            {% else %}
+
+                            <span>Staff</span>
+                            {% endif %}  
+                                </span>
+                        </div>
+                        {% endif %}
+                </div>
+            </header>
+
+            <!-- Stats Cards -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <h3 class="stat-title">Total Customers</h3>
+                        <div class="stat-icon client-icon">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                                <path d="M17 20H22V18C22 16.3431 20.6569 15 19 15C18.0444 15 17.1931 15.4468 16.6438 16.1429M17 20H7M17 20V18C17 17.3438 16.8736 16.717 16.6438 16.1429M7 20H2V18C2 16.3431 3.34315 15 5 15C5.95561 15 6.80686 15.4468 7.35625 16.1429M7 20V18C7 17.3438 7.12642 16.717 7.35625 16.1429M7.35625 16.1429C8.0935 14.301 9.89482 13 12 13C14.1052 13 15.9065 14.301 16.6438 16.1429M15 7C15 8.65685 13.6569 10 12 10C10.3431 10 9 8.65685 9 7C9 5.34315 10.3431 4 12 4C13.6569 4 15 5.34315 15 7ZM21 10C21 11.1046 20.1046 12 19 12C17.8954 12 17 11.1046 17 10C17 8.89543 17.8954 8 19 8C20.1046 8 21 8.89543 21 10ZM7 10C7 11.1046 6.10457 12 5 12C3.89543 12 3 11.1046 3 10C3 8.89543 3.89543 8 5 8C6.10457 8 7 8.89543 7 10Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="stat-value">{{ total_customer }}</div>
+                    <div class="stat-change positive">
+                        <svg width="16" height="16" viewBox="0 0 16 16">
+                            <path d="M8 12V4M8 4L4 8M8 4L12 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                        </svg>
+                        <span>12% vs last month</span>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <h3 class="stat-title">Total Appointments</h3>
+                        <div class="stat-icon revenue-icon">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                                <path d="M12 2V22M12 2C10.3431 2 9 3.79086 9 6C9 8.20914 10.3431 10 12 10M12 2C13.6569 2 15 3.79086 15 6C15 8.20914 13.6569 10 12 10M12 10C10.3431 10 9 11.7909 9 14C9 16.2091 10.3431 18 12 18M12 10C13.6569 10 15 11.7909 15 14C15 16.2091 13.6569 18 12 18M12 18C10.3431 18 9 19.7909 9 22M12 18C13.6569 18 15 19.7909 15 22" stroke="currentColor" stroke-width="1.5"/>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="stat-value">{{ total_appoinment }}</div>
+                    <div class="stat-change positive">
+                        <svg width="16" height="16" viewBox="0 0 16 16">
+                            <path d="M8 12V4M8 4L4 8M8 4L12 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                        </svg>
+                        <span>8% vs last month</span>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <h3 class="stat-title">Today Sales</h3>
+                        <div class="stat-icon visits-icon">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                                <rect x="3" y="6" width="18" height="15" rx="2" stroke="currentColor" stroke-width="1.5"/>
+                                <path d="M3 10H21M7 3V6M17 3V6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                                <circle cx="12" cy="15" r="1" fill="currentColor"/>
+                                <circle cx="16" cy="15" r="1" fill="currentColor"/>
+                                <circle cx="8" cy="15" r="1" fill="currentColor"/>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="stat-value"> {{ today_sales.Catagories__Cost__sum }}</div>
+                    <div class="stat-change positive">
+                        <svg width="16" height="16" viewBox="0 0 16 16">
+                            <path d="M8 12V4M8 4L4 8M8 4L12 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                        </svg>
+                        <span>5% vs last month</span>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <h3 class="stat-title">Retention Rate</h3>
+                        <div class="stat-icon retention-icon">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                                <path d="M3 3L21 21M21 3L3 21" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                                <circle cx="12" cy="12" r="8" stroke="currentColor" stroke-width="1.5"/>
+                                <path d="M9 12L11 14L15 10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="stat-value">87%</div>
+                    <div class="stat-change positive">
+                        <svg width="16" height="16" viewBox="0 0 16 16">
+                            <path d="M8 12V4M8 4L4 8M8 4L12 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                        </svg>
+                        <span>3% vs last month</span>
+                    </div>
+                </div>
+            </div>
+
+             <!-- Stats Cards -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <h3 class="stat-title">Total Services</h3>
+                        <div class="stat-icon client-icon">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                                <path d="M17 20H22V18C22 16.3431 20.6569 15 19 15C18.0444 15 17.1931 15.4468 16.6438 16.1429M17 20H7M17 20V18C17 17.3438 16.8736 16.717 16.6438 16.1429M7 20H2V18C2 16.3431 3.34315 15 5 15C5.95561 15 6.80686 15.4468 7.35625 16.1429M7 20V18C7 17.3438 7.12642 16.717 7.35625 16.1429M7.35625 16.1429C8.0935 14.301 9.89482 13 12 13C14.1052 13 15.9065 14.301 16.6438 16.1429M15 7C15 8.65685 13.6569 10 12 10C10.3431 10 9 8.65685 9 7C9 5.34315 10.3431 4 12 4C13.6569 4 15 5.34315 15 7ZM21 10C21 11.1046 20.1046 12 19 12C17.8954 12 17 11.1046 17 10C17 8.89543 17.8954 8 19 8C20.1046 8 21 8.89543 21 10ZM7 10C7 11.1046 6.10457 12 5 12C3.89543 12 3 11.1046 3 10C3 8.89543 3.89543 8 5 8C6.10457 8 7 8.89543 7 10Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="stat-value">{{ total_service }}</div>
+                    <div class="stat-change positive">
+                        <svg width="16" height="16" viewBox="0 0 16 16">
+                            <path d="M8 12V4M8 4L4 8M8 4L12 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                        </svg>
+                        <span>12% vs last month</span>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <h3 class="stat-title">Total Employees</h3>
+                        <div class="stat-icon revenue-icon">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                                <path d="M12 2V22M12 2C10.3431 2 9 3.79086 9 6C9 8.20914 10.3431 10 12 10M12 2C13.6569 2 15 3.79086 15 6C15 8.20914 13.6569 10 12 10M12 10C10.3431 10 9 11.7909 9 14C9 16.2091 10.3431 18 12 18M12 10C13.6569 10 15 11.7909 15 14C15 16.2091 13.6569 18 12 18M12 18C10.3431 18 9 19.7909 9 22M12 18C13.6569 18 15 19.7909 15 22" stroke="currentColor" stroke-width="1.5"/>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="stat-value">{{ total_employee }}</div>
+                    <div class="stat-change positive">
+                        <svg width="16" height="16" viewBox="0 0 16 16">
+                            <path d="M8 12V4M8 4L4 8M8 4L12 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                        </svg>
+                        <span>8% vs last month</span>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <h3 class="stat-title">Total Sales</h3>
+                        <div class="stat-icon visits-icon">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                                <rect x="3" y="6" width="18" height="15" rx="2" stroke="currentColor" stroke-width="1.5"/>
+                                <path d="M3 10H21M7 3V6M17 3V6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                                <circle cx="12" cy="15" r="1" fill="currentColor"/>
+                                <circle cx="16" cy="15" r="1" fill="currentColor"/>
+                                <circle cx="8" cy="15" r="1" fill="currentColor"/>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="stat-value">{{ total_sales.Catagories__Cost__sum }}</div>
+                    <div class="stat-change positive">
+                        <svg width="16" height="16" viewBox="0 0 16 16">
+                            <path d="M8 12V4M8 4L4 8M8 4L12 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                        </svg>
+                        <span>5% vs last month</span>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <h3 class="stat-title">Total Stores</h3>
+                        <div class="stat-icon retention-icon">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                                <path d="M3 3L21 21M21 3L3 21" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                                <circle cx="12" cy="12" r="8" stroke="currentColor" stroke-width="1.5"/>
+                                <path d="M9 12L11 14L15 10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="stat-value">{{ total_stores }}</div>
+                    <div class="stat-change positive">
+                        <svg width="16" height="16" viewBox="0 0 16 16">
+                            <path d="M8 12V4M8 4L4 8M8 4L12 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                        </svg>
+                        <span>3% vs last month</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Charts and Lists -->
+            <div class="content-grid">
+                <div class="chart-section">
+                    <div class="section-header">
+                        <h2 class="section-title">Weekly Sales</h2>
+                        <p class="section-subtitle">Revenue overview for this week</p>
+                        <div class="chart-tabs">
+                            <button class="chart-tab active">Week</button>
+                            <button class="chart-tab">Month</button>
+                            <button class="chart-tab">Year</button>
+                        </div>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="salesChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="appointments-section">
+                    <div class="section-header">
+                        <h2 class="section-title">Today's Appointments</h2>
+                        <a href="#" class="view-all">View calendar</a>
+                    </div>
+                    <div class="appointments-list">
+                        <div class="appointment-item">
+                            <div class="appointment-icon">
+                                <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                                    <circle cx="10" cy="10" r="7" stroke="currentColor" stroke-width="1.5"/>
+                                    <path d="M10 6V10L13 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                                </svg>
+                            </div>
+                            <div class="appointment-details">
+                                <div class="appointment-header">
+                                    <h4>Maria Garcia</h4>
+                                    <span class="appointment-price">$</span>
+                                </div>
+                                <p class="appointment-service">Balayage & Trim</p>
+                                <div class="appointment-meta">
+                                    <span class="appointment-time">10:00 AM</span>
+                                    <span class="appointment-location">• Station 1</span>
+                                    <span class="appointment-duration">• 2h</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="appointment-item">
+                            <div class="appointment-icon">
+                                <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                                    <circle cx="10" cy="10" r="7" stroke="currentColor" stroke-width="1.5"/>
+                                    <path d="M10 6V10L13 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                                </svg>
+                            </div>
+                            <div class="appointment-details">
+                                <div class="appointment-header">
+                                    <h4>Lisa Thompson</h4>
+                                    <span class="appointment-price">E</span>
+                                </div>
+                                <p class="appointment-service">Bridal Makeup</p>
+                                <div class="appointment-meta">
+                                    <span class="appointment-time">11:30 AM</span>
+                                    <span class="appointment-location">• Station 2</span>
+                                    <span class="appointment-duration">• 1.5h</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="appointment-item">
+                            <div class="appointment-icon">
+                                <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                                    <circle cx="10" cy="10" r="7" stroke="currentColor" stroke-width="1.5"/>
+                                    <path d="M10 6V10L13 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                                </svg>
+                            </div>
+                            <div class="appointment-details">
+                                <div class="appointment-header">
+                                    <h4>Jennifer Lee</h4>
+                                    <span class="appointment-price">$</span>
+                                </div>
+                                <p class="appointment-service">Keratin Treatment</p>
+                                <div class="appointment-meta">
+                                    <span class="appointment-time">2:00 PM</span>
+                                    <span class="appointment-location">• Station 3</span>
+                                    <span class="appointment-duration">• 3h</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Clients -->
+            <div class="recent-section">
+                <div class="section-header">
+                    <h2 class="section-title">Recent Clients</h2>
+                    <a href="clients.html" class="view-all">View all</a>
+                </div>
+                <div class="clients-list">
+                    <div class="client-item">
+                        <div class="client-avatar">SJ</div>
+                        <div class="client-info">
+                            <h4>Sarah Johnson</h4>
+                            <p>Hair Color & Cut</p>
+                        </div>
+                        <div class="client-amount">$150</div>
+                        <span class="status-badge completed">completed</span>
+                    </div>
+
+                    <div class="client-item">
+                        <div class="client-avatar">ED</div>
+                        <div class="client-info">
+                            <h4>Emily Davis</h4>
+                            <p>Manicure & Pedicure</p>
+                        </div>
+                        <div class="client-amount">$85</div>
+                        <span class="status-badge completed">completed</span>
+                    </div>
+
+                    <div class="client-item">
+                        <div class="client-avatar">MC</div>
+                        <div class="client-info">
+                            <h4>Michael Chen</h4>
+                            <p>Men's Haircut</p>
+                        </div>
+                        <div class="client-amount">$35</div>
+                        <span class="status-badge completed">completed</span>
+                    </div>
+
+                    <div class="client-item">
+                        <div class="client-avatar">JW</div>
+                        <div class="client-info">
+                            <h4>Jessica Williams</h4>
+                            <p>Facial Treatment</p>
+                        </div>
+                        <div class="client-amount">$120</div>
+                        <span class="status-badge pending">pending</span>
+                    </div>
+
+                    <div class="client-item">
+                        <div class="client-avatar">AB</div>
+                        <div class="client-info">
+                            <h4>Amanda Brown</h4>
+                            <p>Full Styling</p>
+                        </div>
+                        <div class="client-amount">$200</div>
+                        <span class="status-badge completed">completed</span>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="chart.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
