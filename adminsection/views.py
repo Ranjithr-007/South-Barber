@@ -222,7 +222,7 @@ def allappointment(request):
     context = {
         'Appoinments': Appoinments
     }
-    return render(request, 'adminsection/all-appointment.html', context)
+    return render(request, 'adminsection/appointments.html', context)
 
 
 @staff_member_required
