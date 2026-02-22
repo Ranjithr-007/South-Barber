@@ -14,22 +14,23 @@ class LoginForm(forms.Form):
         'class':'lock'
     }))
 
-    def clean(self, *args, **kwargs):
-        username = self.cleaned_data.get("username")
-        password = self.cleaned_data.get("password")
+    def clean(self):
+        cleaned_data = super().clean()
+        username = cleaned_data.get("username")
+        password = cleaned_data.get("password")
 
         if username and password:
+            # authenticate() checks BOTH username and password at once
             self.user = authenticate(username=username, password=password)
 
             if self.user is None:
-                raise forms.ValidationError("User Does Not Exist.")
-            if not self.user.check_password(password):
-                raise forms.ValidationError("Password Does not Match.")
+                # This covers both "User doesn't exist" AND "Wrong password"
+                raise forms.ValidationError("Invalid username or password.")
+            
             if not self.user.is_active:
-                raise forms.ValidationError("User is not Active.")
+                raise forms.ValidationError("This account is currently disabled.")
 
-        return super(LoginForm, self).clean(*args, **kwargs)
-
+        return cleaned_data
     def get_user(self):
         return self.user
 

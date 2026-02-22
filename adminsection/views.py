@@ -11,28 +11,29 @@ from django.contrib import messages
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.admin.views.decorators import staff_member_required
-
+from django.shortcuts import render, redirect
+from django.contrib.auth import authenticate, login
+from .forms import LoginForm
 
 def signin(request):
     """
         LogIn page for Admin/Staff
     """ 
-    form = LoginForm(request.POST or None)
-
     if request.user.is_authenticated:
         return redirect('dashboard')
 
-    else:
+    form = LoginForm(data=request.POST or None)
 
-        if request.method == 'POST':
-            if form.is_valid():
-                auth.login(request, form.get_user())
-                return redirect('dashboard')
-    context = {
-        'form': form,
-    }
+    if request.method == 'POST':
+        if form.is_valid():
+            user = form.get_user()
+            login(request, user)
+            return redirect('dashboard')
+        else:
+            print(form.errors)
+    
+    context = {'form': form}
     return render(request, 'adminsection/signin.html', context)
-
 
 @staff_member_required
 def dashboard(request):
