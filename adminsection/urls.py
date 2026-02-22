@@ -16,6 +16,7 @@ urlpatterns = [
     path('bwdatesreportsds/', views.bwdatesreportsds, name='bwdatesreportsds'),
     path('allappointment/', views.allappointment, name='allappointment'),
     path('viewappointment/<int:id>/', views.viewappointment, name='viewappointment'),
+    path('delete-appointment/<int:appointment_id>/', views.delete_appointment, name='deleteappointment'),
     path('newappointment/', views.newappointment, name='newappointment'),
     path('acceptedappointment/', views.acceptedappointment, name='acceptedappointment'),
     path('rejectedappointment/', views.rejectedappointment, name='rejectedappointment'),

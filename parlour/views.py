@@ -1,11 +1,11 @@
 from django.shortcuts import render,get_object_or_404,redirect
-from parlour.forms import AppoinmentForm
+from parlour.forms import AppointmentForm
 from parlour.models import *
 from adminsection.models import Service
 from django.urls import reverse
 from django.http import JsonResponse
 from django.shortcuts import render
-from .forms import AppoinmentForm
+from .forms import AppointmentForm
 
 def home(request):
 
@@ -13,7 +13,7 @@ def home(request):
         Provides the ability to make an appoinment via user
     """
     services = Service.objects.all()
-    form     = AppoinmentForm(request.POST or None)
+    form     = AppointmentForm(request.POST or None)
       
     if request.method=='POST':
        
@@ -63,7 +63,7 @@ def contact(request):
 def appointment_view(request):
     print(request.POST)
     if request.method == "POST":
-        form = AppoinmentForm(request.POST)
+        form = AppointmentForm(request.POST)
 
         if form.is_valid():
             form.save()
@@ -80,7 +80,7 @@ def appointment_view(request):
 
 
     else:
-        form = AppoinmentForm()
+        form = AppointmentForm()
 
     return render(request, "website/appointment.html", {"form": form})
 

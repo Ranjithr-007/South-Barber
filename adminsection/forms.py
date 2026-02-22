@@ -88,13 +88,13 @@ class AddCustomerForm(forms.ModelForm):
             raise forms.ValidationError("Note required")
         return Note    
 
-class AppoinmentUpdateForm(forms.ModelForm):
+class AppointmentUpdateForm(forms.ModelForm):
 
     Note = forms.CharField(widget=forms.TextInput(attrs={'placeholder': 'Enter Note If needed'}))
 
     class Meta:
 
-        model=Appoinment
+        model=Appointment
         fields =[
             'Note',
             'Remark',

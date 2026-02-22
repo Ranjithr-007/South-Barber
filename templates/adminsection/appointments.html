@@ -9,7 +9,8 @@
 
 
 
-			<div class="table-responsive bs-example widget-shadow">
+			<div class="table-container">
+    			<div class="table-responsive">
 				<h4>All Appointment:</h4>
 				<table class="table table-bordered">
 					<thead>
@@ -17,24 +18,40 @@
 							<th>#</th>
 							<th> Appointment Number</th>
 							<th>Name</th>
+							<br>
+							<th></th>
+							<th></th>
 							<th>Mobile Number</th>
 							<th>Appointment Date</th>
 							<th>Appointment Time</th>
-							<th>Action</th>
+							<th>Edit Appointment</th>
+							<th>Delete Appointment</th>
 						</tr>
 					</thead>
 					<tbody>
-						{% for list in Appoinments %}
+						{% for list in Appointments %}
 
 						<tr>
 							<th scope="row">{{ forloop.counter }}</th>
 							<td>{{ list.AppointmentNumber}}</td>
 							<td>{{ list.Name}}</td>
+							<td></td>
+							<td></td>
 							<td>{{ list.PhoneNumber}}</td>
-							<td>{{ list.AppoinmentDate}}</td>
-							<td>{{ list.AppoinmentTime|date:"H i A"}}</td>
-							<td><a href="{% url 'viewappointment' list.id %}">Edit</a></td>
-						</td>
+							<td>{{ list.AppointmentDate}}</td>
+							<td>{{ list.AppointmentTime|date:"H i A"}}</td>
+							<td>
+							<a href="{% url 'viewappointment' list.id %}" class="btn btn-primary btn-sm">
+								Edit
+							</a>
+							</td>
+							<td>
+							<a href="{% url 'deleteappointment' list.id %}" 
+							class="btn btn-danger btn-sm" 
+							onclick="return confirm('Are you sure you want to delete this appointment?');">
+								Delete
+							</a>
+							</td>
 						</tr> 
 						{% endfor %}
 					
@@ -44,5 +61,5 @@
 		</div>
 	</div>
 </div>
-
+</div>
 {% endblock %}

@@ -1,7 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from adminsection.forms import *
 from adminsection.models import *
-from parlour.models import Appoinment
+from parlour.models import Appointment
 from django.contrib import auth
 from django.urls import reverse
 from django.db.models import Q
@@ -40,9 +40,9 @@ def dashboard(request):
     """
         Adminsection Dashboard.
     """ 
-    total_appoinment = Appoinment.objects.all().count()
-    total_accepted_appoinment = Appoinment.objects.filter(Remark=1).count()
-    total_Rejected_appoinment = Appoinment.objects.filter(Remark=0).count()
+    total_appointment = Appointment.objects.all().count()
+    total_accepted_appointment = Appointment.objects.filter(Remark=1).count()
+    total_Rejected_appointment = Appointment.objects.filter(Remark=0).count()
     total_service = Service.objects.all().count()
     total_employee = Employee.objects.all().count()
     total_customer = Customer.objects.all().count()
@@ -57,9 +57,9 @@ def dashboard(request):
         Date__gte=date.today() - timedelta(days=7)).aggregate(Sum('Catagories__Cost'))
 
     context = {
-        'total_appoinment': total_appoinment,
-        'total_accepted_appoinment': total_accepted_appoinment,
-        'total_Rejected_appoinment': total_Rejected_appoinment,
+        'total_appointment': total_appointment,
+        'total_accepted_appointment': total_accepted_appointment,
+        'total_Rejected_appointment': total_Rejected_appointment,
         'total_service': total_service,
         'total_employee': total_employee,
         'total_customer': total_customer,
@@ -219,9 +219,9 @@ def allappointment(request):
     """
         Appointment Lists.
     """ 
-    Appoinments = Appoinment.objects.order_by('-ApplyDate')
+    Appointments = Appointment.objects.order_by('-ApplyDate')
     context = {
-        'Appoinments': Appoinments
+        'Appointments': Appointments
     }
     return render(request, 'adminsection/appointments.html', context)
 
@@ -232,19 +232,24 @@ def viewappointment(request, id):
         View appointment.
     """ 
 
-    Appoinments = get_object_or_404(Appoinment, id=id)
-    form = AppoinmentUpdateForm(request.POST or None, instance=Appoinments)
+    Appointments = get_object_or_404(Appointment, id=id)
+    form = AppointmentUpdateForm(request.POST or None, instance=Appointments)
 
     if request.method == 'POST':
         if form.is_valid():
             form.save()
             # return redirect('manageservices')
     context = {
-        'Appoinment': Appoinments,
+        'Appointment': Appointments,
         'form': form
     }
     return render(request, 'adminsection/view-appointment.html', context)
 
+@staff_member_required
+def delete_appointment(request, appointment_id):
+    appointment = get_object_or_404(Appointment, id=appointment_id)
+    appointment.delete()
+    return redirect('allappointment')
 
 @staff_member_required
 def newappointment(request):
@@ -252,9 +257,9 @@ def newappointment(request):
         New appointments list.
     """ 
 
-    Acceptedappoinments = Appoinment.objects.filter(Remark='')
+    Acceptedappointments = Appointment.objects.filter(Remark='')
     context = {
-        'Acceptedappoinments': Acceptedappoinments,
+        'Acceptedappointments': Acceptedappointments,
     }
     return render(request, 'adminsection/new-appointment.html', context)
 
@@ -265,10 +270,10 @@ def acceptedappointment(request):
         Accepted appointments list.
     """ 
 
-    Acceptedappoinments = Appoinment.objects.filter(Remark=1)
+    Acceptedappointments = Appointment.objects.filter(Remark=1)
 
     context = {
-        'Acceptedappoinments': Acceptedappoinments,
+        'Acceptedappointments': Acceptedappointments,
     }
     return render(request, 'adminsection/accepted-appointment.html', context)
 
@@ -278,10 +283,10 @@ def rejectedappointment(request):
     """
         Rejected appointments.
     """ 
-    Rejectedtedappoinments = Appoinment.objects.filter(Remark=0)
+    Rejectedtedappointments = Appointment.objects.filter(Remark=0)
 
     context = {
-        'Rejectedtedappoinments': Rejectedtedappoinments,
+        'Rejectedtedappointments': Rejectedtedappointments,
     }
     return render(request, 'adminsection/rejected-appointment.html', context)
 
@@ -321,7 +326,7 @@ def searchappointment(request):
     appointment_list = ''
     query = request.GET.get('searchdata')
     if query:
-        appointment_list = Appoinment.objects.all()
+        appointment_list = Appointment.objects.all()
         appointment_list = appointment_list.filter(
             Q(AppointmentNumber__iexact=query) |
             Q(Name__icontains=query) |

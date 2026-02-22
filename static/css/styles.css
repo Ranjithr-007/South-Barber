@@ -654,7 +654,30 @@ body {
 .appointment-duration {
     color: var(--text-muted);
 }
+.table-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;   /* Center horizontally */
+    margin-top: 30px;
+}
 
+.table-responsive {
+    width: 85%;               /* Control table width */
+}
+
+.table {
+    background-color: #ffffff;
+    text-align: center;       /* Center text */
+}
+
+.table th {
+    background-color: #f8f9fa;
+    font-weight: 600;
+}
+
+.table td, .table th {
+    vertical-align: middle;
+}
 /* ================================
    Recent Clients Section
    ================================ */

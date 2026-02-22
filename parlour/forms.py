@@ -1,18 +1,18 @@
 from django import forms
-from parlour.models import Appoinment
+from parlour.models import Appointment
 
 
-class AppoinmentForm(forms.ModelForm):
+class AppointmentForm(forms.ModelForm):
 
     class Meta:
-        model = Appoinment
+        model = Appointment
         fields = [
             'Name',
             'Email',
             'PhoneNumber',
             'Service',
-            'AppoinmentDate',
-            'AppoinmentTime',
+            'AppointmentDate',
+            'AppointmentTime',
         ]
 
         widgets = {
@@ -31,11 +31,11 @@ class AppoinmentForm(forms.ModelForm):
             'Service': forms.Select(attrs={
                 'class': 'form-control'
             }),
-            'AppoinmentDate': forms.DateInput(attrs={
+            'AppointmentDate': forms.DateInput(attrs={
                 'type': 'date',
                 'class': 'form-control'
             }),
-            'AppoinmentTime': forms.TimeInput(attrs={
+            'AppointmentTime': forms.TimeInput(attrs={
                 'type': 'time',
                 'class': 'form-control'
             }),

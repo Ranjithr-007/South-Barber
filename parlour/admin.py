@@ -8,5 +8,5 @@ class MyModelAdmin(admin.ModelAdmin):
     
     readonly_fields  = ['ApplyDate','RemarkDate']
 
-admin.site.register(Appoinment , MyModelAdmin)  
+admin.site.register(Appointment , MyModelAdmin)  
 

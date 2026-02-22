@@ -5,7 +5,7 @@ from django.db.models.signals import post_save
 
 # Create your models here.
 
-class Appoinment(models.Model):
+class Appointment(models.Model):
 
 
     Name = models.CharField(max_length=50)
@@ -13,8 +13,8 @@ class Appoinment(models.Model):
     PhoneNumber = models.CharField(max_length=11)
     Service = models.ForeignKey(Service, on_delete=models.CASCADE)
     Note = models.TextField()
-    AppoinmentDate = models.DateField()
-    AppoinmentTime = models.TimeField()  
+    AppointmentDate = models.DateField()
+    AppointmentTime = models.TimeField()  
     ApplyDate = models.DateTimeField(auto_now_add=True)
     RemarkDate = models.DateTimeField(auto_now=True)
     AppointmentNumber = models.IntegerField(null=True, blank=True)
@@ -28,7 +28,7 @@ class Appoinment(models.Model):
 
 
 
-@receiver(post_save, sender=Appoinment)
+@receiver(post_save, sender=Appointment)
 def appointment_listing_update(sender, instance, created, **kwargs):
     appointmentnumber = 6000
     if created:
