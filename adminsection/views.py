@@ -124,6 +124,13 @@ def updateservice(request, id):
 
 
 @staff_member_required
+def delete_service(request, service_id):
+    service = get_object_or_404(Service, id=service_id)
+    service.delete()
+    return redirect('manageservices') 
+
+
+@staff_member_required
 def addcustomer(request):
     """
         Admin can add customer details.

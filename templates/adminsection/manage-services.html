@@ -1,0 +1,66 @@
+{% extends 'adminsection/base.html' %}
+{% load static %}
+{% block content %}
+
+<div id="page-wrapper">
+	<div class="main-page">
+		<div class="tables">
+			<h3 class="title1">Manage Services</h3>
+
+
+
+			<div class="table-container">
+    			<div class="table-responsive">
+				<h4></h4>
+                <div style="margin-bottom: 10px;">
+                <a href="{% url 'addservices' %}" class="btn btn-primary">
+                     Add Service
+                </a>
+                </div>
+				<table class="table table-bordered">
+					<thead>
+						<tr>
+							<th>#</th>
+							<th>Service Name</th>
+							<th>Service Price</th>
+							<br>
+							<th></th>
+							<th></th>
+							<th>Creation Date</th>
+							<th>Service Edit</th>
+                            <th>Service Delete</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% for service in Services %}
+
+						<tr>
+							<th scope="row">{{ forloop.counter }}</th>
+							<td>{{ service.ServiceName}}</td>
+							<td>{{ service.Cost}}</td>
+							<td></td>
+							<td></td>
+							<td>{{ service.TimeStamp}}</td>
+							<td>
+							<a href="{% url 'updateservice' service.id %}" class="btn btn-primary btn-sm">
+								Edit
+							</a>
+							</td>
+							<td>
+							<a href="{% url 'delete_service' service.id %}" 
+							class="btn btn-danger btn-sm" 
+							onclick="return confirm('Are you sure you want to delete this Service?');">
+								Delete
+							</a>
+							</td>
+						</tr> 
+						{% endfor %}
+					
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>
+</div>
+{% endblock %}

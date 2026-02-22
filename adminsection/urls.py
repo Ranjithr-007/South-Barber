@@ -9,6 +9,7 @@ urlpatterns = [
     path('service/', views.addservice, name='addservices'),
     path('manageservices/', views.manageservices, name='manageservices'),
     path('updateservice/<int:id>/', views.updateservice, name='updateservice'),
+    path('delete-service/<int:service_id>/', views.delete_service, name='delete_service'),
     path('addcustomer/', views.addcustomer, name='addcustomer'),
     path('customerlist/', views.customerlist, name='customerlist'),
     path('editcustomer/<int:id>/', views.editcustomer, name='editcustomer'),
