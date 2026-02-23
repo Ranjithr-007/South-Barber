@@ -1,0 +1,63 @@
+{% extends 'adminsection/base.html' %}
+{% load static %}
+{% block content %}
+
+<div id="page-wrapper">
+	<div class="main-page">
+		<div class="tables">
+			<h3 class="title1">Manage Customer</h3>
+
+
+
+			<div class="table-container">
+    			<div class="table-responsive">
+				<h4></h4>
+                <div style="margin-bottom: 10px;">
+                <a href="{% url 'addcustomer' %}" class="btn btn-primary">
+                     Add Customer
+                </a>
+                </div>
+				<table class="table table-bordered">
+					<thead>
+						<tr>
+							<tr>
+							<th>#</th>
+							<th>Name</th>
+							<th>Mobile</th>
+							<th>Creation Date</th>
+							<th>Note</th>
+							<th>Action</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% for list in CustomerList %}
+
+						<tr>
+							<th scope="row">{{ forloop.counter }}</th>
+							<td>{{ list.Name}}</td>
+							<td>{{ list.PhoneNumber}}</td>
+							<td>{{ list.CreateDate}}</td>
+							<td>{{ list.Note}}</td>
+							<td>
+							<a href="{% url 'editcustomer' list.id %}" class="btn btn-primary btn-sm">
+								Edit
+							</a>
+							</td>
+							<td>
+							<a href="{% url 'deletecustomer' list.id %}" 
+							class="btn btn-danger btn-sm" 
+							onclick="return confirm('Are you sure you want to delete this Customer?');">
+								Delete
+							</a>
+							</td>
+						</tr> 
+						{% endfor %}
+					
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>
+</div>
+{% endblock %}

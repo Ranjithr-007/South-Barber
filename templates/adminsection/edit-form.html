@@ -4,9 +4,10 @@
 
 	{% for field in form %}
 	<div class="form-group">
-		<label for="id_{{ field.name }}">{{ field.label }}</label>
 		<input type="{{ field.field.widget.input_type }}" class="form-control" name="{{ field.name }}"
-		id="id_{{ field.name }}" value="{{ field.name.values }}" required="true">
+				id="{{ field.id_for_label }}"
+				value="{{ field.value|default_if_none:'' }}"
+				{% if field.field.required %}required{% endif %}>
 	</div>
 	{% endfor %} 
 

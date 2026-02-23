@@ -44,7 +44,8 @@ class Employee(models.Model):
         return self.User.username
 
 class Customer(models.Model):
-    User = models.OneToOneField(User, on_delete=models.CASCADE)
+    Name = models.CharField(max_length=150)
+    Email = models.EmailField()
     PhoneNumber = models.CharField(max_length=11)
     Gender = models.CharField(max_length=1, choices=(('0','Male'),('1','Female')))
     Note = models.TextField(blank=True)
@@ -52,8 +53,7 @@ class Customer(models.Model):
     UpdateDate = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return self.User.username
-
+        return self.Name
 
 class Service(models.Model):
     ServiceName = models.CharField(max_length=25)

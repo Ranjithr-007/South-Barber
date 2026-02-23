@@ -174,12 +174,20 @@ def editcustomer(request, id):
     if request.method == 'POST':
         if form.is_valid():
             form.save()
+            print(form)
             return redirect('customerlist')
 
     context = {
         'form': form
     }
     return render(request, 'adminsection/edit-customer-detailed.html', context)
+
+
+@staff_member_required
+def deletecustomer(request, id):
+    customer = get_object_or_404(Customer, id=id)
+    customer.delete()
+    return redirect('customerlist')
 
 
 @staff_member_required

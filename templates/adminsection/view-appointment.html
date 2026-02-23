@@ -46,9 +46,11 @@
 
           <tr>
             <th>Services</th>
-            <td>{% for service in Appointment.Service.all %}
-           {{ service.ServiceName }}
-            {% endfor %}</td>
+              <td>
+                  {% for service in list.Service.all %}
+                      {{ service.ServiceName }}<br>
+                  {% endfor %}
+              </td>
           </tr>
           <tr>
             <th>Apply Date</th>

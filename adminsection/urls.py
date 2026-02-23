@@ -6,13 +6,20 @@ from adminsection import views
 urlpatterns = [
     path('', views.dashboard, name='dashboard'),
     path('signin/', views.signin, name='signin'),
+
+    
     path('service/', views.addservice, name='addservices'),
     path('manageservices/', views.manageservices, name='manageservices'),
     path('updateservice/<int:id>/', views.updateservice, name='updateservice'),
     path('delete-service/<int:service_id>/', views.delete_service, name='delete_service'),
+    
+    
     path('addcustomer/', views.addcustomer, name='addcustomer'),
     path('customerlist/', views.customerlist, name='customerlist'),
     path('editcustomer/<int:id>/', views.editcustomer, name='editcustomer'),
+    path('delete-customer/<int:id>/', views.deletecustomer, name='deletecustomer'),
+
+    
     path('assignservices/<int:id>/', views.assignservices, name='assignservices'),
     path('bwdatesreportsds/', views.bwdatesreportsds, name='bwdatesreportsds'),
     path('allappointment/', views.allappointment, name='allappointment'),
