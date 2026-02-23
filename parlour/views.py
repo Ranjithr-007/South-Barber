@@ -69,7 +69,7 @@ def appointment_view(request):
             form.save()
             return JsonResponse({
                 "status": "success",
-                "message": "Your hair’s next chapter? Iconic. See you soon. ✂️✨"
+                "message": ""
             })
 
         else:
