@@ -80,6 +80,10 @@ li.nav-item {
 	text-shadow: none;
     font-size: .9em;
 }
+.custom-logo {
+  width: 60px;
+  height: 60px;
+}
 .bg-light {
     background-color: transparent !important;
 }
