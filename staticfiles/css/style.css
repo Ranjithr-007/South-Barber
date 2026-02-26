@@ -517,7 +517,7 @@ h3.heading:after{
 }
 .about-grid1 h3 {
     font-size: 26px;
-    color: #00a98f;
+    color: #5467ff;
     letter-spacing: 2px;
     line-height: 35px;
 }
@@ -536,8 +536,8 @@ h3.heading:after{
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.37);
 }
 .about-grid1 a:hover,.slider-info a:hover{
-	color: #00a98f;
-    border-bottom: 1px solid #00a98f;
+	color: #5467ff;
+    border-bottom: 1px solid #5467ff;
 }
 .about-grid2 {
     background: url(../images/banner1.jpg) no-repeat 0px 0px;
@@ -641,10 +641,10 @@ h3.heading:after{
     letter-spacing: .2px;
 }
 .servicetext a {
-    color: #00a98f;
+    color: #5467ff;
     font-size: 15px;
     letter-spacing: 2px;
-    border-bottom: 1px solid #00a98f;
+    border-bottom: 1px solid #5467ff;
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.37);
 }
 .servicetext a:hover {
@@ -700,7 +700,7 @@ h3.heading:after{
 	margin: 0 auto;
 }
 .wthree_testimonials_grid h5 {
-    color: #00a98f;
+    color: #5467ff;
     margin: 1em 0 1em;
     font-size: 20px;
     text-transform: uppercase;
@@ -797,7 +797,7 @@ h3.heading:after{
     color: #eee;
 }
 .contact-info p span{
-    color: #00a98f;
+    color: #5467ff;
 }
 .contact-main-grid {
     position: relative;
@@ -859,16 +859,16 @@ h3.heading:after{
 .barbers ul li a {
     font-size: 13px;
     display: block;
-    color: #00a98f;
-    border: 1px solid #00a98f;
+    color: #5467ff;
+    border: 1px solid #5467ff;
     width: 36px;
     height: 36px;
     line-height: 36px;
     border-radius: 3px;
 }
 .barbers ul li a:hover {
-    background: #00a98f;
-    border: 1px solid #00a98f;
+    background: #5467ff;
+    border: 1px solid #5467ff;
     color: #fff;
 }
 /*-- team --*/
@@ -976,7 +976,7 @@ h3.heading:after{
     color: #eee;
 }
 .copyright a:hover {
-    color: #00a98f;
+    color: #5467ff;
 }
 /*-- //footer --*/
 
@@ -984,7 +984,7 @@ h3.heading:after{
 span.price {
     float: right;
     padding-right: 40px;
-    color: #00a98f;
+    color: #5467ff;
 }
 .tab-grids h3 {
     font-size: 20px;
@@ -1056,7 +1056,7 @@ span.price {
     padding: 20px 0;
     font-size: 14px;
     color: #fff;
-    background: #00a98f;
+    background: #5467ff;
     border: none;
     letter-spacing: 2px;
     text-transform: uppercase;
@@ -1211,8 +1211,8 @@ span.price {
 	}
 	.navbar-light .navbar-toggler {
 		color: rgba(0, 0, 0, 0.5);
-		border-color: #00a98f;
-		background: #00a98f;
+		border-color: #5467ff;
+		background: #5467ff;
 	}
 	.navbar-toggler {
 		border-radius: 0rem;
