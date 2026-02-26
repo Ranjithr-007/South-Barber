@@ -981,10 +981,32 @@ h3.heading:after{
 /*-- //footer --*/
 
 /*-- pricing --*/
+/* Active tab background */
+.resp-tabs-list li.resp-tab-active {
+    background: #5467ff !important;
+    color: #fff !important;
+}
+
+/* Small triangle under active tab */
+.resp-tabs-list li.resp-tab-active::after {
+    border-top: 10px solid #5467ff !important;
+}
+
+/* Price color */
+
+.price {
+    color: #5467ff;
+    font-weight: 600;
+}
+
+/* Optional: active tab border */
+.resp-tabs-list li.resp-tab-active {
+    border-color: #5467ff !important;
+}
 span.price {
     float: right;
     padding-right: 40px;
-    color: #5467ff;
+    color: #5467ff !important;
 }
 .tab-grids h3 {
     font-size: 20px;
@@ -1085,7 +1107,7 @@ span.price {
 }
 
 .appointment-btn {
-    background: #17a589;
+    background: #5467ff;
     color: #fff;
     font-size: 22px;
     
@@ -1107,7 +1129,7 @@ span.price {
 }
 
 .appointment-btn:hover {
-    background: #138d75;
+    background: #5467ff;
 }
 /*-- //Appointment --*/
 
