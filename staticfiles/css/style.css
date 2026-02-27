@@ -540,7 +540,7 @@ h3.heading:after{
     border-bottom: 1px solid #5467ff;
 }
 .about-grid2 {
-    background: url(../images/banner1.jpg) no-repeat 0px 0px;
+    background: url("/static/images/banner5.png") no-repeat 0px 0px;
 	background-size: cover;
     position: relative;
     z-index: 1;
@@ -556,7 +556,7 @@ h3.heading:after{
     text-transform: capitalize;
 }
 .about-grid3 {
-    background: url(../images/banner2.jpg) no-repeat 0px 0px;
+    background: url("/static/images/banner6.png") no-repeat 0px 0px;
 	background-size: cover;
     position: relative;
     z-index: 1;
@@ -1172,7 +1172,7 @@ span.price {
     font-size: 20px;
     font-weight: 900;
     line-height: 1;
-}
+} */
 #toTop {
 	display: none;
 	text-decoration: none;
@@ -1185,7 +1185,7 @@ span.price {
 	height: 40px;
 	border: none;
 	text-indent: 100%;
-	background: url(../images/arr.png) no-repeat 0px 0px;
+	/* background: url(../images/arr.png) no-repeat 0px 0px; */
 }
 #toTopHover {
 	width: 40px;
@@ -1196,7 +1196,7 @@ span.price {
 	opacity: 0;
 	-moz-opacity: 0;
 	filter: alpha(opacity=0);
-} */
+}
 /*-- //to-top --*/
 
 /*-- Responsive Design --*/
