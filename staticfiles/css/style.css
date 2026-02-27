@@ -1155,6 +1155,24 @@ span.price {
 /*-- //Appointment --*/
 
 /*-- to-top --*/
+/* #toTop {
+    background: #5467ff !important;
+    border-radius: 50%;
+    width: 45px;
+    height: 45px;
+    position: fixed;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+#toTop::after {
+    content: "▲";  
+    color: #ffffff;
+    font-size: 20px;
+    font-weight: 900;
+    line-height: 1;
+}
 #toTop {
 	display: none;
 	text-decoration: none;
@@ -1178,7 +1196,7 @@ span.price {
 	opacity: 0;
 	-moz-opacity: 0;
 	filter: alpha(opacity=0);
-}
+} */
 /*-- //to-top --*/
 
 /*-- Responsive Design --*/
