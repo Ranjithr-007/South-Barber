@@ -82,5 +82,5 @@ def appointment_view(request):
     else:
         form = AppointmentForm()
 
-    return render(request, "website/appointment.html", {"form": form})
+    return render(request, "website/index.html", {"form": form})
 
