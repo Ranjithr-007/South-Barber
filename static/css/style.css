@@ -1045,6 +1045,24 @@ span.price {
 /*-- //pricing --*/
 
 /*-- Appointment --*/
+.btn-appointment {
+  background-color: #5467ff;
+  color: #ffffff;
+  padding: 12px 28px;
+  font-family: 'Arial', sans-serif;
+  font-weight: bold;
+  text-decoration: none;
+  border-radius: 50px; /* Creates the pill shape */
+  display: inline-block;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(84, 103, 255, 0.3);
+}
+
+.btn-appointment:hover {
+  background-color: #3d4ecc; /* Slightly darker shade for hover */
+  transform: translateY(-2px); /* Subtle lift effect */
+  box-shadow: 0 6px 20px rgba(84, 103, 255, 0.4);
+}
 .appointment{
 	background: url(../images/appointment.jpg) no-repeat 0px 0px;
 	background-size: cover;
