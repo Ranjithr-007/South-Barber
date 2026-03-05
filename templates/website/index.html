@@ -199,74 +199,218 @@
 
 <!-- services -->
 <section class="services py-5" id="services">
-	<div class="container-fluid">
-		<div class="heading text-center">
-			<!-- <i class="fas fa-cut"></i> -->
-			<h3 class="heading mb-sm-5 mb-3 text-uppercase">What We Do</h3>
-		</div>
-		<div class="row service-grids">
-			<div class="col-lg-2 col-sm-6 col-12 serviceimage1">
-				
-			</div>
-			<div class="col-lg-2 col-sm-6 col-12 py-5 px-4 servicetext">
-				<h4>Classic Hair cut</h4>
-				<p class="my-3">Nam sed ullamcorper elit, sit amet libero in imperdiet dolor. Maecenas non commodo libero.</p>
-				<a class="bt text-capitalize" href="#" role="button"> read more
-					<!-- <i class="fas fa-cut"></i> -->
-				</a>
-			</div>
-			<div class="col-lg-2 col-sm-6 col-12 serviceimage2">
-				
-			</div>
-			<div class="col-lg-2 col-sm-6 col-12 py-5 px-4 servicetext">
-				<h4>Beard Waxing</h4>
-				<p class="my-3">Nam sed ullamcorper elit, sit amet libero in imperdiet dolor. Maecenas non commodo libero.</p>
-				<a class="bt text-capitalize" href="#" role="button"> read more
-					<!-- <i class="fas fa-cut"></i> -->
-				</a>
-			</div>
-			<div class="col-lg-2 col-sm-6 col-12 serviceimage3">
-				
-			</div>
-			<div class="col-lg-2 col-sm-6 col-12 py-5 px-4 servicetext">
-				<h4>Hair Coloring</h4>
-				<p class="my-3">Nam sed ullamcorper elit, sit amet libero in imperdiet dolor. Maecenas non commodo libero.</p>
-				<a class="bt text-capitalize" href="#" role="button"> read more
-					<!-- <i class="fas fa-cut"></i> -->
-				</a>
-			</div>
-			<div class="col-lg-2 col-sm-6 col-12 py-5 px-4 servicetext">
-				<h4>Straightening</h4>
-				<p class="my-3">Nam sed ullamcorper elit, sit amet libero in imperdiet dolor. Maecenas non commodo libero.</p>
-				<a class="bt text-capitalize" href="#" role="button"> read more
-					<!-- <i class="fas fa-cut"></i> -->
-				</a>
-			</div>
-			<div class="col-lg-2 col-sm-6 col-12 serviceimage3">
-				
-			</div>
-			<div class="col-lg-2 col-sm-6 col-12 py-5 px-4 servicetext">
-				<h4>Beard Trim</h4>
-				<p class="my-3">Nam sed ullamcorper elit, sit amet libero in imperdiet dolor. Maecenas non commodo libero.</p>
-				<a class="bt text-capitalize" href="#" role="button"> read more
-					<!-- <i class="fas fa-cut"></i> -->
-				</a>
-			</div>
-			<div class="col-lg-2 col-sm-6 col-12 serviceimage1">
-				
-			</div>
-			<div class="col-lg-2 col-sm-6 col-12 py-5 px-4 servicetext">
-				<h4>Clean Shave</h4>
-				<p class="my-3">Nam sed ullamcorper elit, sit amet libero in imperdiet dolor. Maecenas non commodo libero.</p>
-				<a class="bt text-capitalize" href="#" role="button"> read more
-					<!-- <i class="fas fa-cut"></i> -->
-				</a>
-			</div>
-			<div class="col-lg-2 col-sm-6 col-12 serviceimage2">
-				
-			</div>
-		</div>
-	</div>
+    <div class="container">
+        <div class="heading text-center">
+            <h3 class="heading mb-sm-5 mb-3 text-uppercase">What We Do</h3>
+        </div>
+
+        <div class="responsive_tabs">
+            <div id="horizontalTab">
+
+                <!-- Tabs -->
+                <ul class="resp-tabs-list">
+                    <li>Hair Cut</li>
+                    <li>Make Up</li>
+                    <li>Waxing</li>
+                    <li>Beard Style</li>
+                </ul>
+
+                <!-- Tab Content -->
+                <div class="resp-tabs-container">
+
+                    <!-- Hair Cut -->
+                    <div>
+                        <div class="row">
+
+                            <div class="col-md-6 mb-4">
+                                <div class="service-box d-flex">
+                                    <img src="{% static 'images/banner1.jpg' %}" class="service-img">
+                                    <div>
+                                        <h4>Classic Hair Cut</h4>
+                                        <p>Professional haircut tailored to your style and face shape.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6 mb-4">
+                                <div class="service-box d-flex">
+                                    <img src="{% static 'images/banner2.jpg' %}" class="service-img">
+                                    <div>
+                                        <h4>Hair Trimming</h4>
+                                        <p>Maintain a clean and sharp look with regular trimming.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6 mb-4">
+                                <div class="service-box d-flex">
+                                    <img src="{% static 'images/banner3.jpg' %}" class="service-img">
+                                    <div>
+                                        <h4>Clipper Cut</h4>
+                                        <p>Modern clipper haircut for a sharp and stylish finish.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6 mb-4">
+                                <div class="service-box d-flex">
+                                    <img src="{% static 'images/banner4.jpg' %}" class="service-img">
+                                    <div>
+                                        <h4>Clean Shave</h4>
+                                        <p>Smooth professional shave with premium grooming products.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!-- Make Up -->
+                    <div>
+                        <div class="row">
+
+                            <div class="col-md-6 mb-4">
+                                <div class="service-box d-flex">
+                                    <img src="{% static 'images/banner5.jpg' %}" class="service-img">
+                                    <div>
+                                        <h4>Facial & Clean-ups</h4>
+                                        <p>Refresh your skin with professional facial treatments.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6 mb-4">
+                                <div class="service-box d-flex">
+                                    <img src="{% static 'images/banner1.jpg' %}" class="service-img">
+                                    <div>
+                                        <h4>Hair Straightening</h4>
+                                        <p>Smooth and stylish straight hair treatment.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+							<div class="col-md-6 mb-4">
+                                <div class="service-box d-flex">
+                                    <img src="{% static 'images/banner2.jpg' %}" class="service-img">
+                                    <div>
+                                        <h4>Hair Straightening</h4>
+                                        <p>Smooth and stylish straight hair treatment.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+							<div class="col-md-6 mb-4">
+                                <div class="service-box d-flex">
+                                    <img src="{% static 'images/banner3.jpg' %}" class="service-img">
+                                    <div>
+                                        <h4>Hair Straightening</h4>
+                                        <p>Smooth and stylish straight hair treatment.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!-- Waxing -->
+                    <div>
+                        <div class="row">
+
+                            <div class="col-md-6 mb-4">
+                                <div class="service-box d-flex">
+                                    <img src="{% static 'images/banner4.jpg' %}" class="service-img">
+                                    <div>
+                                        <h4>Manicure</h4>
+                                        <p>Professional manicure service for healthy nails.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6 mb-4">
+                                <div class="service-box d-flex">
+                                    <img src="{% static 'images/banner5.jpg' %}" class="service-img">
+                                    <div>
+                                        <h4>Body Polish</h4>
+                                        <p>Exfoliating body polish for glowing skin.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+							<div class="col-md-6 mb-4">
+                                <div class="service-box d-flex">
+                                    <img src="{% static 'images/banner1.jpg' %}" class="service-img">
+                                    <div>
+                                        <h4>Hair Straightening</h4>
+                                        <p>Smooth and stylish straight hair treatment.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+							<div class="col-md-6 mb-4">
+                                <div class="service-box d-flex">
+                                    <img src="{% static 'images/banner2.jpg' %}" class="service-img">
+                                    <div>
+                                        <h4>Hair Straightening</h4>
+                                        <p>Smooth and stylish straight hair treatment.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!-- Beard Style -->
+                    <div>
+                        <div class="row">
+
+                            <div class="col-md-6 mb-4">
+                                <div class="service-box d-flex">
+                                    <img src="{% static 'images/banner3.jpg' %}" class="service-img">
+                                    <div>
+                                        <h4>Beard Trimming</h4>
+                                        <p>Perfect beard trimming for a clean and stylish look.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+							<div class="col-md-6 mb-4">
+                                <div class="service-box d-flex">
+                                    <img src="{% static 'images/banner4.jpg' %}" class="service-img">
+                                    <div>
+                                        <h4>Hair Straightening</h4>
+                                        <p>Smooth and stylish straight hair treatment.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6 mb-4">
+                                <div class="service-box d-flex">
+                                    <img src="{% static 'images/banner5.jpg' %}" class="service-img">
+                                    <div>
+                                        <h4>Beard Grooming</h4>
+                                        <p>Complete beard grooming and styling service.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+							<div class="col-md-6 mb-4">
+                                <div class="service-box d-flex">
+                                    <img src="{% static 'images/banner1.jpg' %}" class="service-img">
+                                    <div>
+                                        <h4>Hair Straightening</h4>
+                                        <p>Smooth and stylish straight hair treatment.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
 </section>
 <!-- //services -->
 
