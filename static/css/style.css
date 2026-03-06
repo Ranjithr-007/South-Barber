@@ -1056,18 +1056,34 @@ span.price {
     padding-right: 40px;
     color: #5467ff !important;
 }
-.tab-grids h3 {
-    font-size: 20px;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    font-weight: 600;
-    color: #222;
+.tab-grids h3{
+    font-size:20px;
+    text-transform:uppercase;
+    letter-spacing:2px;
+    font-weight:600;
+    color:#222;
+    position:relative;
+    padding-right:70px;
 }
-.tab-grids p {
-    font-size: 15px;
-    color: #777;
-    line-height: 28px;
-    letter-spacing: .2px;
+
+.tab-grids h3 .price{
+    position:absolute;
+    right:0;
+    top:0;
+    color:#5467ff;
+    font-weight:700;
+}
+
+.tab-grids p{
+    font-size:15px;
+    color:#777;
+    line-height:28px;
+    letter-spacing:.2px;
+    margin-top:10px;
+}
+
+.tab-grids .col-md-6{
+    margin-bottom:35px;
 }
 /*-- //pricing --*/
 
