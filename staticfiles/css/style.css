@@ -81,8 +81,19 @@ li.nav-item {
     font-size: .9em;
 }
 .custom-logo {
-  width: 60px;
-  height: 60px;
+  width: 80px;
+  height: 90px;
+}
+.logo a,
+.navbar-brand {
+    text-decoration: none !important;
+    border-bottom: none !important;
+}
+
+.logo a:hover,
+.navbar-brand:hover {
+    text-decoration: none !important;
+    border-bottom: none !important;
 }
 .bg-light {
     background-color: transparent !important;
