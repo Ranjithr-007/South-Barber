@@ -14,6 +14,7 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
 from .forms import LoginForm
+import string
 
 def signin(request):
     """
@@ -150,15 +151,22 @@ def addcustomer(request):
 
 @staff_member_required
 def customerlist(request):
-    """
-        Customer list.
-    """ 
-
     CustomerList = Customer.objects.order_by('-CreateDate')
 
+    letters = list(string.ascii_uppercase)
+
+    customers_with_letters = []
+    for i, customer in enumerate(CustomerList):
+        letter_id = letters[i % 26]   # A-Z repeat if more than 26
+        customers_with_letters.append({
+            'customer': customer,
+            'letter_id': letter_id
+        })
+
     context = {
-        'CustomerList': CustomerList
+        'customers_with_letters': customers_with_letters
     }
+
     return render(request, 'adminsection/customer-list.html', context)
 
 

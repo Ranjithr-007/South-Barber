@@ -30,27 +30,29 @@
 						</tr>
 					</thead>
 					<tbody>
-						{% for list in CustomerList %}
-
+						{% for item in customers_with_letters %}
 						<tr>
 							<th scope="row">{{ forloop.counter }}</th>
-							<td>{{ list.Name}}</td>
-							<td>{{ list.PhoneNumber}}</td>
-							<td>{{ list.CreateDate}}</td>
-							<td>{{ list.Note}}</td>
+							<td>{{ item.letter_id }}</td>
+							<td>{{ item.customer.Name }}</td>
+							<td>{{ item.customer.PhoneNumber }}</td>
+							<td>{{ item.customer.CreateDate }}</td>
+							<td>{{ item.customer.Note }}</td>
+
 							<td>
-							<a href="{% url 'editcustomer' list.id %}" class="btn btn-primary btn-sm">
-								Edit
-							</a>
+								<a href="{% url 'editcustomer' item.customer.id %}" class="btn btn-primary btn-sm">
+									Edit
+								</a>
 							</td>
+
 							<td>
-							<a href="{% url 'deletecustomer' list.id %}" 
-							class="btn btn-danger btn-sm" 
-							onclick="return confirm('Are you sure you want to delete this Customer?');">
-								Delete
-							</a>
+								<a href="{% url 'deletecustomer' item.customer.id %}"
+								class="btn btn-danger btn-sm"
+								onclick="return confirm('Are you sure you want to delete this Customer?');">
+									Delete
+								</a>
 							</td>
-						</tr> 
+						</tr>
 						{% endfor %}
 					
 					</tbody>
