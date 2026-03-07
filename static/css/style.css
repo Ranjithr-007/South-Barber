@@ -81,8 +81,8 @@ li.nav-item {
     font-size: .9em;
 }
 .custom-logo {
-  width: 80px;
-  height: 90px;
+  width: 150px;
+  height: 130px;
 }
 .logo a,
 .navbar-brand {
@@ -858,8 +858,6 @@ h3.heading:after{
 	position: relative;
 }
 .barber-grid1:before {
-    border-bottom: 2px solid #eee;
-    border-right: 2px solid #eee;
     content: "";
     display: inline-block;
     left: 15px;
@@ -870,8 +868,6 @@ h3.heading:after{
     z-index: 1;
 }
 .barber-grid1:after {
-    border-top: 2px solid #eee;
-    border-left: 2px solid #eee;
     content: "";
     display: inline-block;
     left: 15px;
