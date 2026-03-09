@@ -1092,6 +1092,41 @@ span.price {
 .tab-grids .col-md-6{
     margin-bottom:35px;
 }
+/* ===== TAB ACTIVE COLOR (DESKTOP) ===== */
+.resp-tabs-list li.resp-tab-active {
+    background: #5467ff !important;
+    color: #fff !important;
+    border-color: #5467ff !important;
+}
+
+/* Arrow under active tab */
+.resp-tabs-list li.resp-tab-active::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: -10px;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-top: 10px solid #5467ff;
+}
+
+/* ===== MOBILE ACCORDION TAB ===== */
+h2.resp-accordion.resp-tab-active {
+    background: #5467ff !important;
+    color: #fff !important;
+    border-color: #5467ff !important;
+}
+
+/* Mobile arrow color */
+h2.resp-accordion.resp-tab-active span.resp-arrow {
+    border-top: 5px solid #fff !important;
+}
+
+/* Remove template green color completely */
+.resp-tab-active {
+    background: #5467ff !important;
+}
 /*-- //pricing --*/
 
 /*-- Appointment --*/
