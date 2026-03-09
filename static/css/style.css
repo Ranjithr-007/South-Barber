@@ -693,6 +693,77 @@ h3.heading:after{
 .servicetext {
     background: #222;
 }
+/* SERVICE BOX */
+.service-box{
+    display:flex;
+    align-items:center;
+    gap:18px;
+}
+
+/* IMAGE */
+.service-img{
+    width:220px;
+    height:170px;
+    object-fit:cover;
+    border-radius:6px;
+    flex-shrink:0;
+}
+
+/* TEXT */
+.service-box h4{
+    font-size:20px;
+    font-weight:600;
+    margin-bottom:6px;
+}
+
+.service-box p{
+    font-size:15px;
+    color:#666;
+    margin:0;
+}
+
+/* ============================= */
+/* TABLET FIX */
+/* ============================= */
+
+@media (max-width: 991px){
+
+    .service-img{
+        width:180px;
+        height:140px;
+    }
+
+    .service-box h4{
+        font-size:18px;
+    }
+
+    .service-box p{
+        font-size:14px;
+    }
+
+}
+
+/* ============================= */
+/* MOBILE FIX */
+/* ============================= */
+
+@media (max-width: 576px){
+
+    .service-box{
+        flex-direction:column;
+        align-items:flex-start;
+    }
+
+    .service-img{
+        width:100%;
+        height:200px;
+    }
+
+    .service-box h4{
+        margin-top:10px;
+    }
+
+}
 /*-- //services --*/
 
 /*-- Testimonials --*/
