@@ -1198,26 +1198,66 @@ h2.resp-accordion.resp-tab-active span.resp-arrow {
 .resp-tab-active {
     background: #5467ff !important;
 }
+/* Remove bottom scroll arrow in mobile/tab view */
+.resp-tabs-container::after,
+.resp-tabs-container > .clearfix + *,
+#horizontalTab .resp-arrow,
+.resp-tab-content .clearfix ~ *,
+[class*="resp-tab"] .arrow,
+.resp-tabs-container > div:last-child:not([class*="tab"]) {
+    display: none !important;
+}
+
+/* Hide the bottom arrow indicator in mobile responsive tabs */
+.resp-tab-content-active::after {
+    display: none !important;
+}
+
+/* Fix for the bottom triangle/arrow shown in mobile view */
+.resp-tabs-list li:not(.resp-tab-active)::after {
+    display: none !important;
+}
+
+/* Remove any pseudo-element arrows at bottom of content */
+#horizontalTab::after,
+.responsive_tabs::after {
+    display: none !important;
+    content: none !important;
+}
 /*-- //pricing --*/
 
 /*-- Appointment --*/
-.btn-appointment {
-  background-color: #5467ff;
-  color: #ffffff;
-  padding: 12px 28px;
-  font-family: 'Arial', sans-serif;
-  font-weight: bold;
-  text-decoration: none;
-  border-radius: 50px; /* Creates the pill shape */
-  display: inline-block;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(84, 103, 255, 0.3);
+.btn-appointment{
+  background-color:#5467ff;
+  color:#fff;
+  padding:12px 28px;
+  font-family:'Arial', sans-serif;
+  font-weight:bold;
+  text-decoration:none;
+  border-radius:50px;
+  display:inline-flex;        /* change from inline-block */
+  align-items:center;
+  justify-content:center;     /* center text */
+  text-align:center;
+  transition:all .3s ease;
+  box-shadow: 0 4px 15px rgba(255, 255, 255, 0.6);
 }
 
-.btn-appointment:hover {
-  background-color: #3d4ecc; /* Slightly darker shade for hover */
-  transform: translateY(-2px); /* Subtle lift effect */
-  box-shadow: 0 6px 20px rgba(84, 103, 255, 0.4);
+.btn-appointment:hover{
+  background-color:#3d4ecc;
+  transform:translateY(-2px);
+  box-shadow: 0 4px 15px rgba(255, 255, 255, 0.6);
+}
+
+/* Mobile menu fix */
+@media (max-width:768px){
+
+  .btn-appointment{
+    width:100%;           /* full width */
+    justify-content:center;
+    text-align:center;
+  }
+
 }
 .appointment{
 	background: url(../images/appointment.jpg) no-repeat 0px 0px;
