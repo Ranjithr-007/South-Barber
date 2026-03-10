@@ -582,17 +582,6 @@ h3.heading:after{
     bottom: 18px;
      z-index: -1;
 }
-.about-grid2:before,.about-grid3:before {
-    content: "";
-    display: inline-block;
-    left: 15px;
-    position: absolute;
-    right: 15px;
-    top: 15px;
-    bottom: 15px;
-     background: rgba(0, 0, 0, 0.3);
-     z-index: -1;
-}
 /*-- //about --*/
 
 /*-- services --*/
@@ -1223,6 +1212,27 @@ h2.resp-accordion.resp-tab-active span.resp-arrow {
 .responsive_tabs::after {
     display: none !important;
     content: none !important;
+}
+/* Remove empty white box below Beard Style tab in mobile view */
+.resp-tabs-container .clearfix {
+    display: none !important;
+    height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+/* Hide any empty div after the last tab item */
+.resp-tabs-list ~ div:empty,
+#horizontalTab > div:empty {
+    display: none !important;
+    height: 0 !important;
+}
+
+/* Fix extra spacing/white box in mobile responsive tabs */
+#horizontalTab .resp-tabs-container > .clearfix,
+.responsive_tabs .clearfix {
+    display: none !important;
+    clear: none !important;
 }
 /*-- //pricing --*/
 

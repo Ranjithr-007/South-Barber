@@ -582,17 +582,6 @@ h3.heading:after{
     bottom: 18px;
      z-index: -1;
 }
-.about-grid2:before,.about-grid3:before {
-    content: "";
-    display: inline-block;
-    left: 15px;
-    position: absolute;
-    right: 15px;
-    top: 15px;
-    bottom: 15px;
-     background: rgba(0, 0, 0, 0.3);
-     z-index: -1;
-}
 /*-- //about --*/
 
 /*-- services --*/
