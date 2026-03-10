@@ -152,33 +152,77 @@
 <!-- //banner -->
 
 <!-- About -->
-<section class="about py-5" id="about">
-	<div class="container py-lg-3 py-2">
-		<div class="heading text-center">
-			<!-- <i class="fas fa-cut"></i> -->
-			<h3 class="heading mb-sm-5 mb-3 text-uppercase">About us</h3>
-		</div>
-		<div class="row about-grids">
-			<div class="col-lg-4 about-grid1 mb-lg-0 mb-5">
-				<h3 class="text-uppercase">Welcome to our Hair Salon shop</h3>
-				<p class="my-lg-4 my-3">Nam sed ullamcorper elit, sit amet libero in imperdiet dolor. Maecenas non commodo libero. Suspendisse sit amet arcu augue efficitur luctus a nec ipsum dolor sit amet.</p>
-				<a class="bt text-capitalize" href="#" role="button"> read more
-					<!-- <i class="fas fa-cut"></i> -->
-				</a>
-			</div>
-			<div class="col-lg-4 col-md-6">
-				<div class="about-grid2 p-5">
-					<h3>Real men’s to go</h3>
-				</div>
-			</div>
-			<div class="col-lg-4 col-md-6">
-				<div class="about-grid3 p-5">
-					<h3>Expert in hair style</h3>
-				</div>
-			</div>
-		</div>
-	</div>
+
+<section class="about" id="about">
+
+  <div class="section-heading">
+    <h2>About Us</h2>
+  </div>
+
+  <div class="about-layout">
+
+    <!-- LEFT COLUMN -->
+    <div class="side-col left">
+      <span class="badge">Our Story</span>
+      <h3>Welcome to Our Hair Salon Shop</h3>
+      <p>Nam sed ullamcorper elit, sit amet libero in imperdiet dolor. Maecenas non commodo libero. Suspendisse sit amet arcu augue efficitur luctus a nec ipsum dolor sit amet.</p>
+      <p>We believe every cut tells a story. Our team of skilled stylists brings precision craftsmanship and passion for modern aesthetics to every visit.</p>
+
+      <div>
+        <div class="stat-row">
+          <div class="stat-num">12+</div>
+          <div class="stat-label">Years of<br/>Experience</div>
+        </div>
+        <div class="stat-row">
+          <div class="stat-num">8k</div>
+          <div class="stat-label">Happy<br/>Clients</div>
+        </div>
+        <div class="stat-row">
+          <div class="stat-num">15</div>
+          <div class="stat-label">Expert<br/>Stylists</div>
+        </div>
+      </div>
+
+      <a href="#" class="read-link">Read More</a>
+    </div>
+
+    <!-- CENTRE — Full-width image (replace src with your banner) -->
+    <div class="about-image">
+      <img
+        src="{% static 'images/banner1.jpg' %}"
+        alt="Barber at work"
+      />
+      <div class="img-caption">
+        <h4>Real Men's To Go</h4>
+        <p>Classic cuts &amp; modern styles — all under one roof</p>
+      </div>
+    </div>
+
+    <!-- RIGHT COLUMN -->
+    <div class="side-col right">
+      <span class="badge">Our Services</span>
+      <h3>Expert in Every Hair Style</h3>
+      <p>From classic fades to contemporary cuts, our experts craft styles tailored to your face shape, personality, and lifestyle.</p>
+
+      <ul class="service-list">
+        <li>Classic Haircut    <span>$25</span></li>
+        <li>Skin Fade          <span>$30</span></li>
+        <li>Beard Trim &amp; Shape <span>$18</span></li>
+        <li>Hot Towel Shave    <span>$22</span></li>
+        <li>Hair Colour        <span>$55</span></li>
+        <li>Kids' Cut          <span>$15</span></li>
+      </ul>
+
+      <p style="font-size:13.5px;color:#888;line-height:1.7;">
+        Walk-ins welcome. Appointments recommended for weekends. Gift vouchers available year-round.
+      </p>
+
+      <a href="#" class="read-link">Book Appointment</a>
+    </div>
+
+  </div>
 </section>
+
 <!-- //About -->
 
 <!-- services -->
