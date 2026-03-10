@@ -156,6 +156,9 @@ li.nav-item {
     padding: 18vw 0 0;
 }
 
+.movetxt {
+    font-family: 'Lexend Peta', sans-serif;
+}
 /*-- text Slider --*/
 
 #slider {
