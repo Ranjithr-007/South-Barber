@@ -1205,6 +1205,22 @@ h5.tag {
 /*-- //footer --*/
 
 /*-- pricing --*/
+#pricing .container{
+    width:95%;
+    max-width:95%;
+    margin:auto;
+}
+
+/* Increase pricing box height */
+.resp-tabs-container{
+    padding: 50px 60px;  /* more inner space */
+    min-height: 420px;   /* increase height */
+}
+
+/* More spacing between service rows */
+.tab-grids .col-md-6{
+    margin-bottom: 50px;
+}
 /* Make sure tab has relative position */
 .resp-tabs-list li {
     position: relative;
