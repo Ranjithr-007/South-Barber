@@ -512,6 +512,11 @@ h5.tag {
 /*-- //banner --*/
 
 /*-- about --*/
+#about .container{
+    width:95%;
+    max-width:95%;
+    margin:auto;
+}
 .about {
       padding: 90px 0 80px;
       background: #f9f7f4;
