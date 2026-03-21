@@ -512,54 +512,38 @@ h5.tag {
 /*-- //banner --*/
 
 /*-- about --*/
-#about .container{
-    width:95%;
-    max-width:95%;
-    margin:auto;
+.about-layout {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr 1.4fr;  
+    width: 100%;
 }
-.about {
-      padding: 90px 0 80px;
-      background: #f9f7f4;
-    }
-
-    /* ── HEADING ── */
-    .section-heading {
-      text-align: center;
-      margin-bottom: 60px;
-    }
-    .section-heading h2 {
-      font-family: 'Playfair Display', serif;
-      font-size: clamp(2rem, 5vw, 3rem);
-      font-weight: 900;
-      letter-spacing: 6px;
-      text-transform: uppercase;
-      color: #111;
-      position: relative;
-      display: inline-block;
-      padding-bottom: 16px;
-    }
-    .section-heading h2::after {
-      content: '';
-      position: absolute;
-      bottom: 0;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 60px;
-      height: 3px;
-      background: #5467ff;
-    }
-
-    /* ── THREE-COLUMN LAYOUT ── */
-    .about-layout {
-      display: grid;
-      grid-template-columns: 1fr 1.6fr 1fr;
-      gap: 0;
-      max-width: 1300px;
-      margin: 0 auto;
-      padding: 0 20px;
-      align-items: stretch;
-    }
-
+/* ── HEADING ── */
+.section-heading {
+    text-align: center;
+    margin-bottom: 60px;
+    padding: 0 20px;
+}
+.section-heading h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 5vw, 3rem);
+    font-weight: 900;
+    letter-spacing: 6px;
+    text-transform: uppercase;
+    color: #111;
+    position: relative;
+    display: inline-block;
+    padding-bottom: 16px;
+}
+.section-heading h2::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 3px;
+    background: #5467ff;
+}
     /* ── SIDE COLUMNS ── */
     .side-col {
       padding: 40px 36px;
@@ -657,9 +641,7 @@ h5.tag {
 
     /* ── FULL-WIDTH CENTRE IMAGE ── */
     .about-image {
-      position: relative;
-      overflow: hidden;
-      min-height: 480px;
+        margin: 0;
     }
     .about-image img {
       width: 100%;
