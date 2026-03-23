@@ -155,7 +155,9 @@ li.nav-item {
 .banner-text {
     padding: 18vw 0 0;
 }
-
+.agile-title {
+  font-family: 'Lexend Peta', sans-serif;
+}
 .movetxt {
     font-family: 'Lexend Peta', sans-serif;
 }
