@@ -549,7 +549,7 @@ h5.tag {
       display: grid;
       grid-template-columns: 1fr 1.6fr 1fr;
       gap: 0;
-      max-width: 1300px;
+      max-width: 100%;
       margin: 0 auto;
       padding: 0 20px;
       align-items: stretch;
