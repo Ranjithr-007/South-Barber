@@ -80,10 +80,6 @@ li.nav-item {
 	text-shadow: none;
     font-size: .9em;
 }
-.custom-logo {
-  width: 2955px;
-  height: 2930px;
-}
 .logo a,
 .navbar-brand {
     text-decoration: none !important;
