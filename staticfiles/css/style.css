@@ -557,12 +557,13 @@ h5.tag {
 
     /* ── SIDE COLUMNS ── */
     .side-col {
-      padding: 40px 36px;
-      background: #fff;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      gap: 28px;
+    padding: 40px 36px;
+    background: #fff;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;   
+    align-items: flex-start;      
+    gap: 28px;
     }
     .side-col.left  { border-right: 1px solid #eee; }
     .side-col.right { border-left:  1px solid #eee; }
