@@ -1,0 +1,59 @@
+{% extends 'adminsection/base.html' %}
+{% load static %}
+{% block content %}
+
+<div id="page-wrapper">
+	<div class="main-page">
+		<div class="tables">
+			<h3 class="title1">Manage Employee</h3>
+
+
+
+			<div class="table-container">
+    			<div class="table-responsive">
+				<h4></h4>
+                <div style="margin-bottom: 10px;">
+                <a href="{% url 'addemployee' %}" class="btn btn-primary">
+                     Add Employee
+                </a>
+                </div>
+				<table class="table table-bordered">
+					<thead>
+						<tr>
+                            <th>#</th>
+                            <th>Employee ID</th>
+                            <th>Name</th>
+                            <th>Joining Date</th>
+                            <th></th>
+                            <th>Salary</th>
+                            <th></th>
+                            <th>Store</th>
+                            <th></th>
+                            <th>Active</th>
+                            <th>Note</th>
+                        </tr>
+					</thead>
+					<tbody>
+                        {% for item in employee %}
+                        <tr>
+                            <th scope="row">{{ forloop.counter }}</th>
+                            <td>{{ item.EmployeeID }}</td>
+                            <td>{{ item.User.get_full_name }}</td>
+                            <td>{{ item.JoiningDate }}</td>
+                            <td></td>
+                            <td>{{ item.Salary }}</td>
+                            <td></td>
+                            <td>{{ item.Store }}</td>
+                            <td></td>
+                            <td>{{ item.IsActive|yesno:"Yes,No" }}</td>
+                            <td>{{ item.Note}}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>
+</div>
+{% endblock %}

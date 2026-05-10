@@ -13,11 +13,19 @@ urlpatterns = [
     path('updateservice/<int:id>/', views.updateservice, name='updateservice'),
     path('delete-service/<int:service_id>/', views.delete_service, name='delete_service'),
     
+    path('addemployee/', views.addemployee, name='addemployee'),
+    path('employeelist/', views.employeelist, name='employeelist'),
+    path('editemployee/<int:id>/', views.editemployee, name='editemployee'),
+    path('delete-employee/<int:id>/', views.deleteemployee, name='deleteemployee'),
+    
     
     path('addcustomer/', views.addcustomer, name='addcustomer'),
     path('customerlist/', views.customerlist, name='customerlist'),
-    path('editcustomer/<int:id>/', views.editcustomer, name='editcustomer'),
-    path('delete-customer/<int:id>/', views.deletecustomer, name='deletecustomer'),
+    path('editcustomer/<uuid:id>/', views.editcustomer, name='editcustomer'),
+    path('delete-customer/<uuid:id>/', views.deletecustomer, name='deletecustomer'),
+    path('customer/<uuid:id>/', views.customer_detail, name='customer_detail'),
+    path('customer/<uuid:id>/add-visit/', views.add_visit, name='add_visit'),
+    path('lookup-customer/', views.lookup_customer, name='lookup_customer'),
 
     
     path('assignservices/<int:id>/', views.assignservices, name='assignservices'),

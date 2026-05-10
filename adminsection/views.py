@@ -15,6 +15,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
 from .forms import LoginForm
 import string
+from decimal import Decimal
 
 def signin(request):
     """
@@ -150,28 +151,44 @@ def addcustomer(request):
 
 
 @staff_member_required
-def customerlist(request):
-    CustomerList = Customer.objects.order_by('-CreateDate')
+def addemployee(request):
+    """
+        Admin can add Employee details.
+    """
+    form = AddEmployeeForm(request.POST or None)
 
-    letters = list(string.ascii_uppercase)
+    if request.method == 'POST':
+        if form.is_valid():
+            employee = form.save(commit=False)
 
-    customers_with_letters = []
-    for i, customer in enumerate(CustomerList):
-        letter_id = letters[i % 26]   # A-Z repeat if more than 26
-        customers_with_letters.append({
-            'customer': customer,
-            'letter_id': letter_id
-        })
+            # Create the related User first
+            user = User.objects.create_user(
+                username=form.cleaned_data['Email'],
+                email=form.cleaned_data['Email'],
+                first_name=form.cleaned_data['Name'],
+            )
+            employee.User = user
+
+            # Auto-generate EmployeeID
+            employee.EmployeeID = 'EMP' + str(User.objects.count()).zfill(4)
+
+            employee.save()
+            return redirect('employeelist')
 
     context = {
-        'customers_with_letters': customers_with_letters
+        'form': form,
     }
-
-    return render(request, 'adminsection/customer-list.html', context)
-
+    return render(request, 'adminsection/add-employee.html', context)
 
 @staff_member_required
-def editcustomer(request, id):
+def employeelist(request):
+    employee = Employee.objects.order_by('-JoiningDate')
+    return render(request, 'adminsection/employee-list.html', {
+        'employee': employee  
+    })
+
+@staff_member_required
+def editemployee(request, id):
     """
         Edit customer details.
     """ 
@@ -183,19 +200,107 @@ def editcustomer(request, id):
         if form.is_valid():
             form.save()
             print(form)
-            return redirect('customerlist')
+            return redirect('employeelist')
 
     context = {
         'form': form
     }
-    return render(request, 'adminsection/edit-customer-detailed.html', context)
+    return render(request, 'adminsection/edit-employee-detailed.html', context)
+
+
+@staff_member_required
+def deleteemployee(request, id):
+    customer = get_object_or_404(Customer, id=id)
+    customer.delete()
+    return redirect('employeelist')
+
+
+@staff_member_required
+def customerlist(request):
+    CustomerList = Customer.objects.order_by('-CreateDate')
+    letters = list(string.ascii_uppercase)
+    customers_with_letters = []
+    for i, customer in enumerate(CustomerList):
+        letter_id = letters[i % 26]
+        customers_with_letters.append({
+            'customer': customer,
+            'letter_id': letter_id
+        })
+    return render(request, 'adminsection/customer-list.html', {'customers_with_letters': customers_with_letters})
+
+
+@staff_member_required
+def addcustomer(request):
+    form = AddCustomerForm(request.POST or None)
+    if request.method == 'POST' and form.is_valid():
+        customer = form.save()
+        return redirect('customer_detail', id=customer.PhoneID)
+    return render(request, 'adminsection/add-customer.html', {'form': form})
+
+
+@staff_member_required
+def editcustomer(request, id):
+    customer = get_object_or_404(Customer, PhoneID=id)
+    form = AddCustomerForm(request.POST or None, instance=customer)
+    if request.method == 'POST' and form.is_valid():
+        form.save()
+        return redirect('customer_detail', id=id)
+    return render(request, 'adminsection/edit-customer-detailed.html', {'form': form, 'customer': customer})
 
 
 @staff_member_required
 def deletecustomer(request, id):
-    customer = get_object_or_404(Customer, id=id)
+    customer = get_object_or_404(Customer, PhoneID=id)
     customer.delete()
     return redirect('customerlist')
+
+
+@staff_member_required
+def customer_detail(request, id):
+    customer = get_object_or_404(Customer, PhoneID=id)
+    visits = customer.visits.order_by('-VisitDate')
+    return render(request, 'adminsection/customer-detail.html', {
+        'customer': customer,
+        'visits': visits,
+    })
+
+
+@staff_member_required
+def add_visit(request, id):
+    customer = get_object_or_404(Customer, PhoneID=id)
+    
+    if request.method == 'POST':
+        bill_amount = Decimal(request.POST.get('bill_amount', 0))
+        discount_type = request.POST.get('discount_type', 'PERCENT')
+        discount_value = Decimal(request.POST.get('discount_value', 0))
+        note = request.POST.get('note', '')
+
+        Visit.objects.create(
+            Customer=customer,
+            BillAmount=bill_amount,
+            DiscountType=discount_type,
+            DiscountValue=discount_value,
+            Note=note,
+        )
+        return redirect('customer_detail', id=id)
+
+    return render(request, 'adminsection/add-visit.html', {'customer': customer})
+
+
+@staff_member_required
+def lookup_customer(request):
+    """Manager enters phone number to find or create customer."""
+    if request.method == 'POST':
+        phone = request.POST.get('phone_number', '').strip()
+        name = request.POST.get('name', 'Unknown').strip()
+
+        customer, created = Customer.objects.get_or_create(
+            PhoneNumber=phone,
+            defaults={'Name': name}
+        )
+        return redirect('customer_detail', id=customer.PhoneID)
+
+    return render(request, 'adminsection/lookup-customer.html')
 
 
 @staff_member_required

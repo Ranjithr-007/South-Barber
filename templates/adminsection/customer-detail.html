@@ -1,0 +1,85 @@
+{% extends 'adminsection/base.html' %}
+{% load static %}
+{% block content %}
+
+<div id="page-wrapper">
+    <div class="main-page">
+        <div class="tables">
+
+            <!-- Customer Info -->
+            <div class="table-container" style="margin-bottom: 20px;">
+                <h3>{{ customer.Name }}</h3>
+                <p>📞 {{ customer.PhoneNumber }}</p>
+                {% if customer.Note %}<p>📝 {{ customer.Note }}</p>{% endif %}
+                <p>Member since: {{ customer.CreateDate|date:"d M Y" }}</p>
+
+                <!-- Stats -->
+                <div style="display: flex; gap: 20px; flex-wrap: wrap; margin: 15px 0;">
+                    <div class="alert alert-primary">
+                        <strong>{{ customer.total_visits }}</strong><br>Total Visits
+                    </div>
+                    <div class="alert alert-success">
+                        <strong>{{ customer.return_visits }}</strong><br>Return Visits
+                    </div>
+                    <div class="alert alert-info">
+                        <strong>{{ customer.retention_rate }}%</strong><br>Retention Rate
+                    </div>
+                    <div class="alert alert-warning">
+                        <strong>₹{{ customer.total_spent }}</strong><br>Total Spent
+                    </div>
+                    <div class="alert alert-secondary">
+                        <strong>{{ customer.last_visit|date:"d M Y" }}</strong><br>Last Visit
+                    </div>
+                </div>
+
+                <a href="{% url 'add_visit' customer.PhoneID %}" class="btn btn-success">+ Add Visit</a>
+                <a href="{% url 'editcustomer' customer.PhoneID %}" class="btn btn-primary">Edit</a>
+                <a href="{% url 'customerlist' %}" class="btn btn-secondary">Back</a>
+            </div>
+
+            <!-- Visit History -->
+            <div class="table-container">
+                <h5>Visit History</h5>
+                <div class="table-responsive">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Date</th>
+                                <th>Bill (₹)</th>
+                                <th>Discount</th>
+                                <th>Final (₹)</th>
+                                <th>Note</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for visit in visits %}
+                            <tr>
+                                <td>{{ forloop.counter }}</td>
+                                <td>{{ visit.VisitDate|date:"d M Y" }}</td>
+                                <td>₹{{ visit.BillAmount }}</td>
+                                <td>
+                                    {% if visit.DiscountType == 'PERCENT' %}
+                                        {{ visit.DiscountValue }}% (₹{{ visit.discount_amount }})
+                                    {% else %}
+                                        ₹{{ visit.DiscountValue }}
+                                    {% endif %}
+                                </td>
+                                <td>₹{{ visit.final_amount }}</td>
+                                <td>{{ visit.Note|default:"—" }}</td>
+                            </tr>
+                            {% endfor %}
+                            {% if not visits %}
+                            <tr>
+                                <td colspan="6" class="text-center">No visits yet</td>
+                            </tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endblock %}

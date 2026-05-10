@@ -3,6 +3,9 @@ from django.contrib.auth.models import AbstractUser
 import uuid
 from django.dispatch import receiver
 from django.db.models.signals import post_save
+from django.utils import timezone
+
+
 # Create your models here.
 class Store(models.Model):
     StoreID = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
@@ -39,21 +42,105 @@ class Employee(models.Model):
     Salary = models.DecimalField(max_digits=10, decimal_places=2)
     Store = models.ForeignKey(Store, on_delete=models.SET_NULL, null=True, blank=True)
     IsActive = models.BooleanField(default=True)
+    Note = models.TextField(blank=True)
 
     def __str__(self):
         return self.User.username
 
 class Customer(models.Model):
+    """
+    Customer identified by phone number (unique, but NOT the DB primary key).
+    Keeping the default auto integer PK preserves existing Invoice FK references.
+    """
+    PhoneID = models.UUIDField(primary_key=True, default=uuid.uuid4)
+    PhoneNumber = models.CharField(max_length=15, unique=True) 
     Name = models.CharField(max_length=150)
-    Email = models.EmailField()
-    PhoneNumber = models.CharField(max_length=11)
-    Gender = models.CharField(max_length=1, choices=(('0','Male'),('1','Female')))
     Note = models.TextField(blank=True)
     CreateDate = models.DateTimeField(auto_now_add=True)
     UpdateDate = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return self.Name
+        return f"{self.Name} ({self.PhoneNumber})"
+ 
+    # ── Retention helpers ──────────────────────────────────────────────────
+ 
+    @property
+    def total_visits(self):
+        return self.visits.count()
+ 
+    @property
+    def return_visits(self):
+        """Visits after the very first one."""
+        return max(self.visits.count() - 1, 0)
+ 
+    @property
+    def retention_rate(self):
+        """
+        Simple retention rate:
+            (return visits / total visits) × 100
+        Returns 0 for first-time customers.
+        """
+        total = self.total_visits
+        if total <= 1:
+            return 0.0
+        return round((self.return_visits / total) * 100, 1)
+ 
+    @property
+    def last_visit(self):
+        visit = self.visits.order_by('-VisitDate').first()
+        return visit.VisitDate if visit else None
+ 
+    @property
+    def total_spent(self):
+        return sum(v.final_amount for v in self.visits.all())
+ 
+ 
+class Visit(models.Model):
+    """
+    Each time a customer makes a purchase, a Visit record is created.
+    The customer is looked up (or created) by their phone number.
+    """
+    DISCOUNT_TYPE_CHOICES = (
+        ('PERCENT', 'Percentage (%)'),
+        ('AMOUNT', 'Fixed Amount (₹)'),
+    )
+ 
+    # FK uses Customer's default integer PK — safe with existing Invoice table
+    Customer = models.ForeignKey(
+        Customer,
+        on_delete=models.CASCADE,
+        related_name='visits'
+    )
+    VisitDate = models.DateTimeField(default=timezone.now)
+    BillAmount = models.DecimalField(max_digits=10, decimal_places=2)
+    DiscountType = models.CharField(
+        max_length=10,
+        choices=DISCOUNT_TYPE_CHOICES,
+        default='PERCENT'
+    )
+    DiscountValue = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        default=0,
+        help_text="Enter % value or flat ₹ amount depending on DiscountType"
+    )
+    Note = models.TextField(blank=True)
+ 
+    class Meta:
+        ordering = ['-VisitDate']
+ 
+    def __str__(self):
+        return f"{self.Customer.Name} – {self.VisitDate.date()} – ₹{self.final_amount}"
+ 
+    @property
+    def discount_amount(self):
+        if self.DiscountType == 'PERCENT':
+            return round(self.BillAmount * self.DiscountValue / 100, 2)
+        return self.DiscountValue  # already a flat amount
+ 
+    @property
+    def final_amount(self):
+        return max(self.BillAmount - self.discount_amount, 0)
 
 class Service(models.Model):
     ServiceName = models.CharField(max_length=25)
