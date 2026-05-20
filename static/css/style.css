@@ -1221,22 +1221,41 @@ h5.tag {
 /*-- //footer --*/
 
 /*-- pricing --*/
-#pricing .container{
-    width:95%;
-    max-width:95%;
-    margin:auto;
+#pricing {
+    position: relative;
+    overflow: hidden;
+}
+
+/* Film grain canvas - full section background */
+#pricing-grain-canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0.35; /* ← adjust: 0.1 subtle | 0.35 medium | 0.6 strong */
+}
+
+#pricing .container {
+    width: 95%;
+    max-width: 95%;
+    margin: auto;
+    position: relative;
+    z-index: 1;
 }
 
 /* Increase pricing box height */
-.resp-tabs-container{
-    padding: 50px 60px;  /* more inner space */
-    min-height: 420px;   /* increase height */
+.resp-tabs-container {
+    padding: 50px 60px;
+    min-height: 420px;
 }
 
 /* More spacing between service rows */
-.tab-grids .col-md-6{
+.tab-grids .col-md-6 {
     margin-bottom: 50px;
 }
+
 /* Make sure tab has relative position */
 .resp-tabs-list li {
     position: relative;
@@ -1270,7 +1289,6 @@ h5.tag {
 }
 
 /* Price color */
-
 .price {
     color: #5467ff;
     font-weight: 600;
@@ -1280,40 +1298,43 @@ h5.tag {
 .resp-tabs-list li.resp-tab-active {
     border-color: #5467ff !important;
 }
+
 span.price {
     float: right;
     padding-right: 40px;
     color: #5467ff !important;
 }
-.tab-grids h3{
-    font-size:20px;
-    text-transform:uppercase;
-    letter-spacing:2px;
-    font-weight:600;
-    color:#222;
-    position:relative;
-    padding-right:70px;
+
+.tab-grids h3 {
+    font-size: 20px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-weight: 600;
+    color: #222;
+    position: relative;
+    padding-right: 70px;
 }
 
-.tab-grids h3 .price{
-    position:absolute;
-    right:0;
-    top:0;
-    color:#5467ff;
-    font-weight:700;
+.tab-grids h3 .price {
+    position: absolute;
+    right: 0;
+    top: 0;
+    color: #5467ff;
+    font-weight: 700;
 }
 
-.tab-grids p{
-    font-size:15px;
-    color:#777;
-    line-height:28px;
-    letter-spacing:.2px;
-    margin-top:10px;
+.tab-grids p {
+    font-size: 15px;
+    color: #777;
+    line-height: 28px;
+    letter-spacing: .2px;
+    margin-top: 10px;
 }
 
-.tab-grids .col-md-6{
-    margin-bottom:35px;
+.tab-grids .col-md-6 {
+    margin-bottom: 35px;
 }
+
 /* ===== TAB ACTIVE COLOR (DESKTOP) ===== */
 .resp-tabs-list li.resp-tab-active {
     background: #5467ff !important;
@@ -1349,6 +1370,7 @@ h2.resp-accordion.resp-tab-active span.resp-arrow {
 .resp-tab-active {
     background: #5467ff !important;
 }
+
 /* Remove bottom scroll arrow in mobile/tab view */
 .resp-tabs-container::after,
 .resp-tabs-container > .clearfix + *,
@@ -1375,6 +1397,7 @@ h2.resp-accordion.resp-tab-active span.resp-arrow {
     display: none !important;
     content: none !important;
 }
+
 /* Remove empty white box below Beard Style tab in mobile view */
 .resp-tabs-container .clearfix {
     display: none !important;

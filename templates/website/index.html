@@ -360,7 +360,7 @@
                                 <div class="service-box d-flex">
                                     <img src="{% static 'images/banner1.jpg' %}" class="service-img">
                                     <div>
-                                        <h4>Hair Straightening(per length)<span class="price">1800/-</span></h4>
+                                        <h4>Hair Straightening (per length)<span class="price">1800/-</span></h4>
                                         <p>Smooth and stylish straight hair treatment.</p>
                                     </div>
                                 </div>
@@ -493,6 +493,7 @@
 
 <!-- pricing -->
 <section class="py-5" id="pricing">
+	<canvas id="pricing-grain-canvas"></canvas>
 	<div class="container">
 		<div class="heading text-center">
 			<!-- <i class="fas fa-cut"></i> -->
@@ -1118,7 +1119,6 @@
 	<!-- //here ends scrolling icon -->
 	<!-- start-smoth-scrolling -->
 	<canvas id="grain-canvas"></canvas>
-
 	<script>
 		(function () {
 		const canvas = document.getElementById('grain-canvas');
@@ -1153,6 +1153,38 @@
 		resize();
 		drawGrain();
 		})();
+	</script>
+
+	<script>
+		(function () {
+		const canvas = document.getElementById('pricing-grain-canvas');
+		if (!canvas) return;
+		const ctx = canvas.getContext('2d');
+		let animFrame;
+
+		function resize() {
+			const section = document.getElementById('pricing');
+			canvas.width  = section.offsetWidth;
+			canvas.height = section.offsetHeight;
+		}
+
+		function drawGrain() {
+			const w = canvas.width, h = canvas.height;
+			const img = ctx.createImageData(w, h);
+			const data = img.data;
+			for (let i = 0; i < data.length; i += 4) {
+				const v = Math.random() * 255 | 0;
+				data[i] = data[i+1] = data[i+2] = v;
+				data[i+3] = 255;
+			}
+			ctx.putImageData(img, 0, 0);
+			animFrame = requestAnimationFrame(drawGrain);
+		}
+
+		resize();
+		window.addEventListener('resize', resize);
+		drawGrain();
+	})();
 	</script>
 <!-- //js-scripts -->
 
