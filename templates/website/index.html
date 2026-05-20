@@ -639,6 +639,7 @@
 
 <!-- Team -->
 <section class="barbers py-5" id="team">
+	<canvas id="team-grain-canvas"></canvas>
 	<div class="container py-lg-3 py-2">
 		<div class="heading text-center">
 			<!-- <i class="fas fa-cut"></i> -->
@@ -1184,6 +1185,42 @@
 		resize();
 		window.addEventListener('resize', resize);
 		drawGrain();
+	})();
+	</script>
+
+	<script>
+		(function () {
+		function makeGrain(canvasId) {
+			const canvas = document.getElementById(canvasId);
+			if (!canvas) return;
+			const ctx = canvas.getContext('2d');
+			let frame;
+
+			function resize() {
+				canvas.width  = canvas.offsetWidth;
+				canvas.height = canvas.offsetHeight;
+			}
+
+			function draw() {
+				const w = canvas.width, h = canvas.height;
+				const imageData = ctx.createImageData(w, h);
+				const data = imageData.data;
+				for (let i = 0; i < data.length; i += 4) {
+					const val = Math.random() * 255 | 0;
+					data[i] = data[i+1] = data[i+2] = val;
+					data[i+3] = 255;
+				}
+				ctx.putImageData(imageData, 0, 0);
+				frame = requestAnimationFrame(draw);
+			}
+
+			window.addEventListener('resize', resize);
+			resize();
+			draw();
+		}
+
+		makeGrain('grain-canvas');      // services
+		makeGrain('team-grain-canvas'); // team
 	})();
 	</script>
 <!-- //js-scripts -->
