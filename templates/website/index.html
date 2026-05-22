@@ -188,6 +188,7 @@
 <!-- About -->
 
 <section class="about" id="about">
+	<canvas id="grain-canvas-about"></canvas>
   <div class="section-heading">
     <h3 class="heading mb-sm-5 mb-3 text-uppercase">About Us</h3>
   </div>
@@ -1217,6 +1218,52 @@
 		makeGrain('grain-canvas');      // services
 		makeGrain('team-grain-canvas'); // team
 	})();
+	</script>
+
+	<script>
+		function initGrain(canvasId) {
+		const canvas = document.getElementById(canvasId);
+		if (!canvas) return;
+		const ctx = canvas.getContext('2d');
+
+		function resize() {
+			canvas.width  = canvas.offsetWidth;
+			canvas.height = canvas.offsetHeight;
+		}
+
+		function drawGrain() {
+			const { width, height } = canvas;
+			const imageData = ctx.createImageData(width, height);
+			const data = imageData.data;
+			for (let i = 0; i < data.length; i += 4) {
+				const v = Math.random() * 255;
+				data[i]     = v; // R
+				data[i + 1] = v; // G
+				data[i + 2] = v; // B
+				data[i + 3] = 255;
+			}
+			ctx.putImageData(imageData, 0, 0);
+		}
+
+		let animId;
+		function loop() {
+			drawGrain();
+			animId = requestAnimationFrame(loop);
+		}
+
+		resize();
+		loop();
+
+		window.addEventListener('resize', () => {
+			cancelAnimationFrame(animId);
+			resize();
+			loop();
+		});
+	}
+
+	// Init both sections
+	initGrain('grain-canvas');         // services
+	initGrain('grain-canvas-about');   // about
 	</script>
 <!-- //js-scripts -->
 

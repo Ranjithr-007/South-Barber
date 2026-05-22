@@ -513,9 +513,27 @@ h5.tag {
 
 /*-- about --*/
 .about {
-      padding: 90px 0 80px;
-      background: #f9f7f4;
-    }
+    position: relative; /* add this if not already */
+    overflow: hidden;   /* add this if not already */
+}
+
+#grain-canvas-about {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0.35;
+}
+
+/* Make sure about's inner content sits above the grain */
+.about .container,
+.section-heading,
+.about-layout {
+    position: relative;
+    z-index: 1;
+}
 
     /* ── HEADING ── */
     .section-heading {
