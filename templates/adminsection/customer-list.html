@@ -23,7 +23,11 @@
                                 <th>Last Visit</th>
                                 <th>Total Spent</th>
                                 <th>Retention</th>
-                                <th>Actions</th>
+                                <th>View</th>
+                                <th></th>
+                                <th>Edit</th>
+                                <th>Delete</th>
+
                             </tr>
                         </thead>
                         <tbody>
@@ -48,7 +52,12 @@
                                 <td>{{ item.customer.retention_rate }}%</td>
                                 <td>
                                     <a href="{% url 'customer_detail' item.customer.PhoneID %}" class="btn btn-info btn-sm">View</a>
+                                </td>
+                                <td></td>
+                                <td>
                                     <a href="{% url 'editcustomer' item.customer.PhoneID %}" class="btn btn-primary btn-sm">Edit</a>
+                                </td>
+                                <td>
                                     <a href="{% url 'deletecustomer' item.customer.PhoneID %}"
                                         class="btn btn-danger btn-sm"
                                         onclick="return confirm('Delete this customer?');">
