@@ -9,7 +9,7 @@ body{
 	margin:0;
 	background:#fff;
 	position:relative;
-	font-family: 'Lexend Peta', sans-serif;
+	font-family: 'Courier Prime';
 }
 body a{
     transition:0.5s all;
@@ -157,7 +157,7 @@ li.nav-item {
 }
 
 .movetxt {
-    font-family: 'Lexend Peta', sans-serif;
+    font-family: 'Courier Prime';
 }
 /*-- text Slider --*/
 
@@ -1463,7 +1463,7 @@ h2.resp-accordion.resp-tab-active span.resp-arrow {
   background-color:#5467ff;
   color:#fff;
   padding:12px 28px;
-  font-family: 'Lexend Peta', sans-serif;
+  font-family: 'Courier Prime';
   font-weight:bold;
   text-decoration:none;
   border-radius:50px;
