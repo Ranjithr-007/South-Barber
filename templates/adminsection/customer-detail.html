@@ -32,23 +32,40 @@
                     </div>
                 </div>
 
-                <a href="{% url 'add_visit' customer.PhoneID %}" class="btn btn-success">+ Add Visit</a>
+                <!-- <a href="{% url 'add_visit' customer.PhoneID %}" class="btn btn-success">+ Add Visit</a> -->
                 <a href="{% url 'editcustomer' customer.PhoneID %}" class="btn btn-primary">Edit</a>
                 <a href="{% url 'customerlist' %}" class="btn btn-secondary">Back</a>
             </div>
+
+            <div style="margin-bottom: 10px; width: 750px;">
+                        <a href="{% url 'add_visit' customer.PhoneID %}" class="btn btn-primary">
+                        Add Visit
+                        </a>
+                    </div>
 
             <!-- Visit History -->
             <div class="table-container">
                 <h5>Visit History</h5>
                 <div class="table-responsive">
+                    
                     <table class="table table-bordered">
                         <thead>
                             <tr>
                                 <th>#</th>
+                                <th></th>
+                                <th></th>
                                 <th>Date</th>
+                                <th></th>
+                                <th></th>
                                 <th>Bill (₹)</th>
+                                <th></th>
+                                <th></th>
                                 <th>Discount</th>
+                                <th></th>
+                                <th></th>
                                 <th>Final (₹)</th>
+                                <th></th>
+                                <th></th>
                                 <th>Note</th>
                             </tr>
                         </thead>
@@ -56,8 +73,14 @@
                             {% for visit in visits %}
                             <tr>
                                 <td>{{ forloop.counter }}</td>
+                                <td></td>
+                                <td></td>
                                 <td>{{ visit.VisitDate|date:"d M Y" }}</td>
+                                <td></td>
+                                <td></td>
                                 <td>₹{{ visit.BillAmount }}</td>
+                                <td></td>
+                                <td></td>
                                 <td>
                                     {% if visit.DiscountType == 'PERCENT' %}
                                         {{ visit.DiscountValue }}% (₹{{ visit.discount_amount }})
@@ -65,7 +88,11 @@
                                         ₹{{ visit.DiscountValue }}
                                     {% endif %}
                                 </td>
+                                <td></td>
+                                <td></td>
                                 <td>₹{{ visit.final_amount }}</td>
+                                <td></td>
+                                <td></td>
                                 <td>{{ visit.Note|default:"—" }}</td>
                             </tr>
                             {% endfor %}

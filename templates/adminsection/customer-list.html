@@ -2,75 +2,343 @@
 {% load static %}
 {% block content %}
 
-<div id="page-wrapper">
-    <div class="main-page">
-        <div class="tables">
-            <h3 class="title1">Manage Customers</h3>
-            <div class="table-container">
-                <div class="table-responsive">
-                    <div style="margin-bottom: 10px;">
-                        <a href="{% url 'addcustomer' %}" class="btn btn-primary">
-                            + Add Customer
-                        </a>
-                    </div>
-                    <table class="table table-bordered table-hover">
-                        <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>Name</th>
-                                <th>Phone</th>
-                                <th>Total Visits</th>
-                                <th>Last Visit</th>
-                                <th>Total Spent</th>
-                                <th>Retention</th>
-                                <th>View</th>
-                                <th></th>
-                                <th>Edit</th>
-                                <th>Delete</th>
+<style>
+  .customers-wrapper {
+    padding: 1.5rem 2rem;
+  }
 
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for item in customers_with_letters %}
-                            <tr>
-                                <td>{{ forloop.counter }}</td>
-                                <td>
-                                    <a href="{% url 'customer_detail' item.customer.PhoneID %}">
-                                        {{ item.customer.Name }}
-                                    </a>
-                                </td>
-                                <td>{{ item.customer.PhoneNumber }}</td>
-                                <td>{{ item.customer.total_visits }}</td>
-                                <td>
-                                    {% if item.customer.last_visit %}
-                                        {{ item.customer.last_visit|date:"d M Y" }}
-                                    {% else %}
-                                        —
-                                    {% endif %}
-                                </td>
-                                <td>₹{{ item.customer.total_spent }}</td>
-                                <td>{{ item.customer.retention_rate }}%</td>
-                                <td>
-                                    <a href="{% url 'customer_detail' item.customer.PhoneID %}" class="btn btn-info btn-sm">View</a>
-                                </td>
-                                <td></td>
-                                <td>
-                                    <a href="{% url 'editcustomer' item.customer.PhoneID %}" class="btn btn-primary btn-sm">Edit</a>
-                                </td>
-                                <td>
-                                    <a href="{% url 'deletecustomer' item.customer.PhoneID %}"
-                                        class="btn btn-danger btn-sm"
-                                        onclick="return confirm('Delete this customer?');">
-                                        Delete
-                                    </a>
-                                </td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
+  .customers-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.5rem;
+  }
+
+  .customers-header h3 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #1a1a2e;
+    margin: 0;
+  }
+
+  .btn-add-customer {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #3b35d4;
+    color: #fff;
+    padding: 9px 20px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    text-decoration: none;
+    transition: background 0.2s;
+  }
+
+  .btn-add-customer:hover {
+    background: #2e28b0;
+    color: #fff;
+    text-decoration: none;
+  }
+
+  .customers-table-card {
+    background: #fff;
+    border-radius: 12px;
+    border: 1px solid #e8e8f0;
+    overflow: hidden;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+  }
+
+  .customers-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+  }
+
+  .customers-table thead tr {
+    background: #f5f5fb;
+    border-bottom: 1.5px solid #e2e2ed;
+  }
+
+  .customers-table thead th {
+    padding: 13px 16px;
+    text-align: left;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: #6b6b8a;
+    white-space: nowrap;
+  }
+
+  .customers-table thead th:first-child {
+    width: 48px;
+    text-align: center;
+    color: #aaaacc;
+  }
+
+  .customers-table tbody tr {
+    border-bottom: 1px solid #f0f0f8;
+    transition: background 0.15s;
+  }
+
+  .customers-table tbody tr:last-child {
+    border-bottom: none;
+  }
+
+  .customers-table tbody tr:hover {
+    background: #fafaff;
+  }
+
+  .customers-table td {
+    padding: 14px 16px;
+    color: #2d2d48;
+    vertical-align: middle;
+  }
+
+  .customers-table td:first-child {
+    text-align: center;
+    color: #b0b0cc;
+    font-size: 13px;
+    font-weight: 500;
+  }
+
+  .customer-name-link {
+    color: #3b35d4;
+    font-weight: 500;
+    text-decoration: none;
+  }
+
+  .customer-name-link:hover {
+    text-decoration: underline;
+    color: #2e28b0;
+  }
+
+  .phone-badge {
+    display: inline-block;
+    background: #f0f0f8;
+    color: #4a4a6a;
+    border-radius: 6px;
+    padding: 3px 10px;
+    font-size: 13px;
+    font-family: monospace;
+    letter-spacing: 0.02em;
+  }
+
+  .visits-pill {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: #ede9fd;
+    color: #4b35c4;
+    font-size: 13px;
+    font-weight: 600;
+  }
+
+  .spent-amount {
+    font-weight: 600;
+    color: #1a8a55;
+  }
+
+  .retention-bar-wrap {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 90px;
+  }
+
+  .retention-bar {
+    flex: 1;
+    height: 6px;
+    background: #ebebf5;
+    border-radius: 99px;
+    overflow: hidden;
+  }
+
+  .retention-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #4ade80, #22c55e);
+    border-radius: 99px;
+  }
+
+  .retention-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: #1a8a55;
+    min-width: 36px;
+    text-align: right;
+  }
+
+  .date-cell {
+    color: #5a5a7a;
+    font-size: 13px;
+  }
+
+  .action-cell {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .btn-view {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 500;
+    text-decoration: none;
+    background: #ede9fd;
+    color: #4b35c4;
+    border: 1px solid #d4ccf8;
+    transition: background 0.15s;
+  }
+
+  .btn-view:hover {
+    background: #ddd6fa;
+    color: #3b28b0;
+    text-decoration: none;
+  }
+
+  .btn-edit {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 500;
+    text-decoration: none;
+    background: #e8f4fd;
+    color: #1a6fa8;
+    border: 1px solid #c5dff5;
+    transition: background 0.15s;
+  }
+
+  .btn-edit:hover {
+    background: #d0e8f8;
+    color: #145a8a;
+    text-decoration: none;
+  }
+
+  .btn-delete {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 500;
+    text-decoration: none;
+    background: #fdecea;
+    color: #c0392b;
+    border: 1px solid #f5c6c2;
+    transition: background 0.15s;
+  }
+
+  .btn-delete:hover {
+    background: #f8d7d4;
+    color: #9b2c1f;
+    text-decoration: none;
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: #9090b0;
+    font-size: 14px;
+  }
+</style>
+
+<div id="page-wrapper">
+  <div class="main-page">
+    <div class="customers-wrapper">
+
+      <div class="customers-header">
+        <h3>Manage Customers</h3>
+        <a href="{% url 'addcustomer' %}" class="btn-add-customer">
+          ＋ Add Customer
+        </a>
+      </div>
+
+      <div class="customers-table-card">
+        <table class="customers-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Name</th>
+              <th>Phone</th>
+              <th>Total Visits</th>
+              <th>Last Visit</th>
+              <th>Total Spent</th>
+              <th>Retention</th>
+              <th style="text-align:center;">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for item in customers_with_letters %}
+            <tr>
+              <td>{{ forloop.counter }}</td>
+              <td>
+                <a href="{% url 'customer_detail' item.customer.PhoneID %}" class="customer-name-link">
+                  {{ item.customer.Name }}
+                </a>
+              </td>
+              <td>
+                <span class="phone-badge">{{ item.customer.PhoneNumber }}</span>
+              </td>
+              <td>
+                <span class="visits-pill">{{ item.customer.total_visits }}</span>
+              </td>
+              <td class="date-cell">
+                {% if item.customer.last_visit %}
+                  {{ item.customer.last_visit|date:"d M Y" }}
+                {% else %}
+                  <span style="color:#c0c0d8;">—</span>
+                {% endif %}
+              </td>
+              <td>
+                <span class="spent-amount">₹{{ item.customer.total_spent }}</span>
+              </td>
+              <td>
+                <div class="retention-bar-wrap">
+                  <div class="retention-bar">
+                    <div class="retention-fill" style="width: {{ item.customer.retention_rate }}%;"></div>
+                  </div>
+                  <span class="retention-label">{{ item.customer.retention_rate }}%</span>
                 </div>
-            </div>
-        </div>
+              </td>
+              <td>
+                <div class="action-cell" style="justify-content:center;">
+                  <a href="{% url 'customer_detail' item.customer.PhoneID %}" class="btn-view">
+                    View
+                  </a>
+                  <a href="{% url 'editcustomer' item.customer.PhoneID %}" class="btn-edit">
+                    Edit
+                  </a>
+                  <a href="{% url 'deletecustomer' item.customer.PhoneID %}"
+                     class="btn-delete"
+                     onclick="return confirm('Delete this customer?');">
+                    Delete
+                  </a>
+                </div>
+              </td>
+            </tr>
+            {% empty %}
+            <tr>
+              <td colspan="8" class="empty-state">No customers found. Add your first customer to get started.</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+
     </div>
+  </div>
 </div>
+
 {% endblock %}
