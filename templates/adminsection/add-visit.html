@@ -2,78 +2,311 @@
 {% load static %}
 {% block content %}
 
+<style>
+  .visit-wrapper {
+    padding: 1.5rem 2rem;
+    max-width: 580px;
+  }
+
+  .page-heading {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin: 0 0 1.25rem;
+  }
+
+  /* ── Customer Info Strip ── */
+  .customer-strip {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: #ede9fd;
+    border-radius: 10px;
+    padding: 12px 16px;
+    margin-bottom: 1.5rem;
+  }
+
+  .strip-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #4b35c4;
+    color: #fff;
+    font-size: 15px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .strip-name {
+    font-size: 15px;
+    font-weight: 700;
+    color: #2e1fa8;
+    margin: 0 0 2px;
+  }
+
+  .strip-meta {
+    font-size: 12px;
+    color: #6b5fc4;
+    margin: 0;
+  }
+
+  .strip-badges {
+    margin-left: auto;
+    display: flex;
+    gap: 8px;
+    flex-shrink: 0;
+  }
+
+  .strip-badge {
+    background: #fff;
+    border-radius: 7px;
+    padding: 5px 11px;
+    text-align: center;
+  }
+
+  .strip-badge .bval {
+    font-size: 14px;
+    font-weight: 700;
+    color: #4b35c4;
+    display: block;
+  }
+
+  .strip-badge .blbl {
+    font-size: 10px;
+    color: #8878d0;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  /* ── Form Card ── */
+  .form-card {
+    background: #fff;
+    border: 1px solid #e8e8f0;
+    border-radius: 14px;
+    padding: 1.75rem;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+  }
+
+  .field-group {
+    margin-bottom: 1.2rem;
+  }
+
+  .field-label {
+    display: block;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: #6b6b8a;
+    margin-bottom: 6px;
+  }
+
+  .field-input {
+    width: 100%;
+    padding: 10px 14px;
+    font-size: 14px;
+    color: #1a1a2e;
+    background: #fafaff;
+    border: 1px solid #e0e0ee;
+    border-radius: 8px;
+    outline: none;
+    transition: border-color 0.15s, box-shadow 0.15s;
+    box-sizing: border-box;
+  }
+
+  .field-input:focus {
+    border-color: #4b35c4;
+    box-shadow: 0 0 0 3px rgba(75,53,196,0.1);
+    background: #fff;
+  }
+
+  .field-input.currency {
+    font-size: 16px;
+    font-weight: 600;
+    color: #1a8a55;
+  }
+
+  /* ── Divider ── */
+  .form-divider {
+    border: none;
+    border-top: 1px solid #f0f0f8;
+    margin: 1.25rem 0;
+  }
+
+  /* ── Live Preview ── */
+  .preview-box {
+    background: #f5f5fb;
+    border: 1px solid #e2e2f0;
+    border-radius: 10px;
+    padding: 14px 18px;
+    margin-bottom: 1.25rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  .preview-item {
+    text-align: center;
+  }
+
+  .preview-label {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: #9090b0;
+    margin-bottom: 4px;
+  }
+
+  .preview-value {
+    font-size: 1.3rem;
+    font-weight: 700;
+  }
+
+  .preview-value.discount { color: #b07a10; }
+  .preview-value.final    { color: #1a8a55; }
+
+  /* ── Form Actions ── */
+  .form-actions {
+    display: flex;
+    gap: 10px;
+    padding-top: 0.5rem;
+  }
+
+  .btn-save {
+    flex: 1;
+    padding: 11px;
+    background: #3b35d4;
+    color: #fff;
+    border: none;
+    border-radius: 9px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .btn-save:hover { background: #2e28b0; }
+
+  .btn-cancel {
+    padding: 11px 22px;
+    background: #f0f0f8;
+    color: #44446a;
+    border: none;
+    border-radius: 9px;
+    font-size: 14px;
+    font-weight: 500;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    transition: background 0.15s;
+  }
+  .btn-cancel:hover { background: #e4e4f0; color: #44446a; text-decoration: none; }
+</style>
+
 <div id="page-wrapper">
-    <div class="main-page">
-        <div class="tables">
-            <h3 class="title1">Add Visit</h3>
-            <div class="table-container" style="max-width: 500px;">
+  <div class="main-page">
+    <div class="visit-wrapper">
 
-                <h5>{{ customer.Name }} — {{ customer.PhoneNumber }}</h5>
-                <small>Total Visits: {{ customer.total_visits }} | Retention: {{ customer.retention_rate }}%</small>
-                <hr>
+      <p class="page-heading">Add Visit</p>
 
-                <form method="post">
-                    {% csrf_token %}
-
-                    <div class="mb-3">
-                        <label>Bill Amount (₹)</label>
-                        <input type="number" name="bill_amount" id="bill_amount"
-                            class="form-control" step="0.01" required>
-                    </div>
-
-                    <div class="mb-3">
-                        <label>Discount Type</label>
-                        <select name="discount_type" id="discount_type" class="form-control">
-                            <option value="PERCENT">Percentage (%)</option>
-                            <option value="AMOUNT">Fixed Amount (₹)</option>
-                        </select>
-                    </div>
-
-                    <div class="mb-3">
-                        <label>Discount Value</label>
-                        <input type="number" name="discount_value" id="discount_value"
-                            class="form-control" step="0.01" value="0">
-                    </div>
-
-                    <!-- Live preview -->
-                    <div class="alert alert-info">
-                        <strong>Discount: ₹<span id="discount_amount">0.00</span></strong><br>
-                        <strong>Final Amount: ₹<span id="final_amount">0.00</span></strong>
-                    </div>
-
-                    <div class="mb-3">
-                        <label>Note</label>
-                        <textarea name="note" class="form-control" rows="2"></textarea>
-                    </div>
-
-                    <button type="submit" class="btn btn-success">Save Visit</button>
-                    <a href="{% url 'customer_detail' customer.PhoneID %}" class="btn btn-secondary">Cancel</a>
-                </form>
-            </div>
+      <!-- Customer strip -->
+      <div class="customer-strip">
+        <div class="strip-avatar">{{ customer.Name|slice:":2"|upper }}</div>
+        <div>
+          <p class="strip-name">{{ customer.Name }}</p>
+          <p class="strip-meta">📞 {{ customer.PhoneNumber }}</p>
         </div>
+        <div class="strip-badges">
+          <div class="strip-badge">
+            <span class="bval">{{ customer.total_visits }}</span>
+            <span class="blbl">Visits</span>
+          </div>
+          <div class="strip-badge">
+            <span class="bval">{{ customer.retention_rate }}%</span>
+            <span class="blbl">Retention</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Form card -->
+      <div class="form-card">
+        <form method="post">
+          {% csrf_token %}
+
+          <div class="field-group">
+            <label class="field-label" for="bill_amount">Bill Amount (₹)</label>
+            <input type="number" name="bill_amount" id="bill_amount"
+                   class="field-input currency" step="0.01"
+                   placeholder="0.00" required>
+          </div>
+
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+            <div class="field-group">
+              <label class="field-label" for="discount_type">Discount Type</label>
+              <select name="discount_type" id="discount_type" class="field-input">
+                <option value="PERCENT">Percentage (%)</option>
+                <option value="AMOUNT">Fixed Amount (₹)</option>
+              </select>
+            </div>
+            <div class="field-group">
+              <label class="field-label" for="discount_value">Discount Value</label>
+              <input type="number" name="discount_value" id="discount_value"
+                     class="field-input" step="0.01" value="0" placeholder="0">
+            </div>
+          </div>
+
+          <hr class="form-divider">
+
+          <!-- Live preview -->
+          <div class="preview-box">
+            <div class="preview-item">
+              <div class="preview-label">Discount</div>
+              <div class="preview-value discount">₹<span id="discount_amount">0.00</span></div>
+            </div>
+            <div class="preview-item">
+              <div class="preview-label">Final Amount</div>
+              <div class="preview-value final">₹<span id="final_amount">0.00</span></div>
+            </div>
+          </div>
+
+          <div class="field-group">
+            <label class="field-label" for="note">Note <span style="font-weight:400;color:#b0b0cc;">(optional)</span></label>
+            <textarea name="note" id="note" class="field-input"
+                      rows="3" placeholder="e.g. Regular haircut, Partner client…"
+                      style="resize:vertical;"></textarea>
+          </div>
+
+          <div class="form-actions">
+            <button type="submit" class="btn-save">✓ Save Visit</button>
+            <a href="{% url 'customer_detail' customer.PhoneID %}" class="btn-cancel">← Cancel</a>
+          </div>
+
+        </form>
+      </div>
+
     </div>
+  </div>
 </div>
 
 <script>
-    function calculate() {
-        const bill = parseFloat(document.getElementById('bill_amount').value) || 0;
-        const type = document.getElementById('discount_type').value;
-        const value = parseFloat(document.getElementById('discount_value').value) || 0;
+  function calculate() {
+    const bill  = parseFloat(document.getElementById('bill_amount').value) || 0;
+    const type  = document.getElementById('discount_type').value;
+    const value = parseFloat(document.getElementById('discount_value').value) || 0;
 
-        let discount = 0;
-        if (type === 'PERCENT') {
-            discount = bill * value / 100;
-        } else {
-            discount = value;
-        }
+    let discount = type === 'PERCENT' ? bill * value / 100 : value;
+    const final  = Math.max(bill - discount, 0);
 
-        const final = Math.max(bill - discount, 0);
-        document.getElementById('discount_amount').textContent = discount.toFixed(2);
-        document.getElementById('final_amount').textContent = final.toFixed(2);
-    }
+    document.getElementById('discount_amount').textContent = discount.toFixed(2);
+    document.getElementById('final_amount').textContent    = final.toFixed(2);
+  }
 
-    document.getElementById('bill_amount').addEventListener('input', calculate);
-    document.getElementById('discount_type').addEventListener('change', calculate);
-    document.getElementById('discount_value').addEventListener('input', calculate);
+  document.getElementById('bill_amount').addEventListener('input', calculate);
+  document.getElementById('discount_type').addEventListener('change', calculate);
+  document.getElementById('discount_value').addEventListener('input', calculate);
 </script>
+
 {% endblock %}
