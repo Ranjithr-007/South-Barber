@@ -2,111 +2,368 @@
 {% load static %}
 {% block content %}
 
+<style>
+  .detail-wrapper {
+    padding: 1.5rem 2rem;
+    max-width: 960px;
+  }
+
+  /* ── Customer Profile Card ── */
+  .profile-card {
+    background: #fff;
+    border: 1px solid #e8e8f0;
+    border-radius: 14px;
+    padding: 1.5rem 1.75rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+  }
+
+  .profile-top {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .avatar {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: #ede9fd;
+    color: #4b35c4;
+    font-size: 20px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    letter-spacing: -0.5px;
+  }
+
+  .profile-name {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin: 0 0 3px;
+  }
+
+  .profile-meta {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    font-size: 13px;
+    color: #6b6b8a;
+    flex-wrap: wrap;
+  }
+
+  .profile-meta span {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  /* ── Stat Cards ── */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 12px;
+    margin-bottom: 1.25rem;
+  }
+
+  .stat-card {
+    border-radius: 10px;
+    padding: 14px 16px;
+    text-align: center;
+  }
+
+  .stat-card.purple { background: #ede9fd; }
+  .stat-card.green  { background: #e8f8f0; }
+  .stat-card.blue   { background: #e8f4fd; }
+  .stat-card.amber  { background: #fff8e8; }
+  .stat-card.gray   { background: #f2f2f8; }
+
+  .stat-value {
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin-bottom: 3px;
+  }
+
+  .stat-card.purple .stat-value { color: #4b35c4; }
+  .stat-card.green  .stat-value { color: #1a8a55; }
+  .stat-card.blue   .stat-value { color: #1a6fa8; }
+  .stat-card.amber  .stat-value { color: #b07a10; }
+  .stat-card.gray   .stat-value { color: #44446a; }
+
+  .stat-label {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #9090b0;
+  }
+
+  /* ── Action Buttons ── */
+  .profile-actions {
+    display: flex;
+    gap: 8px;
+    padding-top: 1rem;
+    border-top: 1px solid #f0f0f8;
+  }
+
+  .btn-action {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 8px 18px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    text-decoration: none;
+    transition: opacity 0.15s;
+  }
+  .btn-action:hover { opacity: 0.85; text-decoration: none; }
+
+  .btn-primary-custom  { background: #3b35d4; color: #fff; }
+  .btn-secondary-custom { background: #f0f0f8; color: #44446a; }
+
+  /* ── Visit History Section ── */
+  .section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+  }
+
+  .section-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin: 0;
+  }
+
+  .btn-add-visit {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: #3b35d4;
+    color: #fff;
+    padding: 8px 18px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    text-decoration: none;
+    transition: background 0.15s;
+  }
+  .btn-add-visit:hover { background: #2e28b0; color: #fff; text-decoration: none; }
+
+  .visits-card {
+    background: #fff;
+    border: 1px solid #e8e8f0;
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+  }
+
+  .visits-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+  }
+
+  .visits-table thead tr {
+    background: #f5f5fb;
+    border-bottom: 1.5px solid #e2e2ed;
+  }
+
+  .visits-table thead th {
+    padding: 12px 16px;
+    text-align: left;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: #6b6b8a;
+    white-space: nowrap;
+  }
+
+  .visits-table thead th:first-child {
+    width: 48px;
+    text-align: center;
+    color: #aaaacc;
+  }
+
+  .visits-table tbody tr {
+    border-bottom: 1px solid #f0f0f8;
+    transition: background 0.15s;
+  }
+
+  .visits-table tbody tr:last-child { border-bottom: none; }
+  .visits-table tbody tr:hover { background: #fafaff; }
+
+  .visits-table td {
+    padding: 14px 16px;
+    color: #2d2d48;
+    vertical-align: middle;
+  }
+
+  .visits-table td:first-child {
+    text-align: center;
+    color: #b0b0cc;
+    font-size: 12px;
+    font-weight: 600;
+  }
+
+  .date-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: #f2f2f8;
+    border-radius: 6px;
+    padding: 4px 10px;
+    font-size: 13px;
+    color: #44446a;
+  }
+
+  .amount-bill {
+    font-size: 14px;
+    color: #5a5a7a;
+  }
+
+  .amount-final {
+    font-weight: 700;
+    color: #1a8a55;
+    font-size: 14px;
+  }
+
+  .discount-badge {
+    display: inline-block;
+    background: #fff8e8;
+    color: #b07a10;
+    border: 1px solid #f5e0a0;
+    border-radius: 6px;
+    padding: 3px 9px;
+    font-size: 12px;
+    font-weight: 600;
+  }
+
+  .note-text {
+    font-size: 13px;
+    color: #6b6b8a;
+    font-style: italic;
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: #9090b0;
+    font-size: 14px;
+  }
+
+  @media (max-width: 700px) {
+    .stats-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+</style>
+
 <div id="page-wrapper">
-    <div class="main-page">
-        <div class="tables">
+  <div class="main-page">
+    <div class="detail-wrapper">
 
-            <!-- Customer Info -->
-            <div class="table-container" style="margin-bottom: 20px;">
-                <h3>{{ customer.Name }}</h3>
-                <p>📞 {{ customer.PhoneNumber }}</p>
-                {% if customer.Note %}<p>📝 {{ customer.Note }}</p>{% endif %}
-                <p>Member since: {{ customer.CreateDate|date:"d M Y" }}</p>
-
-                <!-- Stats -->
-                <div style="display: flex; gap: 20px; flex-wrap: wrap; margin: 15px 0;">
-                    <div class="alert alert-primary">
-                        <strong>{{ customer.total_visits }}</strong><br>Total Visits
-                    </div>
-                    <div class="alert alert-success">
-                        <strong>{{ customer.return_visits }}</strong><br>Return Visits
-                    </div>
-                    <div class="alert alert-info">
-                        <strong>{{ customer.retention_rate }}%</strong><br>Retention Rate
-                    </div>
-                    <div class="alert alert-warning">
-                        <strong>₹{{ customer.total_spent }}</strong><br>Total Spent
-                    </div>
-                    <div class="alert alert-secondary">
-                        <strong>{{ customer.last_visit|date:"d M Y" }}</strong><br>Last Visit
-                    </div>
-                </div>
-
-                <!-- <a href="{% url 'add_visit' customer.PhoneID %}" class="btn btn-success">+ Add Visit</a> -->
-                <a href="{% url 'editcustomer' customer.PhoneID %}" class="btn btn-primary">Edit</a>
-                <a href="{% url 'customerlist' %}" class="btn btn-secondary">Back</a>
+      <!-- Profile Card -->
+      <div class="profile-card">
+        <div class="profile-top">
+          <div class="avatar">{{ customer.Name|slice:":2"|upper }}</div>
+          <div>
+            <p class="profile-name">{{ customer.Name }}</p>
+            <div class="profile-meta">
+              <span>📞 {{ customer.PhoneNumber }}</span>
+              {% if customer.Note %}<span>📝 {{ customer.Note }}</span>{% endif %}
+              <span>Member since {{ customer.CreateDate|date:"d M Y" }}</span>
             </div>
-
-            <div style="margin-bottom: 10px; width: 750px;">
-                        <a href="{% url 'add_visit' customer.PhoneID %}" class="btn btn-primary">
-                        Add Visit
-                        </a>
-                    </div>
-
-            <!-- Visit History -->
-            <div class="table-container">
-                <h5>Visit History</h5>
-                <div class="table-responsive">
-                    
-                    <table class="table table-bordered">
-                        <thead>
-                            <tr>
-                                <th>#</th>
-                                <th></th>
-                                <th></th>
-                                <th>Date</th>
-                                <th></th>
-                                <th></th>
-                                <th>Bill (₹)</th>
-                                <th></th>
-                                <th></th>
-                                <th>Discount</th>
-                                <th></th>
-                                <th></th>
-                                <th>Final (₹)</th>
-                                <th></th>
-                                <th></th>
-                                <th>Note</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for visit in visits %}
-                            <tr>
-                                <td>{{ forloop.counter }}</td>
-                                <td></td>
-                                <td></td>
-                                <td>{{ visit.VisitDate|date:"d M Y" }}</td>
-                                <td></td>
-                                <td></td>
-                                <td>₹{{ visit.BillAmount }}</td>
-                                <td></td>
-                                <td></td>
-                                <td>
-                                    {% if visit.DiscountType == 'PERCENT' %}
-                                        {{ visit.DiscountValue }}% (₹{{ visit.discount_amount }})
-                                    {% else %}
-                                        ₹{{ visit.DiscountValue }}
-                                    {% endif %}
-                                </td>
-                                <td></td>
-                                <td></td>
-                                <td>₹{{ visit.final_amount }}</td>
-                                <td></td>
-                                <td></td>
-                                <td>{{ visit.Note|default:"—" }}</td>
-                            </tr>
-                            {% endfor %}
-                            {% if not visits %}
-                            <tr>
-                                <td colspan="6" class="text-center">No visits yet</td>
-                            </tr>
-                            {% endif %}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
+          </div>
         </div>
+
+        <!-- Stats -->
+        <div class="stats-grid">
+          <div class="stat-card purple">
+            <div class="stat-value">{{ customer.total_visits }}</div>
+            <div class="stat-label">Total Visits</div>
+          </div>
+          <div class="stat-card green">
+            <div class="stat-value">{{ customer.return_visits }}</div>
+            <div class="stat-label">Return Visits</div>
+          </div>
+          <div class="stat-card blue">
+            <div class="stat-value">{{ customer.retention_rate }}%</div>
+            <div class="stat-label">Retention</div>
+          </div>
+          <div class="stat-card amber">
+            <div class="stat-value">₹{{ customer.total_spent }}</div>
+            <div class="stat-label">Total Spent</div>
+          </div>
+          <div class="stat-card gray">
+            <div class="stat-value" style="font-size:1rem;">
+              {% if customer.last_visit %}{{ customer.last_visit|date:"d M Y" }}{% else %}—{% endif %}
+            </div>
+            <div class="stat-label">Last Visit</div>
+          </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="profile-actions">
+          <a href="{% url 'editcustomer' customer.PhoneID %}" class="btn-action btn-primary-custom">✏️ Edit Customer</a>
+          <a href="{% url 'customerlist' %}" class="btn-action btn-secondary-custom">← Back to List</a>
+        </div>
+      </div>
+
+      <!-- Visit History -->
+      <div class="section-header">
+        <h2 class="section-title">Visit History</h2>
+        <a href="{% url 'add_visit' customer.PhoneID %}" class="btn-add-visit">＋ Add Visit</a>
+      </div>
+
+      <div class="visits-card">
+        <table class="visits-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Date</th>
+              <th>Bill Amount</th>
+              <th>Discount</th>
+              <th>Final Amount</th>
+              <th>Note</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for visit in visits %}
+            <tr>
+              <td>{{ forloop.counter }}</td>
+              <td>
+                <span class="date-chip">📅 {{ visit.VisitDate|date:"d M Y" }}</span>
+              </td>
+              <td class="amount-bill">₹{{ visit.BillAmount }}</td>
+              <td>
+                {% if visit.DiscountType == 'PERCENT' %}
+                  <span class="discount-badge">{{ visit.DiscountValue }}% · ₹{{ visit.discount_amount }}</span>
+                {% elif visit.DiscountValue %}
+                  <span class="discount-badge">₹{{ visit.DiscountValue }}</span>
+                {% else %}
+                  <span style="color:#c0c0d8;">—</span>
+                {% endif %}
+              </td>
+              <td class="amount-final">₹{{ visit.final_amount }}</td>
+              <td class="note-text">{{ visit.Note|default:"—" }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+              <td colspan="6" class="empty-state">No visits recorded yet. Add the first visit above.</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+
     </div>
+  </div>
 </div>
+
 {% endblock %}
