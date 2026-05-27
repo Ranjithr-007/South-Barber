@@ -2,58 +2,389 @@
 {% load static %}
 {% block content %}
 
-<div id="page-wrapper">
-	<div class="main-page">
-		<div class="tables">
-			<h3 class="title1">Manage Employee</h3>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600&family=DM+Sans:wght@300;400;500&display=swap');
 
+:root {
+  --gold: #1f36e9;
+  --gold-light: #9490e6;
+  --gold-dark: #1f36e9;
+  --ink: #0F0E0C;
+  --ink-muted: #3D3A34;
+  --ink-soft: #6B6560;
+  --cream: #F9F6F0;
+  --cream-dark: #EDE8DF;
+  --surface: #FFFFFF;
+  --border: #DDD8CE;
+  --radius: 6px;
+}
 
+.emp-page {
+  font-family: 'DM Sans', sans-serif;
+  background: #FFFFFF;
+  min-height: 100vh;
+  padding: 2.5rem 2rem;
+}
 
-			<div class="table-container">
-    			<div class="table-responsive">
-				<h4></h4>
-                <div style="margin-bottom: 10px;">
-                <a href="{% url 'addemployee' %}" class="btn btn-primary">
-                     Add Employee
-                </a>
-                </div>
-				<table class="table table-bordered">
-					<thead>
-						<tr>
-                            <th>#</th>
-                            <th>Employee ID</th>
-                            <th>Name</th>
-                            <th>Joining Date</th>
-                            <th></th>
-                            <th>Salary</th>
-                            <th></th>
-                            <th>Store</th>
-                            <th></th>
-                            <th>Active</th>
-                            <th>Note</th>
-                        </tr>
-					</thead>
-					<tbody>
-                        {% for item in employee %}
-                        <tr>
-                            <th scope="row">{{ forloop.counter }}</th>
-                            <td>{{ item.EmployeeID }}</td>
-                            <td>{{ item.User.get_full_name }}</td>
-                            <td>{{ item.JoiningDate }}</td>
-                            <td></td>
-                            <td>{{ item.Salary }}</td>
-                            <td></td>
-                            <td>{{ item.Store }}</td>
-                            <td></td>
-                            <td>{{ item.IsActive|yesno:"Yes,No" }}</td>
-                            <td>{{ item.Note}}</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-				</table>
-			</div>
-		</div>
-	</div>
+.emp-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-bottom: 2rem;
+  padding-bottom: 1.25rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.emp-header-left h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: 2rem;
+  font-weight: 600;
+  color: var(--ink);
+  letter-spacing: -0.02em;
+  margin: 0 0 0.2rem;
+  line-height: 1.1;
+}
+
+.emp-header-left p {
+  font-size: 0.8rem;
+  color: var(--ink-soft);
+  margin: 0;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.emp-header-left .gold-rule {
+  width: 36px;
+  height: 2px;
+  background: var(--gold);
+  margin-bottom: 0.6rem;
+}
+
+.emp-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin-bottom: 1.75rem;
+}
+
+.stat-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.1rem 1.4rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.stat-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: #1f36e9;
+  border: 1px solid #1f36e9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.stat-icon svg {
+  width: 18px;
+  height: 18px;
+  stroke: #ffffff;
+  fill: none;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.stat-label {
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  margin-bottom: 0.15rem;
+}
+
+.stat-value {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.5rem;
+  font-weight: 500;
+  color: var(--ink);
+  line-height: 1;
+}
+
+.emp-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.emp-card-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid var(--cream-dark);
+  background: var(--cream);
+}
+
+.emp-card-toolbar-title {
+  font-size: 0.7rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  font-weight: 500;
+}
+
+.btn-add {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  background: #1f36e9;
+  color: #fff;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  padding: 0.55rem 1.2rem;
+  border-radius: var(--radius);
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+  transition: background 0.18s, transform 0.12s;
+}
+
+.btn-add:hover {
+  background: #1f1a8a;
+  color: #fff;
+  text-decoration: none;
+  transform: translateY(-1px);
+}
+
+.btn-add svg {
+  width: 14px;
+  height: 14px;
+  stroke: #fff;
+  fill: none;
+  stroke-width: 2.2;
+  stroke-linecap: round;
+}
+
+.emp-table { width: 100%; border-collapse: collapse; font-size: 0.875rem; }
+.emp-table thead tr { background: var(--cream); border-bottom: 1px solid var(--border); }
+.emp-table thead th {
+  font-size: 0.68rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  font-weight: 500;
+  padding: 0.85rem 1.25rem;
+  text-align: left;
+  white-space: nowrap;
+}
+.emp-table thead th:first-child { width: 48px; text-align: center; }
+.emp-table tbody tr { border-bottom: 1px solid var(--cream-dark); transition: background 0.12s; }
+.emp-table tbody tr:last-child { border-bottom: none; }
+.emp-table tbody tr:hover { background: #f3f2fd; }
+.emp-table td { padding: 1rem 1.25rem; color: var(--ink-muted); vertical-align: middle; }
+.emp-table td:first-child { text-align: center; color: var(--ink-soft); font-size: 0.75rem; }
+
+.emp-id {
+  display: inline-block;
+  background: #eeedfb;
+  border: 1px solid #9490e6;
+  color: #1f36e9;
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  padding: 0.25rem 0.6rem;
+  border-radius: 20px;
+  font-family: 'DM Sans', sans-serif;
+}
+
+.emp-name { display: flex; align-items: center; gap: 0.75rem; }
+
+.emp-avatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: #1f36e9;
+  border: 1.5px solid #1f36e9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  font-weight: 500;
+  color: #ffffff;
+  letter-spacing: 0.04em;
+  flex-shrink: 0;
+  text-transform: uppercase;
+}
+
+.emp-name-text { font-weight: 500; color: var(--ink); }
+.emp-date { color: var(--ink-soft); font-size: 0.82rem; }
+.emp-salary { font-family: 'Playfair Display', serif; font-size: 0.95rem; color: var(--ink); }
+.emp-store { font-size: 0.82rem; color: var(--ink-muted); }
+
+.badge-active {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  background: #EDF7ED;
+  color: #2E6B2E;
+  font-size: 0.72rem;
+  font-weight: 500;
+  padding: 0.25rem 0.65rem;
+  border-radius: 20px;
+  letter-spacing: 0.04em;
+}
+.badge-active::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #4CAF50;
+  display: inline-block;
+}
+
+.badge-inactive {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  background: #F5F5F5;
+  color: #777;
+  font-size: 0.72rem;
+  font-weight: 500;
+  padding: 0.25rem 0.65rem;
+  border-radius: 20px;
+  letter-spacing: 0.04em;
+}
+.badge-inactive::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #bbb;
+  display: inline-block;
+}
+
+.emp-note { font-size: 0.8rem; color: var(--ink-soft); font-style: italic; }
+
+.emp-card::before {
+  content: '';
+  display: block;
+  height: 3px;
+  background: linear-gradient(90deg, #1f36e9 0%, #9490e6 100%);
+}
+</style>
+
+<div class="emp-page">
+
+  <!-- Header -->
+  <div class="emp-header">
+    <div class="emp-header-left">
+      <div class="gold-rule"></div>
+      <h1>Manage Employees</h1>
+      <p>South Barber — Staff Directory</p>
+    </div>
+  </div>
+
+  <!-- Stats -->
+  <div class="emp-stats">
+    <div class="stat-card">
+      <div class="stat-icon">
+        <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      </div>
+      <div>
+        <div class="stat-label">Total Staff</div>
+        <div class="stat-value">{{ employee|length }}</div>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon">
+        <svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+      </div>
+      <div>
+        <div class="stat-label">Active</div>
+        <div class="stat-value">{% for e in employee %}{% if e.IsActive %}{% endif %}{% endfor %}{{ employee|length }}</div>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon">
+        <svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+      </div>
+      <div>
+        <div class="stat-label">Roles</div>
+        <div class="stat-value">1</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main card -->
+  <div class="emp-card">
+    <div class="emp-card-toolbar">
+      <span class="emp-card-toolbar-title">Staff Roster</span>
+      <a href="{% url 'addemployee' %}" class="btn-add">
+        <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Add Employee
+      </a>
+    </div>
+
+    <table class="emp-table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Employee ID</th>
+          <th>Name</th>
+          <th>Joining Date</th>
+          <th>Salary</th>
+          <th>Store</th>
+          <th>Status</th>
+          <th>Note</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in employee %}
+        <tr>
+          <td>{{ forloop.counter }}</td>
+          <td><span class="emp-id">{{ item.EmployeeID }}</span></td>
+          <td>
+            <div class="emp-name">
+              <div class="emp-avatar">
+                {{ item.User.get_full_name|slice:":2" }}
+              </div>
+              <span class="emp-name-text">{{ item.User.get_full_name }}</span>
+            </div>
+          </td>
+          <td><span class="emp-date">{{ item.JoiningDate }}</span></td>
+          <td><span class="emp-salary">₹ {{ item.Salary }}</span></td>
+          <td><span class="emp-store">{{ item.Store|default:"—" }}</span></td>
+          <td>
+            {% if item.IsActive %}
+              <span class="badge-active">Active</span>
+            {% else %}
+              <span class="badge-inactive">Inactive</span>
+            {% endif %}
+          </td>
+          <td><span class="emp-note">{{ item.Note|default:"—" }}</span></td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="8">
+            <div class="emp-empty">
+              <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+              <p>No employees on record yet. Add your first staff member above.</p>
+            </div>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
 </div>
-</div>
+
 {% endblock %}
