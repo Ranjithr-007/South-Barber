@@ -40,6 +40,9 @@ def signin(request):
 
 @staff_member_required
 def dashboard(request):
+    """
+        Adminsection Dashboard.
+    """ 
     total_appointment = Appointment.objects.all().count()
     total_service = Service.objects.all().count()
     total_employee = Employee.objects.all().count()
@@ -47,6 +50,8 @@ def dashboard(request):
     today = timezone.now().date()
     week_start = today - timedelta(days=today.weekday())      # Monday
     month_start = today.replace(day=1)
+    todays_appointments = (Appointment.objects.filter(AppointmentDate=today).select_related('Service').order_by('AppointmentTime'))
+    recent_visits = (Visit.objects.select_related('Customer').order_by('-VisitDate')[:10])
 
     # ── Sales aggregates ──────────────────────────────────────
     def sales_sum(qs):
@@ -106,6 +111,8 @@ def dashboard(request):
         'total_service': total_service,
         'total_employee': total_employee,
         'total_customer': total_customer,
+        'todays_appointments': todays_appointments,
+        'recent_visits':       recent_visits,
         # stat cards
         'today_sales':    today_sales,
         'weekly_sales':   weekly_sales,

@@ -4,7 +4,7 @@
 
             <!-- Stats Cards -->
             <div class="stats-grid">
-                <div class="stat-card">
+                <!-- <div class="stat-card">
                     <div class="stat-header">
                         <h3 class="stat-title">Total Employees</h3>
                         <div class="stat-icon client-icon">
@@ -20,7 +20,7 @@
                         </svg>
                         <span>12% vs last month</span>
                     </div>
-                </div>
+                </div> -->
 
                 <div class="stat-card">
                     <div class="stat-header">
@@ -84,14 +84,14 @@
             <div class="stats-grid">
                 <div class="stat-card">
                     <div class="stat-header">
-                        <h3 class="stat-title">Total Services</h3>
+                        <h3 class="stat-title">Total Customer</h3>
                         <div class="stat-icon client-icon">
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
                                 <path d="M17 20H22V18C22 16.3431 20.6569 15 19 15C18.0444 15 17.1931 15.4468 16.6438 16.1429M17 20H7M17 20V18C17 17.3438 16.8736 16.717 16.6438 16.1429M7 20H2V18C2 16.3431 3.34315 15 5 15C5.95561 15 6.80686 15.4468 7.35625 16.1429M7 20V18C7 17.3438 7.12642 16.717 7.35625 16.1429M7.35625 16.1429C8.0935 14.301 9.89482 13 12 13C14.1052 13 15.9065 14.301 16.6438 16.1429M15 7C15 8.65685 13.6569 10 12 10C10.3431 10 9 8.65685 9 7C9 5.34315 10.3431 4 12 4C13.6569 4 15 5.34315 15 7ZM21 10C21 11.1046 20.1046 12 19 12C17.8954 12 17 11.1046 17 10C17 8.89543 17.8954 8 19 8C20.1046 8 21 8.89543 21 10ZM7 10C7 11.1046 6.10457 12 5 12C3.89543 12 3 11.1046 3 10C3 8.89543 3.89543 8 5 8C6.10457 8 7 8.89543 7 10Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
                             </svg>
                         </div>
                     </div>
-                    <div class="stat-value"><a href="{% url 'manageservices' %}">{{ total_service }}</a></div>
+                    <div class="stat-value"><a href="{% url 'customerlist' %}">{{ total_customer }}</a></div>
                     <div class="stat-change positive">
                         <svg width="16" height="16" viewBox="0 0 16 16">
                             <path d="M8 12V4M8 4L4 8M8 4L12 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
@@ -100,10 +100,10 @@
                     </div>
                 </div>
 
-                <div class="stat-card">
+                <!-- <div class="stat-card">
                     <div class="stat-header">
                         <h3 class="stat-title">Total Customer</h3>
-                        <div class="stat-icon revenue-icon">
+                        <div class="stat-icon client-icon">
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
                                 <path d="M12 2V22M12 2C10.3431 2 9 3.79086 9 6C9 8.20914 10.3431 10 12 10M12 2C13.6569 2 15 3.79086 15 6C15 8.20914 13.6569 10 12 10M12 10C10.3431 10 9 11.7909 9 14C9 16.2091 10.3431 18 12 18M12 10C13.6569 10 15 11.7909 15 14C15 16.2091 13.6569 18 12 18M12 18C10.3431 18 9 19.7909 9 22M12 18C13.6569 18 15 19.7909 15 22" stroke="currentColor" stroke-width="1.5"/>
                             </svg>
@@ -116,7 +116,7 @@
                         </svg>
                         <span>8% vs last month</span>
                     </div>
-                </div>
+                </div> -->
 
                 <div class="stat-card">
                     <div class="stat-header">
@@ -161,154 +161,163 @@
                 </div>
             </div>
 
-            <!-- Charts and Lists -->
+            <!-- ── Chart + Appointments ───────────────────────────── -->
             <div class="content-grid">
-                <div class="chart-section">
-                    <div class="section-header">
-                        <h2 class="section-title">Weekly Sales</h2>
-                        <p class="section-subtitle">Revenue overview for this week</p>
-                        <div class="chart-tabs">
-                            <button class="chart-tab active">Week</button>
-                            <button class="chart-tab">Month</button>
-                            <button class="chart-tab">Year</button>
-                        </div>
-                    </div>
-                    <div class="chart-container">
-                        <canvas id="salesChart"></canvas>
-                    </div>
-                </div>
 
-                <div class="appointments-section">
-                    <div class="section-header">
-                        <h2 class="section-title">Today's Appointments</h2>
-                        <a href="#" class="view-all">View calendar</a>
-                    </div>
-                    <div class="appointments-list">
-                        <div class="appointment-item">
-                            <div class="appointment-icon">
-                                <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                                    <circle cx="10" cy="10" r="7" stroke="currentColor" stroke-width="1.5"/>
-                                    <path d="M10 6V10L13 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-                                </svg>
-                            </div>
-                            <div class="appointment-details">
-                                <div class="appointment-header">
-                                    <h4>Maria Garcia</h4>
-                                    <span class="appointment-price">$</span>
-                                </div>
-                                <p class="appointment-service">Balayage & Trim</p>
-                                <div class="appointment-meta">
-                                    <span class="appointment-time">10:00 AM</span>
-                                    <span class="appointment-location">• Station 1</span>
-                                    <span class="appointment-duration">• 2h</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="appointment-item">
-                            <div class="appointment-icon">
-                                <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                                    <circle cx="10" cy="10" r="7" stroke="currentColor" stroke-width="1.5"/>
-                                    <path d="M10 6V10L13 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-                                </svg>
-                            </div>
-                            <div class="appointment-details">
-                                <div class="appointment-header">
-                                    <h4>Lisa Thompson</h4>
-                                    <span class="appointment-price">E</span>
-                                </div>
-                                <p class="appointment-service">Bridal Makeup</p>
-                                <div class="appointment-meta">
-                                    <span class="appointment-time">11:30 AM</span>
-                                    <span class="appointment-location">• Station 2</span>
-                                    <span class="appointment-duration">• 1.5h</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="appointment-item">
-                            <div class="appointment-icon">
-                                <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                                    <circle cx="10" cy="10" r="7" stroke="currentColor" stroke-width="1.5"/>
-                                    <path d="M10 6V10L13 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-                                </svg>
-                            </div>
-                            <div class="appointment-details">
-                                <div class="appointment-header">
-                                    <h4>Jennifer Lee</h4>
-                                    <span class="appointment-price">$</span>
-                                </div>
-                                <p class="appointment-service">Keratin Treatment</p>
-                                <div class="appointment-meta">
-                                    <span class="appointment-time">2:00 PM</span>
-                                    <span class="appointment-location">• Station 3</span>
-                                    <span class="appointment-duration">• 3h</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Recent Clients -->
-            <div class="recent-section">
+            <!-- Sales Chart -->
+            <div class="chart-section">
                 <div class="section-header">
-                    <h2 class="section-title">Recent Clients</h2>
-                    <a href="clients.html" class="view-all">View all</a>
+                <h2 class="section-title">Sales Overview</h2>
+                <p class="section-subtitle">Revenue breakdown by period</p>
+                <div class="chart-tabs">
+                    <button class="chart-tab active" onclick="switchTab(this,'week')">Week</button>
+                    <button class="chart-tab"        onclick="switchTab(this,'month')">Month</button>
+                    <button class="chart-tab"        onclick="switchTab(this,'year')">Year</button>
                 </div>
-                <div class="clients-list">
-                    <div class="client-item">
-                        <div class="client-avatar">SJ</div>
-                        <div class="client-info">
-                            <h4>Sarah Johnson</h4>
-                            <p>Hair Color & Cut</p>
-                        </div>
-                        <div class="client-amount">$150</div>
-                        <span class="status-badge completed">completed</span>
-                    </div>
-
-                    <div class="client-item">
-                        <div class="client-avatar">ED</div>
-                        <div class="client-info">
-                            <h4>Emily Davis</h4>
-                            <p>Manicure & Pedicure</p>
-                        </div>
-                        <div class="client-amount">$85</div>
-                        <span class="status-badge completed">completed</span>
-                    </div>
-
-                    <div class="client-item">
-                        <div class="client-avatar">MC</div>
-                        <div class="client-info">
-                            <h4>Michael Chen</h4>
-                            <p>Men's Haircut</p>
-                        </div>
-                        <div class="client-amount">$35</div>
-                        <span class="status-badge completed">completed</span>
-                    </div>
-
-                    <div class="client-item">
-                        <div class="client-avatar">JW</div>
-                        <div class="client-info">
-                            <h4>Jessica Williams</h4>
-                            <p>Facial Treatment</p>
-                        </div>
-                        <div class="client-amount">$120</div>
-                        <span class="status-badge pending">pending</span>
-                    </div>
-
-                    <div class="client-item">
-                        <div class="client-avatar">AB</div>
-                        <div class="client-info">
-                            <h4>Amanda Brown</h4>
-                            <p>Full Styling</p>
-                        </div>
-                        <div class="client-amount">$200</div>
-                        <span class="status-badge completed">completed</span>
-                    </div>
+                </div>
+                <div class="chart-container">
+                <canvas id="salesChart"
+                        role="img"
+                        aria-label="Bar chart showing sales revenue for the selected period">
+                    Sales revenue chart.
+                </canvas>
                 </div>
             </div>
-        </main>
-    </div>
+
+            <!-- Today's Appointments -->
+            <div class="appointments-section">
+                <div class="section-header">
+                <h2 class="section-title">Today's Appointments</h2>
+                <span style="font-size:13px;color:var(--text-muted,#888);">
+                    {{ todays_appointments.count }} booked
+                </span>
+                </div>
+
+                <div class="appointments-list">
+                {% for appt in todays_appointments %}
+                <div class="appointment-item">
+                    <div class="appointment-icon">
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                        <circle cx="10" cy="10" r="7" stroke="currentColor" stroke-width="1.5"/>
+                        <path d="M10 6V10L13 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                    </svg>
+                    </div>
+                    <div class="appointment-details">
+                    <div class="appointment-header">
+                        <h4>{{ appt.Name }}</h4>
+                        {% if appt.Remark == '1' %}
+                        <span class="status-badge completed">Accepted</span>
+                        {% elif appt.Remark == '0' %}
+                        <span class="status-badge" style="background:#fee2e2;color:#991b1b;border-radius:6px;padding:2px 8px;font-size:11px;">Rejected</span>
+                        {% else %}
+                        <span class="status-badge pending">Pending</span>
+                        {% endif %}
+                    </div>
+                    <p class="appointment-service">{{ appt.Service.Name }}</p>
+                    <div class="appointment-meta">
+                        <span class="appointment-time">{{ appt.AppointmentTime|time:"h:i A" }}</span>
+                        <span class="appointment-location">• {{ appt.PhoneNumber }}</span>
+                        {% if appt.Note %}
+                        <span class="appointment-duration">• {{ appt.Note|truncatechars:30 }}</span>
+                        {% endif %}
+                    </div>
+                    </div>
+                </div>
+                {% empty %}
+                <p style="color:var(--text-muted,#888);font-size:14px;padding:1.5rem 0;text-align:center;">
+                    No appointments today.
+                </p>
+                {% endfor %}
+                </div>
+            </div>
+
+            </div>
+
+            <!-- ── Recent Clients ─────────────────────────────────── -->
+            <div class="recent-section">
+            <div class="section-header">
+                <h2 class="section-title">Recent Clients</h2>
+                <a href="{% url 'customerlist' %}" class="view-all">View all</a>
+            </div>
+            <div class="clients-list">
+                {% for visit in recent_visits %}
+                <div class="client-item">
+                <div class="client-avatar">
+                    {{ visit.Customer.Name|slice:":2"|upper }}
+                </div>
+                <div class="client-info">
+                    <h4>{{ visit.Customer.Name }}</h4>
+                    <p>{{ visit.VisitDate|date:"d M, g:i A" }}</p>
+                </div>
+                <div class="client-amount">₹{{ visit.final_amount|floatformat:0 }}</div>
+                {% if visit.DiscountValue > 0 %}
+                    <span class="status-badge pending">
+                    -{% if visit.DiscountType == 'PERCENT' %}{{ visit.DiscountValue }}%{% else %}₹{{ visit.DiscountValue }}{% endif %}
+                    </span>
+                {% else %}
+                    <span class="status-badge completed">No discount</span>
+                {% endif %}
+                </div>
+                {% empty %}
+                <p style="color:var(--text-muted,#888);font-size:14px;padding:1rem 0;">
+                No visits recorded yet.
+                </p>
+                {% endfor %}
+            </div>
+            </div>
+
+            <!-- ── Chart.js (place before </body>) ───────────────── -->
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+            <script>
+                const chartData = {
+                week:  { labels: {{ week_labels|safe }},  data: {{ week_data|safe }} },
+                month: { labels: {{ month_labels|safe }}, data: {{ month_data|safe }} },
+                year:  { labels: {{ year_labels|safe }},  data: {{ year_data|safe }} },
+                };
+
+                const salesChart = new Chart(document.getElementById('salesChart'), {
+                type: 'bar',
+                data: {
+                    labels: chartData.week.labels,
+                    datasets: [{
+                    label: 'Sales (₹)',
+                    data: chartData.week.data,
+                    backgroundColor: '#1f36e9',
+                    borderColor: '#1f36e9',
+                    borderWidth: 1,
+                    borderRadius: 6,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                        label: c => '₹' + c.parsed.y.toLocaleString('en-IN')
+                        }
+                    }
+                    },
+                    scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                        callback: v => '₹' + (v >= 1000 ? (v/1000).toFixed(1)+'k' : v)
+                        }
+                    },
+                    x: { ticks: { autoSkip: false } }
+                    }
+                }
+                });
+
+                function switchTab(btn, period) {
+                document.querySelectorAll('.chart-tab').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                salesChart.data.labels = chartData[period].labels;
+                salesChart.data.datasets[0].data = chartData[period].data;
+                salesChart.update('active');
+                }
+        </script>
 
     {% endblock %}
