@@ -16,6 +16,7 @@ from django.contrib.auth import authenticate, login
 from .forms import LoginForm
 import string
 from decimal import Decimal
+import json
 
 def signin(request):
     """
@@ -39,38 +40,86 @@ def signin(request):
 
 @staff_member_required
 def dashboard(request):
-    """
-        Adminsection Dashboard.
-    """ 
     total_appointment = Appointment.objects.all().count()
-    total_accepted_appointment = Appointment.objects.filter(Remark=1).count()
-    total_Rejected_appointment = Appointment.objects.filter(Remark=0).count()
     total_service = Service.objects.all().count()
     total_employee = Employee.objects.all().count()
     total_customer = Customer.objects.all().count()
-    total_stores = Store.objects.all().count()
-    total_sales = Invoice.objects.values(
-        'Catagories__Cost').aggregate(Sum('Catagories__Cost'))
-    today_sales = Invoice.objects.filter(
-        Date__date=date.today()).aggregate(Sum('Catagories__Cost'))
-    yesterday_sales = Invoice.objects.filter(
-        Date__date=date.today() - timedelta(days=1)).aggregate(Sum('Catagories__Cost'))
-    last_seven_days_sales = Invoice.objects.filter(
-        Date__gte=date.today() - timedelta(days=7)).aggregate(Sum('Catagories__Cost'))
+    today = timezone.now().date()
+    week_start = today - timedelta(days=today.weekday())      # Monday
+    month_start = today.replace(day=1)
+
+    # ── Sales aggregates ──────────────────────────────────────
+    def sales_sum(qs):
+        """Sum final amounts from a Visit queryset."""
+        total = Decimal('0')
+        for v in qs:
+            total += v.final_amount
+        return float(total)
+
+    all_visits   = Visit.objects.all().select_related('Customer')
+    today_visits = all_visits.filter(VisitDate__date=today)
+    week_visits  = all_visits.filter(VisitDate__date__gte=week_start)
+    month_visits = all_visits.filter(VisitDate__date__gte=month_start)
+
+    today_sales   = sales_sum(today_visits)
+    weekly_sales  = sales_sum(week_visits)
+    monthly_sales = sales_sum(month_visits)
+
+    # ── Retention rate ────────────────────────────────────────
+    all_customers = Customer.objects.prefetch_related('visits').all()
+    total_customers = all_customers.count()
+    retained = sum(1 for c in all_customers if c.visits.count() > 1)
+    retention_rate = round((retained / total_customers * 100), 1) if total_customers else 0
+
+    # ── Weekly chart data (Mon–Sun) ───────────────────────────
+    week_labels, week_data = [], []
+    for i in range(7):
+        day = week_start + timedelta(days=i)
+        label = day.strftime('%a')          # Mon, Tue, …
+        day_visits = all_visits.filter(VisitDate__date=day)
+        week_labels.append(label)
+        week_data.append(sales_sum(day_visits))
+
+    # ── Monthly chart data (last 30 days by week buckets) ─────
+    month_labels, month_data = [], []
+    for i in range(4):
+        wk_start = month_start + timedelta(weeks=i)
+        wk_end   = wk_start + timedelta(days=6)
+        label = f"Wk {i+1}"
+        wk_visits = all_visits.filter(VisitDate__date__gte=wk_start,
+                                      VisitDate__date__lte=wk_end)
+        month_labels.append(label)
+        month_data.append(sales_sum(wk_visits))
+
+    # ── Yearly chart data (Jan–Dec) ───────────────────────────
+    year = today.year
+    year_labels, year_data = [], []
+    for m in range(1, 13):
+        month_visits_yr = all_visits.filter(
+            VisitDate__year=year, VisitDate__month=m
+        )
+        year_labels.append(date(year, m, 1).strftime('%b'))
+        year_data.append(sales_sum(month_visits_yr))
 
     context = {
         'total_appointment': total_appointment,
-        'total_accepted_appointment': total_accepted_appointment,
-        'total_Rejected_appointment': total_Rejected_appointment,
         'total_service': total_service,
         'total_employee': total_employee,
         'total_customer': total_customer,
-        'total_stores': total_stores,
-        'total_sales': total_sales,
-        'today_sales': today_sales,
-        'yesterday_sales': yesterday_sales,
-        'last_seven_days_sales': last_seven_days_sales
-
+        # stat cards
+        'today_sales':    today_sales,
+        'weekly_sales':   weekly_sales,
+        'monthly_sales':  monthly_sales,
+        'retention_rate': retention_rate,
+        'total_customers': total_customers,
+        'retained_customers': retained,
+        # chart data as JSON
+        'week_labels':    json.dumps(week_labels),
+        'week_data':      json.dumps(week_data),
+        'month_labels':   json.dumps(month_labels),
+        'month_data':     json.dumps(month_data),
+        'year_labels':    json.dumps(year_labels),
+        'year_data':      json.dumps(year_data),
     }
     return render(request, 'adminsection/admindashboard.html', context)
 
