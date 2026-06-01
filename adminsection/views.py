@@ -16,7 +16,6 @@ from django.contrib.auth import authenticate, login
 from .forms import LoginForm
 import string
 from decimal import Decimal
-from datetime import date
 import json
 
 def signin(request):
