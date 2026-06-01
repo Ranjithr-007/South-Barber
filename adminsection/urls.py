@@ -30,6 +30,7 @@ urlpatterns = [
     
     path('assignservices/<int:id>/', views.assignservices, name='assignservices'),
     path('bwdatesreportsds/', views.bwdatesreportsds, name='bwdatesreportsds'),
+    path('appointment/today/detail/<int:pk>/', views.today_appointment_detail, name='todayappointmentdetail'),
     path('allappointment/', views.allappointment, name='allappointment'),
     path('viewappointment/<int:id>/', views.viewappointment, name='viewappointment'),
     path('delete-appointment/<int:appointment_id>/', views.delete_appointment, name='deleteappointment'),

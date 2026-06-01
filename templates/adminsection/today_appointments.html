@@ -1,0 +1,190 @@
+{% extends 'adminsection/base.html' %}
+{% load static %}
+{% block content %}
+
+<style>
+  .detail-wrapper {
+    padding: 2rem;
+    background: #f4f6fb;
+    min-height: 100vh;
+  }
+
+  .detail-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .btn-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #eef0fd;
+    color: #1f36e9;
+    font-size: 0.8rem;
+    font-weight: 600;
+    padding: 0.4rem 1rem;
+    border-radius: 8px;
+    text-decoration: none;
+    border: 1px solid #dde2f8;
+  }
+
+  .btn-back:hover { background: #dde2f8; color: #1f36e9; text-decoration: none; }
+
+  .detail-header h3 {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin: 0;
+    position: relative;
+    padding-left: 14px;
+  }
+
+  .detail-header h3::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 50%;
+    transform: translateY(-50%);
+    width: 4px; height: 100%;
+    background: #1f36e9;
+    border-radius: 4px;
+  }
+
+  .detail-card {
+    background: #fff;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 2px 20px rgba(31,54,233,0.08);
+    border: 1px solid #e4e8f7;
+    max-width: 600px;
+  }
+
+  .detail-card-top {
+    background: linear-gradient(135deg, #1f36e9 0%, #4b5ef5 100%);
+    padding: 1.6rem;
+    display: flex;
+    align-items: center;
+    gap: 1.2rem;
+  }
+
+  .detail-avatar {
+    width: 60px; height: 60px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.2);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.4rem; font-weight: 700; color: #fff;
+    flex-shrink: 0;
+  }
+
+  .detail-card-top .name { font-size: 1.1rem; font-weight: 700; color: #fff; }
+  .detail-card-top .appt-no { font-size: 0.78rem; color: rgba(255,255,255,0.75); margin-top: 3px; }
+
+  .detail-body {
+    padding: 1.6rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+
+  .detail-item {
+    background: #f7f8fe;
+    border-radius: 10px;
+    padding: 0.85rem 1rem;
+    border: 1px solid #eef0fd;
+  }
+
+  .detail-item.full { grid-column: 1 / -1; }
+
+  .detail-item .label {
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #8890b5;
+    margin-bottom: 5px;
+  }
+
+  .detail-item .value {
+    font-size: 0.92rem;
+    font-weight: 600;
+    color: #1a1a2e;
+  }
+
+  .status-accepted { color: #1f36e9; }
+  .status-rejected { color: #d63031; }
+  .status-pending  { color: #e65100; }
+</style>
+
+<div class="detail-wrapper">
+
+  <div class="detail-header">
+    <a href="javascript:history.back()" class="btn-back">
+      ← Back
+    </a>
+    <h3>Appointment Details</h3>
+  </div>
+
+  <div class="detail-card">
+    <div class="detail-card-top">
+      <div class="detail-avatar">
+        {{ appt.Name|slice:":2"|upper }}
+      </div>
+      <div>
+        <div class="name">{{ appt.Name }}</div>
+        <div class="appt-no">Appt #{{ appt.AppointmentNumber }}</div>
+      </div>
+    </div>
+
+    <div class="detail-body">
+
+      <div class="detail-item">
+        <div class="label">Mobile</div>
+        <div class="value">{{ appt.PhoneNumber }}</div>
+      </div>
+
+      <div class="detail-item">
+        <div class="label">Service</div>
+        <div class="value">{{ appt.Service.ServiceName }}</div>
+      </div>
+
+      <div class="detail-item">
+        <div class="label">Service Price</div>
+        <div class="value">₹{{ appt.Service.Cost }}</div>
+      </div>
+
+      <div class="detail-item">
+        <div class="label">Date</div>
+        <div class="value">{{ appt.AppointmentDate }}</div>
+      </div>
+
+      <div class="detail-item">
+        <div class="label">Time</div>
+        <div class="value">{{ appt.AppointmentTime|time:"h:i A" }}</div>
+      </div>
+
+      <div class="detail-item">
+        <div class="label">Status</div>
+        <div class="value
+          {% if appt.Remark == '1' %}status-accepted
+          {% elif appt.Remark == '0' %}status-rejected
+          {% else %}status-pending{% endif %}">
+          {% if appt.Remark == '1' %}Accepted
+          {% elif appt.Remark == '0' %}Rejected
+          {% else %}Pending{% endif %}
+        </div>
+      </div>
+
+      {% if appt.Note %}
+      <div class="detail-item full">
+        <div class="label">Note</div>
+        <div class="value">{{ appt.Note }}</div>
+      </div>
+      {% endif %}
+
+    </div>
+  </div>
+
+</div>
+
+{% endblock %}

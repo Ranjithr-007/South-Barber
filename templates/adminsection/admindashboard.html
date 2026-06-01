@@ -204,7 +204,11 @@
                     </div>
                     <div class="appointment-details">
                     <div class="appointment-header">
-                        <h4>{{ appt.Name }}</h4>
+                        <h4>
+                            <a href="{% url 'todayappointmentdetail' appt.id %}" style="color:inherit;text-decoration:none;">
+                            {{ appt.Name }}
+                            </a>
+                        </h4>
                         {% if appt.Remark == '1' %}
                         <span class="status-badge completed">Accepted</span>
                         {% elif appt.Remark == '0' %}

@@ -16,6 +16,7 @@ from django.contrib.auth import authenticate, login
 from .forms import LoginForm
 import string
 from decimal import Decimal
+from datetime import date
 import json
 
 def signin(request):
@@ -409,6 +410,16 @@ def allappointment(request):
     }
     return render(request, 'adminsection/appointments.html', context)
 
+
+@staff_member_required
+def today_appointment_detail(request, pk):
+    appointment = get_object_or_404(
+        Appointment.objects.select_related('Service'),
+        id=pk
+    )
+    return render(request, 'adminsection/today_appointments.html', {
+        'appt': appointment,
+    })
 
 @staff_member_required
 def viewappointment(request, id):
