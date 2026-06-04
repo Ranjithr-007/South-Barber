@@ -1,5 +1,6 @@
 from django.db import models
 from adminsection.models import Service
+from adminsection.models import Store
 from django.dispatch import receiver
 from django.db.models.signals import post_save
 
@@ -8,11 +9,12 @@ from django.db.models.signals import post_save
 class Appointment(models.Model):
 
 
+    Store = models.ForeignKey(Store, on_delete=models.CASCADE)
     Name = models.CharField(max_length=50)
     Email = models.EmailField()
     PhoneNumber = models.CharField(max_length=11)
     Service = models.ForeignKey(Service, on_delete=models.CASCADE)
-    Note = models.TextField()
+    Note = models.TextField(blank=True)
     AppointmentDate = models.DateField()
     AppointmentTime = models.TimeField()  
     ApplyDate = models.DateTimeField(auto_now_add=True)
@@ -22,7 +24,7 @@ class Appointment(models.Model):
         ('1', 'Accepted'),
         ('0', 'Rejected'),
     )
-    Remark = models.CharField(max_length=1, choices=REMARK_CHOICES)
+    Remark = models.CharField(max_length=1, choices=REMARK_CHOICES, blank=True)
     def __str__(self):
         return self.Name
 

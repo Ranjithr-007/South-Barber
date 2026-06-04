@@ -797,43 +797,17 @@
 					<div class="contact_left_grid">
 						<div class="row">
 									{% for field in form %}
-									{% if field.name == 'Service' %}
-
-									<div class="col-sm-12">
-										<div class="form-group">
-											<div class="select-wrap">
-													<!-- <div id="output"></div> -->
-												<!-- <div class="icon">Select Service<span class="ion-ios-arrow-down"></span></div> -->
-												
-													<select name="Service" id="Service" 
-															class="form-control" required>
-														
-														<option value="" disabled selected>
-															Select Service
-														</option>
-
-														{% for service in services %}
-															<option value="{{ service.id }}">
-																{{ service.ServiceName }}
-															</option>
-														{% endfor %}
-													</select>
-
+										<div class="col-sm-12">
+											<div class="form-group">
+												{% if field.field.widget.input_type == 'select' %}
+													<div class="select-wrap">
+														{{ field }}
+													</div>
+												{% else %}
+													{{ field }}
+												{% endif %}
 											</div>
 										</div>
-									</div>
-									{% else %}
-									<div class="col-sm-12">
-										<div class="form-group">
-											<input type="{{ field.field.widget.input_type }}"
-												class="form-control {{ field.field.widget.attrs.class }}"
-												name="{{ field.name }}" id="id_{{ field.name }}"
-												placeholder="{{ field.field.widget.attrs.placeholder }}"
-												required="true">
-
-										</div>
-									</div>
-									{% endif %}
 									{% endfor %}
 						<!-- <div class="form-group">
 							<input class="form-control" type="text" name="Name" placeholder="Your Name" required="">

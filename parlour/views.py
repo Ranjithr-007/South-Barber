@@ -2,6 +2,7 @@ from django.shortcuts import render,get_object_or_404,redirect
 from parlour.forms import AppointmentForm
 from parlour.models import *
 from adminsection.models import Service
+from adminsection.models import Store
 from django.urls import reverse
 from django.http import JsonResponse
 from django.shortcuts import render
@@ -61,7 +62,6 @@ def contact(request):
 
 
 def appointment_view(request):
-    print(request.POST)
     if request.method == "POST":
         form = AppointmentForm(request.POST)
 
@@ -78,9 +78,15 @@ def appointment_view(request):
                 "errors": form.errors
             }, status=400)
 
-
     else:
         form = AppointmentForm()
 
-    return render(request, "website/index.html", {"form": form})
+    stores = Store.objects.all()
+    print(stores)
+    services = Service.objects.all() 
 
+    return render(request, "website/index.html", {
+        "form": form,
+        "stores": stores,     
+        "services": services, 
+    })
