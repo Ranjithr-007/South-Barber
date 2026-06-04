@@ -286,39 +286,56 @@ def addcustomer(request):
 
 @staff_member_required
 def addemployee(request):
-    """
-        Admin can add Employee details.
-    """
-    form = AddEmployeeForm(request.POST or None)
+    store_id = request.session.get('active_store_id')
+    active_store = Store.objects.get(id=store_id)
 
+    form = AddEmployeeForm(request.POST or None)
+    
     if request.method == 'POST':
         if form.is_valid():
-            employee = form.save(commit=False)
+            email = form.cleaned_data['Email']
+            if User.objects.filter(username=email).exists():
+                form.add_error('Email', 'An employee with this email already exists.')
+            else:
+                employee = form.save(commit=False)
+                user = User.objects.create_user(
+                    username=email,
+                    email=email,
+                    first_name=form.cleaned_data['Name'],
+                )
+                employee.User = user
+                employee.EmployeeID = 'EMP' + str(User.objects.count()).zfill(4)
+                employee.Store = active_store
+                employee.save()
+                return redirect('employeelist')
 
-            # Create the related User first
-            user = User.objects.create_user(
-                username=form.cleaned_data['Email'],
-                email=form.cleaned_data['Email'],
-                first_name=form.cleaned_data['Name'],
-            )
-            employee.User = user
-
-            # Auto-generate EmployeeID
-            employee.EmployeeID = 'EMP' + str(User.objects.count()).zfill(4)
-
-            employee.save()
-            return redirect('employeelist')
-
-    context = {
+    return render(request, 'adminsection/add-employee.html', {
         'form': form,
-    }
-    return render(request, 'adminsection/add-employee.html', context)
+        'active_store': active_store,
+    })
 
 @staff_member_required
 def employeelist(request):
-    employee = Employee.objects.order_by('-JoiningDate')
+    active_store = get_active_store(request)
+    
+    if isinstance(active_store, tuple):
+        store_id = active_store[0]
+    else:
+        store_id = active_store.id
+
+    employee = Employee.objects.filter(
+        Store=store_id
+    ).order_by('-JoiningDate')
+
+    if request.user.is_superuser:
+        user_stores = Store.objects.all()
+    else:
+        user_stores = Store.objects.filter(staff=request.user)
+
     return render(request, 'adminsection/employee-list.html', {
-        'employee': employee  
+        'employee': employee,
+        'active_store': active_store,
+        'user_stores': user_stores,
     })
 
 @staff_member_required
@@ -482,6 +499,8 @@ def assignservices(request, id):
 
 @staff_member_required
 def allappointment(request):
+    """Appointment Lists - filtered by active store.
+    """
     active_store = get_active_store(request)
     if isinstance(active_store, tuple):
         store_id = active_store[0]
