@@ -482,16 +482,21 @@ def assignservices(request, id):
 
 @staff_member_required
 def allappointment(request):
+    active_store = get_active_store(request)
+    if isinstance(active_store, tuple):
+        store_id = active_store[0]
+    else:
+        store_id = active_store.id
 
-    """
-        Appointment Lists.
-    """ 
-    Appointments = Appointment.objects.order_by('-ApplyDate')
+    Appointments = Appointment.objects.filter(
+        Store=store_id
+    ).order_by('-ApplyDate')
+
     context = {
-        'Appointments': Appointments
+        'Appointments': Appointments,
+        'active_store': active_store,
     }
     return render(request, 'adminsection/appointments.html', context)
-
 
 @staff_member_required
 def today_appointment_detail(request, pk):
