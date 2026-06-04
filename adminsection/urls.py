@@ -6,6 +6,7 @@ from adminsection import views
 urlpatterns = [
     path('', views.dashboard, name='dashboard'),
     path('signin/', views.signin, name='signin'),
+    path('switch-store/<int:store_id>/', views.switch_store, name='switch_store'),
 
     
     path('service/', views.addservice, name='addservices'),

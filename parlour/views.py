@@ -82,7 +82,6 @@ def appointment_view(request):
         form = AppointmentForm()
 
     stores = Store.objects.all()
-    print(stores)
     services = Service.objects.all() 
 
     return render(request, "website/index.html", {

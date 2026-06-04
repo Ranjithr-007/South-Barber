@@ -1,212 +1,428 @@
 {% extends 'adminsection/base.html' %}
 {% load static %}
+
+{% block header_store_switcher %}
+{% if user_stores|length > 1 %}
+<div class="store-switcher-wrap" id="storeSwitcherWrap">
+    <button class="store-btn" id="storeDropBtn" aria-haspopup="true" aria-expanded="false">
+        <span class="store-btn__icon">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none">
+                <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+                <path d="M9 22V12h6v10" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+            </svg>
+        </span>
+        <span class="store-btn__name">{{ active_store.StoreName }}</span>
+        <span class="store-btn__chevron">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none">
+                <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        </span>
+    </button>
+
+    <div class="store-menu" id="storeDropMenu" role="menu">
+        <div class="store-menu__header">
+            <span class="store-menu__label">Your Stores</span>
+            <span class="store-menu__count">{{ user_stores|length }}</span>
+        </div>
+        <div class="store-menu__list">
+            {% for store in user_stores %}
+            <a class="store-menu__item {% if store.id == active_store.id %}store-menu__item--active{% endif %}"
+               href="{% url 'switch_store' store.id %}?next={{ request.path }}"
+               role="menuitem">
+                <span class="store-menu__dot {% if store.id == active_store.id %}store-menu__dot--active{% endif %}"></span>
+                <span class="store-menu__item-name">{{ store.StoreName }}</span>
+                {% if store.id == active_store.id %}
+                <span class="store-menu__check">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none">
+                        <path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </span>
+                {% endif %}
+            </a>
+            {% endfor %}
+        </div>
+        <div class="store-menu__footer">
+            {% if is_owner %}<span class="store-menu__role">Store Owner</span>{% endif %}
+        </div>
+    </div>
+</div>
+{% else %}
+<div class="store-single-badge">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+        <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+    </svg>
+    {{ active_store.StoreName }}
+</div>
+{% endif %}
+
+<style>
+/* ── Store Switcher ─────────────────────────────── */
+.store-switcher-wrap { position: relative; }
+
+.store-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 15px 9px 12px;
+    background: #fff;
+    border: 1.5px solid #dde3f5;
+    border-radius: 12px;
+    font-size: 13.5px;
+    font-weight: 600;
+    color: #1a2557;
+    cursor: pointer;
+    transition: all 0.18s ease;
+    box-shadow: 0 1px 4px rgba(31,54,233,0.06);
+    white-space: nowrap;
+    font-family: inherit;
+}
+.store-btn:hover,
+.store-btn.open {
+    border-color: #1f36e9;
+    background: #f4f6ff;
+    box-shadow: 0 2px 14px rgba(31,54,233,0.14);
+    color: #1f36e9;
+}
+.store-btn__icon {
+    display: flex;
+    align-items: center;
+    color: #1f36e9;
+    opacity: 0.8;
+}
+.store-btn__chevron {
+    display: flex;
+    align-items: center;
+    color: #8a96bb;
+    margin-left: 2px;
+    transition: transform 0.2s ease;
+}
+.store-btn.open .store-btn__chevron {
+    transform: rotate(180deg);
+    color: #1f36e9;
+}
+
+/* ── Dropdown Menu ──────────────────────────────── */
+.store-menu {
+    display: none;
+    position: absolute;
+    top: calc(100% + 10px);
+    right: 0;
+    min-width: 230px;
+    background: #fff;
+    border: 1.5px solid #e4eafd;
+    border-radius: 16px;
+    box-shadow:
+        0 4px 6px -1px rgba(31,54,233,0.08),
+        0 12px 40px rgba(31,54,233,0.14),
+        0 2px 8px rgba(0,0,0,0.05);
+    overflow: hidden;
+    z-index: 9999;
+    animation: storeMenuIn 0.17s cubic-bezier(.22,.68,0,1.2);
+}
+.store-menu.open { display: block; }
+
+@keyframes storeMenuIn {
+    from { opacity: 0; transform: translateY(-8px) scale(0.97); }
+    to   { opacity: 1; transform: translateY(0)   scale(1);    }
+}
+
+.store-menu__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 13px 16px 10px;
+    border-bottom: 1px solid #f0f4ff;
+}
+.store-menu__label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #9aa3c4;
+}
+.store-menu__count {
+    font-size: 11px;
+    font-weight: 700;
+    background: #1f36e9;
+    color: #fff;
+    border-radius: 20px;
+    padding: 1px 7px;
+    line-height: 1.6;
+}
+
+.store-menu__list { padding: 6px 0; }
+
+.store-menu__item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 16px;
+    font-size: 13.5px;
+    font-weight: 500;
+    color: #2d3a5e;
+    text-decoration: none;
+    transition: background 0.13s, color 0.13s;
+    cursor: pointer;
+}
+.store-menu__item:hover {
+    background: #f4f6ff;
+    color: #1f36e9;
+}
+.store-menu__item--active {
+    background: #eef1ff;
+    color: #1f36e9;
+    font-weight: 700;
+}
+.store-menu__dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #d0d8ee;
+    flex-shrink: 0;
+    transition: background 0.13s;
+}
+.store-menu__dot--active { background: #1f36e9; }
+.store-menu__item-name { flex: 1; }
+.store-menu__check {
+    display: flex;
+    align-items: center;
+    color: #1f36e9;
+}
+
+.store-menu__footer {
+    padding: 10px 16px;
+    border-top: 1px solid #f0f4ff;
+    min-height: 36px;
+    display: flex;
+    align-items: center;
+}
+.store-menu__role {
+    font-size: 11px;
+    font-weight: 700;
+    color: #fff;
+    background: linear-gradient(135deg, #1f36e9, #5b6ef5);
+    padding: 3px 10px;
+    border-radius: 20px;
+    letter-spacing: 0.04em;
+}
+
+/* Single store badge */
+.store-single-badge {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 9px 14px;
+    background: #f4f6ff;
+    border: 1.5px solid #dde3f5;
+    border-radius: 12px;
+    font-size: 13.5px;
+    font-weight: 600;
+    color: #1a2557;
+}
+.store-single-badge svg { color: #1f36e9; }
+</style>
+
+<script>
+(function () {
+    const btn  = document.getElementById('storeDropBtn');
+    const menu = document.getElementById('storeDropMenu');
+    if (!btn || !menu) return;
+
+    btn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        const isOpen = menu.classList.toggle('open');
+        btn.classList.toggle('open', isOpen);
+        btn.setAttribute('aria-expanded', isOpen);
+    });
+
+    document.addEventListener('click', function () {
+        menu.classList.remove('open');
+        btn.classList.remove('open');
+        btn.setAttribute('aria-expanded', 'false');
+    });
+
+    // Close on Escape
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') {
+            menu.classList.remove('open');
+            btn.classList.remove('open');
+            btn.setAttribute('aria-expanded', 'false');
+        }
+    });
+})();
+</script>
+{% endblock %}
+
 {% block content %}
 
-            <!-- Stats Cards -->
-            <div class="stats-grid">
-                <!-- <div class="stat-card">
-                    <div class="stat-header">
-                        <h3 class="stat-title">Total Employees</h3>
-                        <div class="stat-icon client-icon">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                                <path d="M17 20H22V18C22 16.3431 20.6569 15 19 15C18.0444 15 17.1931 15.4468 16.6438 16.1429M17 20H7M17 20V18C17 17.3438 16.8736 16.717 16.6438 16.1429M7 20H2V18C2 16.3431 3.34315 15 5 15C5.95561 15 6.80686 15.4468 7.35625 16.1429M7 20V18C7 17.3438 7.12642 16.717 7.35625 16.1429M7.35625 16.1429C8.0935 14.301 9.89482 13 12 13C14.1052 13 15.9065 14.301 16.6438 16.1429M15 7C15 8.65685 13.6569 10 12 10C10.3431 10 9 8.65685 9 7C9 5.34315 10.3431 4 12 4C13.6569 4 15 5.34315 15 7ZM21 10C21 11.1046 20.1046 12 19 12C17.8954 12 17 11.1046 17 10C17 8.89543 17.8954 8 19 8C20.1046 8 21 8.89543 21 10ZM7 10C7 11.1046 6.10457 12 5 12C3.89543 12 3 11.1046 3 10C3 8.89543 3.89543 8 5 8C6.10457 8 7 8.89543 7 10Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-                            </svg>
-                        </div>
-                    </div>
-                    <div class="stat-value"><a href="{% url 'employeelist' %}">{{ total_customer }}</a></div>
-                    <div class="stat-change positive">
-                        <svg width="16" height="16" viewBox="0 0 16 16">
-                            <path d="M8 12V4M8 4L4 8M8 4L12 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-                        </svg>
-                        <span>12% vs last month</span>
-                    </div>
-                </div> -->
-
-                <div class="stat-card">
-                    <div class="stat-header">
-                        <h3 class="stat-title">Total Appointments</h3>
-                        <div class="stat-icon revenue-icon">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                                <rect x="3" y="6" width="18" height="15" rx="2" stroke="currentColor" stroke-width="1.5"/>
-                                <path d="M3 10H21M7 3V6M17 3V6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-                                <circle cx="12" cy="15" r="1" fill="currentColor"/>
-                                <circle cx="16" cy="15" r="1" fill="currentColor"/>
-                                <circle cx="8" cy="15" r="1" fill="currentColor"/>
-                            </svg>
-                        </div>
-                    </div>
-                    <div class="stat-value"><a href="{% url 'allappointment' %}">{{ total_appointment }}</a></div>
-                    <div class="stat-change positive">
-                        <svg width="16" height="16" viewBox="0 0 16 16">
-                            <path d="M8 12V4M8 4L4 8M8 4L12 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-                        </svg>
-                        <span>5% vs last month</span>
-                    </div>
-                </div>
-
-                <div class="stat-card">
-                    <div class="stat-header">
-                        <h3 class="stat-title">Today Sales</h3>
-                        <div class="stat-icon visits-icon">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                                <path d="M12 2V22M12 2C10.3431 2 9 3.79086 9 6C9 8.20914 10.3431 10 12 10M12 2C13.6569 2 15 3.79086 15 6C15 8.20914 13.6569 10 12 10M12 10C10.3431 10 9 11.7909 9 14C9 16.2091 10.3431 18 12 18M12 10C13.6569 10 15 11.7909 15 14C15 16.2091 13.6569 18 12 18M12 18C10.3431 18 9 19.7909 9 22M12 18C13.6569 18 15 19.7909 15 22" stroke="currentColor" stroke-width="1.5"/>
-                            </svg>
-                        </div>
-                    </div>
-                    <div class="stat-value">₹{{ today_sales|floatformat:0 }}</div>
-                    <div class="stat-change positive">
-                        <svg width="16" height="16" viewBox="0 0 16 16">
-                            <path d="M8 12V4M8 4L4 8M8 4L12 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-                        </svg>
-                        <span>8% vs last month</span>
-                    </div>
-                </div>
-
-                <div class="stat-card">
-                    <div class="stat-header">
-                        <h3 class="stat-title">Retention Rate</h3>
-                        <div class="stat-icon retention-icon">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                                <path d="M3 3L21 21M21 3L3 21" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-                                <circle cx="12" cy="12" r="8" stroke="currentColor" stroke-width="1.5"/>
-                                <path d="M9 12L11 14L15 10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                            </svg>
-                        </div>
-                    </div>
-                    <div class="stat-value">{{ retention_rate }}%</div>
-                    <div class="stat-change positive">
-                        {{ retained_customers }} of {{ total_customers }} customers returned
-                     </div>
-                </div>
+<!-- Stats Cards -->
+<div class="stats-grid">
+    <!-- Your existing stats cards... -->
+    <div class="stat-card">
+        <div class="stat-header">
+            <h3 class="stat-title">Total Appointments</h3>
+            <div class="stat-icon revenue-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <rect x="3" y="6" width="18" height="15" rx="2" stroke="currentColor" stroke-width="1.5"/>
+                    <path d="M3 10H21M7 3V6M17 3V6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                    <circle cx="12" cy="15" r="1" fill="currentColor"/>
+                    <circle cx="16" cy="15" r="1" fill="currentColor"/>
+                    <circle cx="8" cy="15" r="1" fill="currentColor"/>
+                </svg>
             </div>
+        </div>
+        <div class="stat-value"><a href="{% url 'allappointment' %}">{{ total_appointment }}</a></div>
+        <div class="stat-change positive">
+            <svg width="16" height="16" viewBox="0 0 16 16">
+                <path d="M8 12V4M8 4L4 8M8 4L12 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+            <span>5% vs last month</span>
+        </div>
+    </div>
 
-             <!-- Stats Cards -->
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <div class="stat-header">
-                        <h3 class="stat-title">Total Customer</h3>
-                        <div class="stat-icon client-icon">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                                <path d="M17 20H22V18C22 16.3431 20.6569 15 19 15C18.0444 15 17.1931 15.4468 16.6438 16.1429M17 20H7M17 20V18C17 17.3438 16.8736 16.717 16.6438 16.1429M7 20H2V18C2 16.3431 3.34315 15 5 15C5.95561 15 6.80686 15.4468 7.35625 16.1429M7 20V18C7 17.3438 7.12642 16.717 7.35625 16.1429M7.35625 16.1429C8.0935 14.301 9.89482 13 12 13C14.1052 13 15.9065 14.301 16.6438 16.1429M15 7C15 8.65685 13.6569 10 12 10C10.3431 10 9 8.65685 9 7C9 5.34315 10.3431 4 12 4C13.6569 4 15 5.34315 15 7ZM21 10C21 11.1046 20.1046 12 19 12C17.8954 12 17 11.1046 17 10C17 8.89543 17.8954 8 19 8C20.1046 8 21 8.89543 21 10ZM7 10C7 11.1046 6.10457 12 5 12C3.89543 12 3 11.1046 3 10C3 8.89543 3.89543 8 5 8C6.10457 8 7 8.89543 7 10Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-                            </svg>
-                        </div>
-                    </div>
-                    <div class="stat-value"><a href="{% url 'customerlist' %}">{{ total_customer }}</a></div>
-                    <div class="stat-change positive">
-                        <svg width="16" height="16" viewBox="0 0 16 16">
-                            <path d="M8 12V4M8 4L4 8M8 4L12 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-                        </svg>
-                        <span>12% vs last month</span>
-                    </div>
-                </div>
-
-                <!-- <div class="stat-card">
-                    <div class="stat-header">
-                        <h3 class="stat-title">Total Customer</h3>
-                        <div class="stat-icon client-icon">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                                <path d="M12 2V22M12 2C10.3431 2 9 3.79086 9 6C9 8.20914 10.3431 10 12 10M12 2C13.6569 2 15 3.79086 15 6C15 8.20914 13.6569 10 12 10M12 10C10.3431 10 9 11.7909 9 14C9 16.2091 10.3431 18 12 18M12 10C13.6569 10 15 11.7909 15 14C15 16.2091 13.6569 18 12 18M12 18C10.3431 18 9 19.7909 9 22M12 18C13.6569 18 15 19.7909 15 22" stroke="currentColor" stroke-width="1.5"/>
-                            </svg>
-                        </div>
-                    </div>
-                    <div class="stat-value"><a href="{% url 'customerlist' %}">{{ total_customer }}</a></div>
-                    <div class="stat-change positive">
-                        <svg width="16" height="16" viewBox="0 0 16 16">
-                            <path d="M8 12V4M8 4L4 8M8 4L12 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-                        </svg>
-                        <span>8% vs last month</span>
-                    </div>
-                </div> -->
-
-                <div class="stat-card">
-                    <div class="stat-header">
-                        <h3 class="stat-title">Weekly Sales</h3>
-                        <div class="stat-icon visits-icon">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                                <rect x="3" y="6" width="18" height="15" rx="2" stroke="currentColor" stroke-width="1.5"/>
-                                <path d="M3 10H21M7 3V6M17 3V6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-                                <circle cx="12" cy="15" r="1" fill="currentColor"/>
-                                <circle cx="16" cy="15" r="1" fill="currentColor"/>
-                                <circle cx="8" cy="15" r="1" fill="currentColor"/>
-                            </svg>
-                        </div>
-                    </div>
-                    <div class="stat-value">₹{{ weekly_sales|floatformat:0 }}</div>
-                    <div class="stat-change positive">
-                        <svg width="16" height="16" viewBox="0 0 16 16">
-                            <path d="M8 12V4M8 4L4 8M8 4L12 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-                        </svg>
-                        <span>5% vs last month</span>
-                    </div>
-                </div>
-
-                <div class="stat-card">
-                    <div class="stat-header">
-                        <h3 class="stat-title">Monthly Sales</h3>
-                        <div class="stat-icon retention-icon">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                                <path d="M3 3L21 21M21 3L3 21" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-                                <circle cx="12" cy="12" r="8" stroke="currentColor" stroke-width="1.5"/>
-                                <path d="M9 12L11 14L15 10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                            </svg>
-                        </div>
-                    </div>
-                    <div class="stat-value">₹{{ monthly_sales|floatformat:0 }}</div>
-                    <div class="stat-change positive">
-                        <svg width="16" height="16" viewBox="0 0 16 16">
-                            <path d="M8 12V4M8 4L4 8M8 4L12 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-                        </svg>
-                        <span>3% vs last month</span>
-                    </div>
-                </div>
+    <div class="stat-card">
+        <div class="stat-header">
+            <h3 class="stat-title">Today Sales</h3>
+            <div class="stat-icon visits-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <path d="M12 2V22M12 2C10.3431 2 9 3.79086 9 6C9 8.20914 10.3431 10 12 10M12 2C13.6569 2 15 3.79086 15 6C15 8.20914 13.6569 10 12 10M12 10C10.3431 10 9 11.7909 9 14C9 16.2091 10.3431 18 12 18M12 10C13.6569 10 15 11.7909 15 14C15 16.2091 13.6569 18 12 18M12 18C10.3431 18 9 19.7909 9 22M12 18C13.6569 18 15 19.7909 15 22" stroke="currentColor" stroke-width="1.5"/>
+                </svg>
             </div>
+        </div>
+        <div class="stat-value">₹{{ today_sales|floatformat:0 }}</div>
+        <div class="stat-change positive">
+            <svg width="16" height="16" viewBox="0 0 16 16">
+                <path d="M8 12V4M8 4L4 8M8 4L12 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+            <span>8% vs last month</span>
+        </div>
+    </div>
 
-            <!-- ── Chart + Appointments ───────────────────────────── -->
-            <div class="content-grid">
-
-            <!-- Sales Chart -->
-            <div class="chart-section">
-                <div class="section-header">
-                <h2 class="section-title">Sales Overview</h2>
-                <p class="section-subtitle">Revenue breakdown by period</p>
-                <div class="chart-tabs">
-                    <button class="chart-tab active" onclick="switchTab(this,'week')">Week</button>
-                    <button class="chart-tab"        onclick="switchTab(this,'month')">Month</button>
-                    <button class="chart-tab"        onclick="switchTab(this,'year')">Year</button>
-                </div>
-                </div>
-                <div class="chart-container">
-                <canvas id="salesChart"
-                        role="img"
-                        aria-label="Bar chart showing sales revenue for the selected period">
-                    Sales revenue chart.
-                </canvas>
-                </div>
+    <div class="stat-card">
+        <div class="stat-header">
+            <h3 class="stat-title">Retention Rate</h3>
+            <div class="stat-icon retention-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <path d="M3 3L21 21M21 3L3 21" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                    <circle cx="12" cy="12" r="8" stroke="currentColor" stroke-width="1.5"/>
+                    <path d="M9 12L11 14L15 10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
             </div>
+        </div>
+        <div class="stat-value">{{ retention_rate }}%</div>
+        <div class="stat-change positive">
+            {{ retained_customers }} of {{ total_customers }} customers returned
+        </div>
+    </div>
+</div>
 
-            <!-- Today's Appointments -->
-            <div class="appointments-section">
-                <div class="section-header">
-                <h2 class="section-title">Today's Appointments</h2>
-                <span style="font-size:13px;color:var(--text-muted,#888);">
-                    {{ todays_appointments.count }} booked
-                </span>
-                </div>
+<!-- Second row of stats -->
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-header">
+            <h3 class="stat-title">Total Customer</h3>
+            <div class="stat-icon client-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <path d="M17 20H22V18C22 16.3431 20.6569 15 19 15C18.0444 15 17.1931 15.4468 16.6438 16.1429M17 20H7M17 20V18C17 17.3438 16.8736 16.717 16.6438 16.1429M7 20H2V18C2 16.3431 3.34315 15 5 15C5.95561 15 6.80686 15.4468 7.35625 16.1429M7 20V18C7 17.3438 7.12642 16.717 7.35625 16.1429M7.35625 16.1429C8.0935 14.301 9.89482 13 12 13C14.1052 13 15.9065 14.301 16.6438 16.1429M15 7C15 8.65685 13.6569 10 12 10C10.3431 10 9 8.65685 9 7C9 5.34315 10.3431 4 12 4C13.6569 4 15 5.34315 15 7ZM21 10C21 11.1046 20.1046 12 19 12C17.8954 12 17 11.1046 17 10C17 8.89543 17.8954 8 19 8C20.1046 8 21 8.89543 21 10ZM7 10C7 11.1046 6.10457 12 5 12C3.89543 12 3 11.1046 3 10C3 8.89543 3.89543 8 5 8C6.10457 8 7 8.89543 7 10Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                </svg>
+            </div>
+        </div>
+        <div class="stat-value"><a href="{% url 'customerlist' %}">{{ total_customer }}</a></div>
+        <div class="stat-change positive">
+            <svg width="16" height="16" viewBox="0 0 16 16">
+                <path d="M8 12V4M8 4L4 8M8 4L12 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+            <span>12% vs last month</span>
+        </div>
+    </div>
 
-                <div class="appointments-list">
-                {% for appt in todays_appointments %}
-                <div class="appointment-item">
-                    <div class="appointment-icon">
+    <div class="stat-card">
+        <div class="stat-header">
+            <h3 class="stat-title">Weekly Sales</h3>
+            <div class="stat-icon visits-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <rect x="3" y="6" width="18" height="15" rx="2" stroke="currentColor" stroke-width="1.5"/>
+                    <path d="M3 10H21M7 3V6M17 3V6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                    <circle cx="12" cy="15" r="1" fill="currentColor"/>
+                    <circle cx="16" cy="15" r="1" fill="currentColor"/>
+                    <circle cx="8" cy="15" r="1" fill="currentColor"/>
+                </svg>
+            </div>
+        </div>
+        <div class="stat-value">₹{{ weekly_sales|floatformat:0 }}</div>
+        <div class="stat-change positive">
+            <svg width="16" height="16" viewBox="0 0 16 16">
+                <path d="M8 12V4M8 4L4 8M8 4L12 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+            <span>5% vs last month</span>
+        </div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-header">
+            <h3 class="stat-title">Monthly Sales</h3>
+            <div class="stat-icon retention-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <path d="M3 3L21 21M21 3L3 21" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                    <circle cx="12" cy="12" r="8" stroke="currentColor" stroke-width="1.5"/>
+                    <path d="M9 12L11 14L15 10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </div>
+        </div>
+        <div class="stat-value">₹{{ monthly_sales|floatformat:0 }}</div>
+        <div class="stat-change positive">
+            <svg width="16" height="16" viewBox="0 0 16 16">
+                <path d="M8 12V4M8 4L4 8M8 4L12 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+            <span>3% vs last month</span>
+        </div>
+    </div>
+</div>
+
+<!-- Chart + Appointments -->
+<div class="content-grid">
+    <!-- Sales Chart -->
+    <div class="chart-section">
+        <div class="section-header">
+            <h2 class="section-title">Sales Overview</h2>
+            <p class="section-subtitle">Revenue breakdown by period</p>
+            <div class="chart-tabs">
+                <button class="chart-tab active" onclick="switchTab(this,'week')">Week</button>
+                <button class="chart-tab" onclick="switchTab(this,'month')">Month</button>
+                <button class="chart-tab" onclick="switchTab(this,'year')">Year</button>
+            </div>
+        </div>
+        <div class="chart-container">
+            <canvas id="salesChart"
+                    role="img"
+                    aria-label="Bar chart showing sales revenue for the selected period">
+                Sales revenue chart.
+            </canvas>
+        </div>
+    </div>
+
+    <!-- Today's Appointments -->
+    <div class="appointments-section">
+        <div class="section-header">
+            <h2 class="section-title">Today's Appointments</h2>
+            <span style="font-size:13px;color:var(--text-muted,#888);">
+                {{ todays_appointments.count }} booked
+            </span>
+        </div>
+        <div class="appointments-list">
+            {% for appt in todays_appointments %}
+            <div class="appointment-item">
+                <div class="appointment-icon">
                     <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
                         <circle cx="10" cy="10" r="7" stroke="currentColor" stroke-width="1.5"/>
                         <path d="M10 6V10L13 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
                     </svg>
-                    </div>
-                    <div class="appointment-details">
+                </div>
+                <div class="appointment-details">
                     <div class="appointment-header">
                         <h4>
                             <a href="{% url 'todayappointmentdetail' appt.id %}" style="color:inherit;text-decoration:none;">
-                            {{ appt.Name }}
+                                {{ appt.Name }}
                             </a>
                         </h4>
                         {% if appt.Remark == '1' %}
@@ -225,103 +441,105 @@
                         <span class="appointment-duration">• {{ appt.Note|truncatechars:30 }}</span>
                         {% endif %}
                     </div>
-                    </div>
-                </div>
-                {% empty %}
-                <p style="color:var(--text-muted,#888);font-size:14px;padding:1.5rem 0;text-align:center;">
-                    No appointments today.
-                </p>
-                {% endfor %}
                 </div>
             </div>
+            {% empty %}
+            <p style="color:var(--text-muted,#888);font-size:14px;padding:1.5rem 0;text-align:center;">
+                No appointments today.
+            </p>
+            {% endfor %}
+        </div>
+    </div>
+</div>
 
+<!-- Recent Clients -->
+<div class="recent-section">
+    <div class="section-header">
+        <h2 class="section-title">Recent Clients</h2>
+        <a href="{% url 'customerlist' %}" class="view-all">View all</a>
+    </div>
+    <div class="clients-list">
+        {% for visit in recent_visits %}
+        <div class="client-item">
+            <div class="client-avatar">
+                {{ visit.Customer.Name|slice:":2"|upper }}
             </div>
-
-            <!-- ── Recent Clients ─────────────────────────────────── -->
-            <div class="recent-section">
-            <div class="section-header">
-                <h2 class="section-title">Recent Clients</h2>
-                <a href="{% url 'customerlist' %}" class="view-all">View all</a>
+            <div class="client-info">
+                <h4>{{ visit.Customer.Name }}</h4>
+                <p>{{ visit.VisitDate|date:"d M, g:i A" }}</p>
             </div>
-            <div class="clients-list">
-                {% for visit in recent_visits %}
-                <div class="client-item">
-                <div class="client-avatar">
-                    {{ visit.Customer.Name|slice:":2"|upper }}
-                </div>
-                <div class="client-info">
-                    <h4>{{ visit.Customer.Name }}</h4>
-                    <p>{{ visit.VisitDate|date:"d M, g:i A" }}</p>
-                </div>
-                <div class="client-amount">₹{{ visit.final_amount|floatformat:0 }}</div>
-                {% if visit.DiscountValue > 0 %}
-                    <span class="status-badge pending">
+            <div class="client-amount">₹{{ visit.final_amount|floatformat:0 }}</div>
+            {% if visit.DiscountValue > 0 %}
+                <span class="status-badge pending">
                     -{% if visit.DiscountType == 'PERCENT' %}{{ visit.DiscountValue }}%{% else %}₹{{ visit.DiscountValue }}{% endif %}
-                    </span>
-                {% else %}
-                    <span class="status-badge completed">No discount</span>
-                {% endif %}
-                </div>
-                {% empty %}
-                <p style="color:var(--text-muted,#888);font-size:14px;padding:1rem 0;">
-                No visits recorded yet.
-                </p>
-                {% endfor %}
-            </div>
-            </div>
+                </span>
+            {% else %}
+                <span class="status-badge completed">No discount</span>
+            {% endif %}
+        </div>
+        {% empty %}
+        <p style="color:var(--text-muted,#888);font-size:14px;padding:1rem 0;">
+            No visits recorded yet.
+        </p>
+        {% endfor %}
+    </div>
+</div>
 
-            <!-- ── Chart.js (place before </body>) ───────────────── -->
-            <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
-            <script>
-                const chartData = {
-                week:  { labels: {{ week_labels|safe }},  data: {{ week_data|safe }} },
-                month: { labels: {{ month_labels|safe }}, data: {{ month_data|safe }} },
-                year:  { labels: {{ year_labels|safe }},  data: {{ year_data|safe }} },
-                };
+<!-- Chart.js Script -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+    const chartData = {
+        week:  { labels: {{ week_labels|safe }},  data: {{ week_data|safe }} },
+        month: { labels: {{ month_labels|safe }}, data: {{ month_data|safe }} },
+        year:  { labels: {{ year_labels|safe }},  data: {{ year_data|safe }} },
+    };
 
-                const salesChart = new Chart(document.getElementById('salesChart'), {
-                type: 'bar',
-                data: {
-                    labels: chartData.week.labels,
-                    datasets: [{
-                    label: 'Sales (₹)',
-                    data: chartData.week.data,
-                    backgroundColor: '#1f36e9',
-                    borderColor: '#1f36e9',
-                    borderWidth: 1,
-                    borderRadius: 6,
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                    legend: { display: false },
-                    tooltip: {
-                        callbacks: {
+    const salesChart = new Chart(document.getElementById('salesChart'), {
+        type: 'bar',
+        data: {
+            labels: chartData.week.labels,
+            datasets: [{
+                label: 'Sales (₹)',
+                data: chartData.week.data,
+                backgroundColor: '#1f36e9',
+                borderColor: '#1f36e9',
+                borderWidth: 1,
+                borderRadius: 6,
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    callbacks: {
                         label: c => '₹' + c.parsed.y.toLocaleString('en-IN')
-                        }
                     }
-                    },
-                    scales: {
-                    y: {
-                        beginAtZero: true,
-                        ticks: {
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
                         callback: v => '₹' + (v >= 1000 ? (v/1000).toFixed(1)+'k' : v)
-                        }
-                    },
-                    x: { ticks: { autoSkip: false } }
                     }
-                }
-                });
+                },
+                x: { ticks: { autoSkip: false } }
+            }
+        }
+    });
 
-                function switchTab(btn, period) {
-                document.querySelectorAll('.chart-tab').forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                salesChart.data.labels = chartData[period].labels;
-                salesChart.data.datasets[0].data = chartData[period].data;
-                salesChart.update('active');
-                }
-        </script>
+    function switchTab(btn, period) {
+        document.querySelectorAll('.chart-tab').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        salesChart.data.labels = chartData[period].labels;
+        salesChart.data.datasets[0].data = chartData[period].data;
+        salesChart.update('active');
+    }
+</script>
 
-    {% endblock %}
+<!-- Add Bootstrap JS for dropdown (if not already in base template) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+
+{% endblock %}

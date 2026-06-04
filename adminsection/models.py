@@ -150,6 +150,26 @@ class Service(models.Model):
     def __str__(self):
         return self.ServiceName
                  
+class StoreStaff(models.Model):
+    """Links admin users to stores they can access"""
+    user = models.ForeignKey(User, on_delete=models.CASCADE, 
+        related_name='store_access'
+    )
+    store = models.ForeignKey(
+        'Store', 
+        on_delete=models.CASCADE, 
+        related_name='staff_members'
+    )
+    is_owner = models.BooleanField(default=False)  # Owners can see all stores
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('user', 'store')
+        verbose_name_plural = "Store Staff"
+
+    def __str__(self):
+        return f"{self.user.username} - {self.store.StoreName}"
+
 
 class Invoice(models.Model):
     Customer = models.ForeignKey(Customer, on_delete=models.CASCADE)

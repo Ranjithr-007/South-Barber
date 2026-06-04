@@ -38,97 +38,175 @@ def signin(request):
     context = {'form': form}
     return render(request, 'adminsection/signin.html', context)
 
+def get_user_stores(request):
+    """Get stores accessible to the current user"""
+    if request.user.is_superuser:
+        # Superusers can see all stores
+        return Store.objects.all(), True
+    
+    # Regular staff - get their assigned stores
+    store_staff = StoreStaff.objects.filter(user=request.user).select_related('store')
+    stores = [ss.store for ss in store_staff]
+    
+    # Check if user is owner of any store (can see all)
+    is_owner = any(ss.is_owner for ss in store_staff)
+    if is_owner:
+        stores = Store.objects.all()
+    
+    return stores, is_owner
+
+def get_active_store(request):
+    """Get currently selected store from session"""
+    stores, is_owner = get_user_stores(request)
+    
+    if not stores:
+        return None, stores, is_owner
+    
+    # If only one store, use it
+    if len(stores) == 1:
+        return stores[0], stores, is_owner
+    
+    # Get store from session
+    store_id = request.session.get('active_store_id')
+    if store_id:
+        try:
+            active_store = next((s for s in stores if str(s.id) == str(store_id)), stores[0])
+            return active_store, stores, is_owner
+        except:
+            pass
+    
+    return stores[0], stores, is_owner
+
 @staff_member_required
 def dashboard(request):
     """
-        Adminsection Dashboard.
-    """ 
-    total_appointment = Appointment.objects.all().count()
+    Adminsection Dashboard with multi-store support.
+    """
+    active_store, user_stores, is_owner = get_active_store(request)
+    
+    # Base querysets filtered by active store
+    if active_store:
+        all_visits = Visit.objects.filter(Store=active_store).select_related('Customer')
+        all_appointments = Appointment.objects.filter(Store=active_store)
+        all_customers = Customer.objects.filter(
+            visits__Store=active_store
+        ).distinct().prefetch_related('visits')
+    else:
+        all_visits = Visit.objects.none()
+        all_appointments = Appointment.objects.none()
+        all_customers = Customer.objects.none()
+    
+    # Statistics
+    total_appointment = all_appointments.count()
     total_service = Service.objects.all().count()
     total_employee = Employee.objects.all().count()
-    total_customer = Customer.objects.all().count()
+    total_customer = all_customers.count()
+    
     today = timezone.now().date()
-    week_start = today - timedelta(days=today.weekday())      # Monday
+    week_start = today - timedelta(days=today.weekday())
     month_start = today.replace(day=1)
-    todays_appointments = (Appointment.objects.filter(AppointmentDate=today).select_related('Service').order_by('AppointmentTime'))
-    recent_visits = (Visit.objects.select_related('Customer').order_by('-VisitDate')[:10])
-
-    # ── Sales aggregates ──────────────────────────────────────
+    
+    # Today's appointments (filtered by store)
+    todays_appointments = all_appointments.filter(
+        AppointmentDate=today
+    ).select_related('Service').order_by('AppointmentTime')
+    
+    # Recent visits (filtered by store)
+    recent_visits = all_visits.select_related('Customer').order_by('-VisitDate')[:10]
+    
+    # Sales aggregates
     def sales_sum(qs):
-        """Sum final amounts from a Visit queryset."""
         total = Decimal('0')
         for v in qs:
             total += v.final_amount
         return float(total)
-
-    all_visits   = Visit.objects.all().select_related('Customer')
+    
     today_visits = all_visits.filter(VisitDate__date=today)
-    week_visits  = all_visits.filter(VisitDate__date__gte=week_start)
+    week_visits = all_visits.filter(VisitDate__date__gte=week_start)
     month_visits = all_visits.filter(VisitDate__date__gte=month_start)
-
-    today_sales   = sales_sum(today_visits)
-    weekly_sales  = sales_sum(week_visits)
+    
+    today_sales = sales_sum(today_visits)
+    weekly_sales = sales_sum(week_visits)
     monthly_sales = sales_sum(month_visits)
-
-    # ── Retention rate ────────────────────────────────────────
-    all_customers = Customer.objects.prefetch_related('visits').all()
+    
+    # Retention rate (customers who visited this store more than once)
     total_customers = all_customers.count()
-    retained = sum(1 for c in all_customers if c.visits.count() > 1)
+    retained = 0
+    
+    for customer in all_customers:
+        # Count only visits to this specific store
+        store_visits = customer.visits.filter(Store=active_store).count() if active_store else 0
+        if store_visits > 1:
+            retained += 1
+    
     retention_rate = round((retained / total_customers * 100), 1) if total_customers else 0
-
-    # ── Weekly chart data (Mon–Sun) ───────────────────────────
+    
+    # Weekly chart data (Mon-Sun)
     week_labels, week_data = [], []
     for i in range(7):
         day = week_start + timedelta(days=i)
-        label = day.strftime('%a')          # Mon, Tue, …
+        label = day.strftime('%a')
         day_visits = all_visits.filter(VisitDate__date=day)
         week_labels.append(label)
         week_data.append(sales_sum(day_visits))
-
-    # ── Monthly chart data (last 30 days by week buckets) ─────
+    
+    # Monthly chart data (last 4 weeks)
     month_labels, month_data = [], []
     for i in range(4):
         wk_start = month_start + timedelta(weeks=i)
-        wk_end   = wk_start + timedelta(days=6)
+        wk_end = wk_start + timedelta(days=6)
         label = f"Wk {i+1}"
-        wk_visits = all_visits.filter(VisitDate__date__gte=wk_start,
-                                      VisitDate__date__lte=wk_end)
+        wk_visits = all_visits.filter(
+            VisitDate__date__gte=wk_start,
+            VisitDate__date__lte=wk_end
+        )
         month_labels.append(label)
         month_data.append(sales_sum(wk_visits))
-
-    # ── Yearly chart data (Jan–Dec) ───────────────────────────
+    
+    # Yearly chart data
     year = today.year
     year_labels, year_data = [], []
     for m in range(1, 13):
         month_visits_yr = all_visits.filter(
-            VisitDate__year=year, VisitDate__month=m
+            VisitDate__year=year, 
+            VisitDate__month=m
         )
         year_labels.append(date(year, m, 1).strftime('%b'))
         year_data.append(sales_sum(month_visits_yr))
-
+    
     context = {
+        'active_store': active_store,
+        'user_stores': user_stores,
+        'is_owner': is_owner,
         'total_appointment': total_appointment,
         'total_service': total_service,
         'total_employee': total_employee,
         'total_customer': total_customer,
         'todays_appointments': todays_appointments,
-        'recent_visits':       recent_visits,
-        # stat cards
-        'today_sales':    today_sales,
-        'weekly_sales':   weekly_sales,
-        'monthly_sales':  monthly_sales,
+        'recent_visits': recent_visits,
+        'today_sales': today_sales,
+        'weekly_sales': weekly_sales,
+        'monthly_sales': monthly_sales,
         'retention_rate': retention_rate,
         'total_customers': total_customers,
         'retained_customers': retained,
-        # chart data as JSON
-        'week_labels':    json.dumps(week_labels),
-        'week_data':      json.dumps(week_data),
-        'month_labels':   json.dumps(month_labels),
-        'month_data':     json.dumps(month_data),
-        'year_labels':    json.dumps(year_labels),
-        'year_data':      json.dumps(year_data),
+        'week_labels': json.dumps(week_labels),
+        'week_data': json.dumps(week_data),
+        'month_labels': json.dumps(month_labels),
+        'month_data': json.dumps(month_data),
+        'year_labels': json.dumps(year_labels),
+        'year_data': json.dumps(year_data),
     }
     return render(request, 'adminsection/admindashboard.html', context)
+
+@staff_member_required
+def switch_store(request, store_id):
+    """Switch active store"""
+    request.session['active_store_id'] = str(store_id)
+    
+    # Get the referring page
+    next_url = request.GET.get('next', 'dashboard')
+    return redirect(next_url)
 
 
 @staff_member_required
@@ -324,6 +402,11 @@ def customer_detail(request, id):
 @staff_member_required
 def add_visit(request, id):
     customer = get_object_or_404(Customer, PhoneID=id)
+    active_store, _, _ = get_active_store(request)
+    
+    if not active_store:
+        messages.error(request, "No store assigned to you.")
+        return redirect('dashboard')
     
     if request.method == 'POST':
         bill_amount = Decimal(request.POST.get('bill_amount', 0))
@@ -333,6 +416,7 @@ def add_visit(request, id):
 
         Visit.objects.create(
             Customer=customer,
+            Store=active_store,  # IMPORTANT: Add this line
             BillAmount=bill_amount,
             DiscountType=discount_type,
             DiscountValue=discount_value,
@@ -341,7 +425,6 @@ def add_visit(request, id):
         return redirect('customer_detail', id=id)
 
     return render(request, 'adminsection/add-visit.html', {'customer': customer})
-
 
 @staff_member_required
 def lookup_customer(request):
