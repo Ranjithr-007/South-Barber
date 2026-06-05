@@ -549,24 +549,23 @@ def today_appointment_detail(request, pk):
         'appt': appointment,
     })
 
+
 @staff_member_required
 def viewappointment(request, id):
-    """
-        View appointment.
-    """ 
-
     Appointments = get_object_or_404(Appointment, id=id)
     form = AppointmentUpdateForm(request.POST or None, instance=Appointments)
 
     if request.method == 'POST':
         if form.is_valid():
             form.save()
-            # return redirect('manageservices')
+            return redirect('allappointment')  
+
     context = {
         'Appointment': Appointments,
-        'form': form
+        'form': form,
     }
     return render(request, 'adminsection/view-appointment.html', context)
+
 
 @staff_member_required
 def delete_appointment(request, appointment_id):

@@ -183,22 +183,13 @@ class AddEmployeeForm(forms.ModelForm):
 
 class AppointmentUpdateForm(forms.ModelForm):
 
-    Note = forms.CharField(widget=forms.TextInput(attrs={'placeholder': 'Enter Note If needed'}))
+    Note = forms.CharField(
+        required=False,
+        widget=forms.TextInput(attrs={'placeholder': 'Enter Note if needed'})
+    )
 
     class Meta:
+        model = Appointment
+        fields = ['Service', 'Note', 'Remark']
 
-        model=Appointment
-        fields =[
-            'Note',
-            'Remark',
-
-        ]
-
-  
-    def clean_remark(self):
-        Remark = self.cleaned_data.get('Remark')
-  
-        if not Remark:
-            raise forms.ValidationError("Remark is required")
-        return Remark
     
