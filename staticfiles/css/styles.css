@@ -71,6 +71,17 @@ body {
     -moz-osx-font-smoothing: grayscale;
 }
 
+.main-page {
+  display: flex;
+  justify-content: center;
+  padding: 2rem 1rem;
+}
+
+#page-wrapper {
+  width: 100%;
+  max-width: 680px;
+}
+
 /* ================================
    Layout - App Container
    ================================ */

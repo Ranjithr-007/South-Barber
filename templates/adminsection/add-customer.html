@@ -1,50 +1,408 @@
 {% extends 'adminsection/base.html' %}
 {% load static %}
 {% block content %}
+
+<style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --blue:        #1f36e9;
+      --blue-dark:   #1629c4;
+      --blue-deeper: #0f1d8a;
+      --blue-light:  #eceffe;
+      --blue-mid:    #c5ccfb;
+      --text-main:   #0d1117;
+      --text-muted:  #5b6477;
+      --text-hint:   #9ba5b8;
+      --bg-page:     #f0f2ff;
+      --bg-card:     #ffffff;
+      --bg-input:    #f7f8fe;
+      --border:      #dde1f7;
+      --border-focus:#1f36e9;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: var(--bg-page);
+      min-height: 100vh;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 3rem 1rem 4rem;
+    }
+
+    #page-wrapper {
+      width: 100%;
+      max-width: 680px;
+    }
+
+    /* ── Breadcrumb label ── */
+    .page-label {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--blue);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .page-label::before {
+      content: '';
+      display: inline-block;
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--blue);
+    }
+
+    /* ── Page title ── */
+    .page-title {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 1.75rem;
+      line-height: 1.2;
+    }
+    .page-title span { color: var(--blue); }
+
+    /* ── Card ── */
+    .form-card {
+      background: var(--bg-card);
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      overflow: hidden;
+      box-shadow: 0 4px 32px rgba(31,54,233,0.08);
+    }
+
+    /* ── Accent bar ── */
+    .card-accent {
+      height: 4px;
+      background: linear-gradient(90deg, var(--blue-deeper), var(--blue), #6b80f5);
+    }
+
+    /* ── Card header ── */
+    .card-header {
+      padding: 1.5rem 2rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      background: var(--blue-light);
+    }
+
+    .header-icon {
+      width: 44px; height: 44px;
+      border-radius: 10px;
+      background: var(--blue);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .header-icon svg {
+      width: 20px; height: 20px;
+      fill: none; stroke: #fff;
+      stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round;
+    }
+
+    .header-text h4 {
+      font-size: 16px; font-weight: 600;
+      color: var(--text-main);
+    }
+    .header-text p {
+      font-size: 12.5px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    /* ── Card body ── */
+    .card-body {
+      padding: 2rem;
+      display: flex; flex-direction: column; gap: 1.25rem;
+    }
+
+    /* ── Two-column row ── */
+    .field-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+
+    @media (max-width: 520px) {
+      .field-row { grid-template-columns: 1fr; }
+      .card-body { padding: 1.25rem; }
+      .card-header { padding: 1.25rem; }
+      .card-footer { padding: 1rem 1.25rem; flex-direction: column; align-items: stretch; }
+      .btn-group { flex-direction: column; }
+    }
+
+    /* ── Field group ── */
+    .field-group {
+      display: flex; flex-direction: column; gap: 6px;
+    }
+
+    .field-group label {
+      font-size: 11.5px; font-weight: 600;
+      letter-spacing: 0.07em; text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    .field-group input[type="text"],
+    .field-group input[type="tel"],
+    .field-group input[type="email"],
+    .field-group input[type="number"],
+    .field-group input[type="date"],
+    .field-group select,
+    .field-group textarea {
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 13px;
+      font-size: 14px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      color: var(--text-main);
+      outline: none;
+      transition: border-color 0.15s, box-shadow 0.15s, background 0.15s;
+      width: 100%;
+      appearance: none; -webkit-appearance: none;
+    }
+
+    .field-group input:hover,
+    .field-group select:hover,
+    .field-group textarea:hover { border-color: var(--blue-mid); }
+
+    .field-group input:focus,
+    .field-group select:focus,
+    .field-group textarea:focus {
+      border-color: var(--border-focus);
+      background: #ffffff;
+      box-shadow: 0 0 0 3px rgba(31,54,233,0.12);
+    }
+
+    .field-group input::placeholder,
+    .field-group textarea::placeholder { color: var(--text-hint); }
+
+    .field-group textarea {
+      resize: vertical; min-height: 110px; line-height: 1.6;
+    }
+
+    /* ── Divider ── */
+    .divider {
+      height: 1px; background: var(--border); margin: 0.25rem 0;
+    }
+
+    /* ── Section label ── */
+    .section-label {
+      font-size: 11px; font-weight: 700;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--blue);
+      display: flex; align-items: center; gap: 8px;
+    }
+    .section-label::after {
+      content: ''; flex: 1; height: 1px; background: var(--blue-mid);
+    }
+
+    /* ── Gender radio ── */
+    .gender-group { display: flex; flex-direction: column; gap: 8px; }
+    .gender-group > span {
+      font-size: 11.5px; font-weight: 600;
+      letter-spacing: 0.07em; text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    .radio-options { display: flex; gap: 10px; }
+
+    .radio-label {
+      display: flex; align-items: center; gap: 8px;
+      cursor: pointer;
+      padding: 9px 18px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--bg-input);
+      font-size: 14px; color: var(--text-main);
+      transition: border-color 0.15s, background 0.15s;
+      user-select: none;
+    }
+    .radio-label:hover { border-color: var(--blue-mid); }
+    .radio-label input[type="radio"] { display: none; }
+
+    .radio-dot {
+      width: 15px; height: 15px; border-radius: 50%;
+      border: 1.5px solid var(--blue-mid);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; transition: border-color 0.15s, background 0.15s;
+    }
+    .radio-label input:checked ~ .radio-dot {
+      border-color: var(--blue); background: var(--blue);
+    }
+    .radio-label input:checked ~ .radio-dot::after {
+      content: ''; width: 5px; height: 5px;
+      border-radius: 50%; background: white; display: block;
+    }
+    .radio-label:has(input:checked) {
+      border-color: var(--blue); background: var(--blue-light);
+      color: var(--blue-deeper); font-weight: 500;
+    }
+
+    /* ── Card footer ── */
+    .card-footer {
+      padding: 1.25rem 2rem;
+      border-top: 1px solid var(--border);
+      display: flex; align-items: center;
+      justify-content: space-between; gap: 1rem;
+      background: var(--blue-light);
+    }
+
+    .footer-note { font-size: 12px; color: var(--text-muted); }
+    .footer-note strong { color: var(--blue); }
+
+    .btn-group { display: flex; gap: 10px; }
+
+    .btn-submit {
+      background: var(--blue);
+      color: #ffffff;
+      border: none; border-radius: 8px;
+      padding: 11px 32px;
+      font-size: 14px; font-weight: 600;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      cursor: pointer; letter-spacing: 0.02em;
+      transition: background 0.15s, transform 0.1s;
+    }
+    .btn-submit:hover { background: var(--blue-dark); }
+    .btn-submit:active { transform: scale(0.98); }
+
+    .btn-reset {
+      background: transparent; color: var(--text-muted);
+      border: 1px solid var(--border);
+      border-radius: 8px; padding: 10px 20px;
+      font-size: 13px; font-weight: 500;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      cursor: pointer;
+      transition: border-color 0.15s, color 0.15s;
+    }
+    .btn-reset:hover { border-color: var(--blue-mid); color: var(--blue); }
+</style>
+
 <div id="page-wrapper">
-	<div class="main-page">
-		<div class="forms">
-			<h3 class="title1">Add Customer</h3>
-			<div class="form-grids row widget-shadow" data-example-id="basic-forms">
-				<div class="form-title">
-					<h4>South Barber Customer:</h4>
-				</div>
-				<div class="form-body">
+  <p class="page-label">South Barber Admin</p>
+  <h1 class="page-title">Add <span>Customer</span></h1>
 
-					<form action="" method="POST" class="appointment-form">
-						{% csrf_token %}
+  <div class="form-card">
+    <div class="card-accent"></div>
 
-						{% for field in form %}
-						{% if field.name != 'Gender' and field.name != 'Note' %}
-						<div class="form-group">
-							<label for="id_{{ field.name }}">{{ field.label }}</label>
-							<input type="{{ field.field.widget.input_type }}" class="form-control"
-								name="{{ field.name }}" id="id_{{ field.name }}"
-								placeholder="{{ field.field.widget.attrs.placeholder }}" required="true">
-						</div>
-						{% endif  %}
-						{% endfor %}
-						<div class="radio">
-							<p style="padding-top: 20px; font-size: 15px"> <strong>Gender:</strong> <label>
-									<input type="radio" name="Gender" id="Gender" value="1" checked="true">
-									Female
-								</label>
-								<label>
-									<input type="radio" name="Gender" id="Gender" value="0">
-									Male
-								</label>
-							</p>
-						</div>
-						<div class="form-group">
-							<label for="exampleInputEmail1">Details</label>
-							<textarea type="text" class="form-control" id="Note" name="Note" placeholder="Details"
-								required="true" rows="12" cols="4"></textarea>
-						</div>
+    <div class="card-header">
+      <div class="header-icon">
+        <svg viewBox="0 0 24 24">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+          <circle cx="12" cy="7" r="4"/>
+        </svg>
+      </div>
+      <div class="header-text">
+        <h4>New Customer Profile</h4>
+        <p>All fields are required to add a customer</p>
+      </div>
+    </div>
 
-						<button type="submit" name="submit" class="btn btn-default">Add</button>
-					</form>
-				</div>
-			</div>
-		</div>
-	</div>
+    <div class="card-body">
+      <form action="" method="POST" class="appointment-form" id="customerForm">
+        {% csrf_token %}
+
+        <p class="section-label">Personal Info</p>
+
+        <!-- Name field - assuming your form has 'Name' field -->
+        {% for field in form %}
+          {% if field.name == 'Name' or field.name == 'name' or field.name == 'customer_name' %}
+          <div class="field-group">
+            <label for="id_{{ field.name }}">{{ field.label }}</label>
+            <input type="text" name="{{ field.name }}" id="id_{{ field.name }}"
+              placeholder="{{ field.field.widget.attrs.placeholder|default:'Enter full name' }}" 
+              value="{{ field.value|default:'' }}" required>
+          </div>
+          {% endif %}
+        {% endfor %}
+
+        <!-- Display all other fields except Gender and Note and Name fields -->
+        <div class="field-row">
+          {% for field in form %}
+            {% if field.name != 'Gender' and field.name != 'Note' and field.name != 'Name' and field.name != 'name' and field.name != 'customer_name' %}
+              <div class="field-group">
+                <label for="id_{{ field.name }}">{{ field.label }}</label>
+                <input type="{{ field.field.widget.input_type }}" 
+                  name="{{ field.name }}" 
+                  id="id_{{ field.name }}"
+                  placeholder="{{ field.field.widget.attrs.placeholder|default:field.label }}"
+                  value="{{ field.value|default:'' }}"
+                  {% if field.field.required %}required{% endif %}>
+                {% if field.help_text %}
+                  <small class="form-text text-muted">{{ field.help_text }}</small>
+                {% endif %}
+                {% for error in field.errors %}
+                  <div class="error-message" style="color: #e03a3a; font-size: 12px; margin-top: 4px;">{{ error }}</div>
+                {% endfor %}
+              </div>
+            {% endif %}
+          {% endfor %}
+        </div>
+
+        <div class="divider"></div>
+        <p class="section-label">Additional Details</p>
+
+        <!-- Gender Field -->
+        <div class="gender-group">
+          <span>Gender</span>
+          <div class="radio-options">
+            <label class="radio-label">
+              <input type="radio" name="Gender" value="Female" {% if form.Gender.value == 'Female' %}checked{% endif %}>
+              <span class="radio-dot"></span> Female
+            </label>
+            <label class="radio-label">
+              <input type="radio" name="Gender" value="Male" {% if form.Gender.value == 'Male' %}checked{% endif %}>
+              <span class="radio-dot"></span> Male
+            </label>
+            <label class="radio-label">
+              <input type="radio" name="Gender" value="Other" {% if form.Gender.value == 'Other' %}checked{% endif %}>
+              <span class="radio-dot"></span> Other
+            </label>
+          </div>
+          {% if form.Gender.errors %}
+            {% for error in form.Gender.errors %}
+              <div class="error-message" style="color: #e03a3a; font-size: 12px;">{{ error }}</div>
+            {% endfor %}
+          {% endif %}
+        </div>
+
+        <!-- Note / Details Field -->
+        <div class="field-group">
+          <label for="Note">Details / Notes</label>
+          <textarea id="Note" name="Note" rows="4"
+            placeholder="Any additional notes or details about this customer...">{{ form.Note.value|default:'' }}</textarea>
+          {% if form.Note.errors %}
+            {% for error in form.Note.errors %}
+              <div class="error-message" style="color: #e03a3a; font-size: 12px;">{{ error }}</div>
+            {% endfor %}
+          {% endif %}
+        </div>
+
+      </form>
+    </div>
+
+    <div class="card-footer">
+      <span class="footer-note">Adding to <strong>South Barber</strong> customer list</span>
+      <div class="btn-group">
+        <button type="reset" class="btn-reset" form="customerForm">Clear</button>
+        <button type="submit" class="btn-submit" form="customerForm" name="submit">Add Customer</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  // Add reset functionality
+  document.querySelector('.btn-reset').addEventListener('click', function(e) {
+    if (confirm('Clear all form fields?')) {
+      document.getElementById('customerForm').reset();
+    }
+  });
+</script>
+
 {% endblock %}

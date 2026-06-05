@@ -286,11 +286,10 @@ def addcustomer(request):
 
 @staff_member_required
 def addemployee(request):
-    store_id = request.session.get('active_store_id')
-    active_store = Store.objects.get(id=store_id)
+    active_store, user_stores, is_owner = get_active_store(request)
 
     form = AddEmployeeForm(request.POST or None)
-    
+
     if request.method == 'POST':
         if form.is_valid():
             email = form.cleaned_data['Email']
@@ -316,26 +315,17 @@ def addemployee(request):
 
 @staff_member_required
 def employeelist(request):
-    active_store = get_active_store(request)
-    
-    if isinstance(active_store, tuple):
-        store_id = active_store[0]
-    else:
-        store_id = active_store.id
+    active_store, user_stores, is_owner = get_active_store(request)
 
     employee = Employee.objects.filter(
-        Store=store_id
+        Store=active_store
     ).order_by('-JoiningDate')
-
-    if request.user.is_superuser:
-        user_stores = Store.objects.all()
-    else:
-        user_stores = Store.objects.filter(staff=request.user)
 
     return render(request, 'adminsection/employee-list.html', {
         'employee': employee,
         'active_store': active_store,
         'user_stores': user_stores,
+        'is_owner': is_owner,
     })
 
 @staff_member_required
@@ -368,7 +358,17 @@ def deleteemployee(request, id):
 
 @staff_member_required
 def customerlist(request):
-    CustomerList = Customer.objects.order_by('-CreateDate')
+    active_store, user_stores, is_owner = get_active_store(request)
+    
+    # Get customers who have visited this store
+    store_customer_ids = Visit.objects.filter(
+        Store=active_store
+    ).values_list('Customer', flat=True).distinct()
+    
+    CustomerList = Customer.objects.filter(
+        PhoneID__in=store_customer_ids
+    ).order_by('-CreateDate')
+
     letters = list(string.ascii_uppercase)
     customers_with_letters = []
     for i, customer in enumerate(CustomerList):
@@ -377,7 +377,13 @@ def customerlist(request):
             'customer': customer,
             'letter_id': letter_id
         })
-    return render(request, 'adminsection/customer-list.html', {'customers_with_letters': customers_with_letters})
+
+    return render(request, 'adminsection/customer-list.html', {
+        'customers_with_letters': customers_with_letters,
+        'active_store': active_store,
+        'user_stores': user_stores,
+        'is_owner': is_owner,
+    })
 
 
 @staff_member_required
@@ -420,11 +426,11 @@ def customer_detail(request, id):
 def add_visit(request, id):
     customer = get_object_or_404(Customer, PhoneID=id)
     active_store, _, _ = get_active_store(request)
-    
+
     if not active_store:
         messages.error(request, "No store assigned to you.")
         return redirect('dashboard')
-    
+
     if request.method == 'POST':
         bill_amount = Decimal(request.POST.get('bill_amount', 0))
         discount_type = request.POST.get('discount_type', 'PERCENT')
@@ -433,7 +439,7 @@ def add_visit(request, id):
 
         Visit.objects.create(
             Customer=customer,
-            Store=active_store,  # IMPORTANT: Add this line
+            Store=active_store,
             BillAmount=bill_amount,
             DiscountType=discount_type,
             DiscountValue=discount_value,
@@ -442,7 +448,6 @@ def add_visit(request, id):
         return redirect('customer_detail', id=id)
 
     return render(request, 'adminsection/add-visit.html', {'customer': customer})
-
 @staff_member_required
 def lookup_customer(request):
     """Manager enters phone number to find or create customer."""
@@ -496,26 +501,22 @@ def assignservices(request, id):
 
     return render(request, 'adminsection/add-customer-services.html', context)
 
-
 @staff_member_required
 def allappointment(request):
     """Appointment Lists - filtered by active store.
     """
-    active_store = get_active_store(request)
-    if isinstance(active_store, tuple):
-        store_id = active_store[0]
-    else:
-        store_id = active_store.id
+    active_store, user_stores, is_owner = get_active_store(request)
 
     Appointments = Appointment.objects.filter(
-        Store=store_id
+        Store=active_store
     ).order_by('-ApplyDate')
 
-    context = {
+    return render(request, 'adminsection/appointments.html', {
         'Appointments': Appointments,
         'active_store': active_store,
-    }
-    return render(request, 'adminsection/appointments.html', context)
+        'user_stores': user_stores,
+        'is_owner': is_owner,
+    })
 
 @staff_member_required
 def today_appointment_detail(request, pk):
