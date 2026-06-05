@@ -259,7 +259,20 @@
           </div>
 
           <hr class="form-divider">
-
+          <div class="form-group">
+            <label>Services</label>
+            <div style="display:flex; flex-wrap:wrap; gap:8px; margin-top:6px;">
+              {% for svc in services %}
+              <label style="display:flex; align-items:center; gap:5px; cursor:pointer;
+                            background:#f0f3ff; padding:6px 14px; border-radius:8px;
+                            font-size:13px; font-weight:500; color:#1f36e9;">
+                <input type="checkbox" name="services" value="{{ svc.id }}"
+                      style="accent-color:#1f36e9;">
+                {{ svc.ServiceName }} — ₹{{ svc.Cost }}
+              </label>
+              {% endfor %}
+            </div>
+          </div>
           <!-- Live preview -->
           <div class="preview-box">
             <div class="preview-item">

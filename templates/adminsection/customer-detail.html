@@ -327,6 +327,7 @@
             <tr>
               <th>#</th>
               <th>Date</th>
+              <th>Services</th>
               <th>Bill Amount</th>
               <th>Discount</th>
               <th>Final Amount</th>
@@ -339,6 +340,17 @@
               <td>{{ forloop.counter }}</td>
               <td>
                 <span class="date-chip">📅 {{ visit.VisitDate|date:"d M Y" }}</span>
+              </td>
+              <td>
+                {% for svc in visit.Services.all %}
+                  <span style="display:inline-block; background:#ede9fd; color:#4b35c4;
+                              font-size:0.78rem; font-weight:600; padding:3px 10px;
+                              border-radius:20px; margin:2px;">
+                    {{ svc.ServiceName }}
+                  </span>
+                {% empty %}
+                  <span style="color:#c0c0d8;">—</span>
+                {% endfor %}
               </td>
               <td class="amount-bill">₹{{ visit.BillAmount }}</td>
               <td>

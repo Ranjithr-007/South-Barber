@@ -342,6 +342,7 @@
               <th>#</th>
               <th>Name</th>
               <th>Phone</th>
+              <th>Top Services</th>
               <th>Total Visits</th>
               <th>Last Visit</th>
               <th>Total Spent</th>
@@ -360,6 +361,17 @@
               </td>
               <td>
                 <span class="phone-badge">{{ item.customer.PhoneNumber }}</span>
+              </td>
+              <td>
+                {% for svc in item.top_services %}
+                  <span style="display:inline-block; background:#eef0fd; color:#1f36e9;
+                              font-size:0.75rem; font-weight:600; padding:2px 10px;
+                              border-radius:20px; margin:2px;">
+                    {{ svc.ServiceName }}
+                  </span>
+                {% empty %}
+                  <span style="color:#c0c0d8;">—</span>
+                {% endfor %}
               </td>
               <td>
                 <span class="visits-pill">{{ item.customer.total_visits }}</span>

@@ -110,6 +110,11 @@ class Visit(models.Model):
         on_delete=models.CASCADE,
         related_name='visits'
     )
+    Services = models.ManyToManyField(
+    'Service',
+    blank=True,
+    related_name='visits'
+    )
     Store    = models.ForeignKey(Store, on_delete=models.SET_NULL, null=True, related_name='visits')
     VisitDate = models.DateTimeField(default=timezone.now)
     BillAmount = models.DecimalField(max_digits=10, decimal_places=2)

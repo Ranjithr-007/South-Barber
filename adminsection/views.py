@@ -16,6 +16,7 @@ from django.contrib.auth import authenticate, login
 from .forms import LoginForm
 import string
 from decimal import Decimal
+from django.db.models import Count
 import json
 
 def signin(request):
@@ -359,12 +360,11 @@ def deleteemployee(request, id):
 @staff_member_required
 def customerlist(request):
     active_store, user_stores, is_owner = get_active_store(request)
-    
-    # Get customers who have visited this store
+
     store_customer_ids = Visit.objects.filter(
         Store=active_store
     ).values_list('Customer', flat=True).distinct()
-    
+
     CustomerList = Customer.objects.filter(
         PhoneID__in=store_customer_ids
     ).order_by('-CreateDate')
@@ -373,9 +373,19 @@ def customerlist(request):
     customers_with_letters = []
     for i, customer in enumerate(CustomerList):
         letter_id = letters[i % 26]
+
+        # Most-used services for this customer (at this store)
+        top_services = (
+            Service.objects
+            .filter(visits__Customer=customer, visits__Store=active_store)
+            .annotate(visit_count=Count('visits'))
+            .order_by('-visit_count')[:3]  # top 3
+        )
+
         customers_with_letters.append({
             'customer': customer,
-            'letter_id': letter_id
+            'letter_id': letter_id,
+            'top_services': top_services,
         })
 
     return render(request, 'adminsection/customer-list.html', {
@@ -415,7 +425,7 @@ def deletecustomer(request, id):
 @staff_member_required
 def customer_detail(request, id):
     customer = get_object_or_404(Customer, PhoneID=id)
-    visits = customer.visits.order_by('-VisitDate')
+    visits = customer.visits.prefetch_related('Services').order_by('-VisitDate')
     return render(request, 'adminsection/customer-detail.html', {
         'customer': customer,
         'visits': visits,
@@ -425,19 +435,22 @@ def customer_detail(request, id):
 @staff_member_required
 def add_visit(request, id):
     customer = get_object_or_404(Customer, PhoneID=id)
-    active_store, _, _ = get_active_store(request)
+    active_store, user_stores, is_owner = get_active_store(request)
 
     if not active_store:
         messages.error(request, "No store assigned to you.")
         return redirect('dashboard')
+
+    services = Service.objects.all()  
 
     if request.method == 'POST':
         bill_amount = Decimal(request.POST.get('bill_amount', 0))
         discount_type = request.POST.get('discount_type', 'PERCENT')
         discount_value = Decimal(request.POST.get('discount_value', 0))
         note = request.POST.get('note', '')
+        selected_service_ids = request.POST.getlist('services')  # list of IDs
 
-        Visit.objects.create(
+        visit = Visit.objects.create(
             Customer=customer,
             Store=active_store,
             BillAmount=bill_amount,
@@ -445,9 +458,17 @@ def add_visit(request, id):
             DiscountValue=discount_value,
             Note=note,
         )
+        if selected_service_ids:
+            visit.Services.set(selected_service_ids)
+
         return redirect('customer_detail', id=id)
 
-    return render(request, 'adminsection/add-visit.html', {'customer': customer})
+    return render(request, 'adminsection/add-visit.html', {
+        'customer': customer,
+        'services': services,
+    })
+
+
 @staff_member_required
 def lookup_customer(request):
     """Manager enters phone number to find or create customer."""
