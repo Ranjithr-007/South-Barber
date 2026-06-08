@@ -425,10 +425,24 @@ def deletecustomer(request, id):
 @staff_member_required
 def customer_detail(request, id):
     customer = get_object_or_404(Customer, PhoneID=id)
-    visits = customer.visits.prefetch_related('Services').order_by('-VisitDate')
+    active_store, user_stores, is_owner = get_active_store(request)
+
+    visits = customer.visits.filter(Store=active_store).prefetch_related('Services').order_by('-VisitDate')
+
+    total_visits = visits.count()
+    total_spent = visits.aggregate(s=Sum('BillAmount'))['s'] or 0
+    return_visits = total_visits - 1 if total_visits > 1 else 0
+    retention_rate = round((return_visits / total_visits) * 100, 1) if total_visits > 0 else 0
+    last_visit = visits.first()
+
     return render(request, 'adminsection/customer-detail.html', {
         'customer': customer,
         'visits': visits,
+        'total_visits': total_visits,
+        'total_spent': total_spent,
+        'return_visits': return_visits,
+        'retention_rate': retention_rate,
+        'last_visit': last_visit.VisitDate if last_visit else None,
     })
 
 
@@ -441,14 +455,14 @@ def add_visit(request, id):
         messages.error(request, "No store assigned to you.")
         return redirect('dashboard')
 
-    services = Service.objects.all()  
+    services = Service.objects.all()
 
     if request.method == 'POST':
         bill_amount = Decimal(request.POST.get('bill_amount', 0))
         discount_type = request.POST.get('discount_type', 'PERCENT')
         discount_value = Decimal(request.POST.get('discount_value', 0))
         note = request.POST.get('note', '')
-        selected_service_ids = request.POST.getlist('services')  # list of IDs
+        selected_service_ids = request.POST.getlist('services')
 
         visit = Visit.objects.create(
             Customer=customer,
@@ -463,9 +477,16 @@ def add_visit(request, id):
 
         return redirect('customer_detail', id=id)
 
+    visits_qs = customer.visits.filter(Store=active_store)
+    total_visits = visits_qs.count()
+    return_visits = max(total_visits - 1, 0)
+    retention_rate = round((return_visits / total_visits) * 100, 1) if total_visits > 0 else 0
+
     return render(request, 'adminsection/add-visit.html', {
         'customer': customer,
         'services': services,
+        'total_visits': total_visits,
+        'retention_rate': retention_rate,
     })
 
 

@@ -46,6 +46,8 @@ class AddServiceForm(forms.ModelForm):
         'placeholder': 'Cost',
         'label': "Cost"
     }))
+    Note = forms.CharField( widget=forms.Textarea(attrs={'placeholder': 'Note'}))
+    
     class Meta:
 
         model=Service
@@ -53,8 +55,8 @@ class AddServiceForm(forms.ModelForm):
         fields =[
             'ServiceName',
             'Cost',
+            'Note',
         ]
-
 
 
 class CustomerVisitForm(forms.Form):

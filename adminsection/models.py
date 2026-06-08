@@ -151,6 +151,7 @@ class Service(models.Model):
     ServiceName = models.CharField(max_length=25)
     Cost = models.PositiveIntegerField()
     TimeStamp = models.DateTimeField(auto_now_add=True)
+    Note = models.TextField(blank=True)
 
     def __str__(self):
         return self.ServiceName
