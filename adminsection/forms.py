@@ -159,29 +159,72 @@ class AddCustomerForm(forms.ModelForm):
         return Note    
 
 
-class AddEmployeeForm(forms.ModelForm):
+class AddEmployeeForm(forms.Form):  
+    email = forms.EmailField(
+        widget=forms.EmailInput(attrs={'placeholder': 'e.g. john@example.com'})
+    )
+    first_name = forms.CharField(
+        widget=forms.TextInput(attrs={'placeholder': 'First name'})
+    )
+    last_name = forms.CharField(
+        required=False,
+        widget=forms.TextInput(attrs={'placeholder': 'Last name'})
+    )
+    JoiningDate = forms.DateField(
+        widget=forms.DateInput(attrs={'type': 'date'})
+    )
+    Salary = forms.DecimalField(
+        widget=forms.NumberInput(attrs={'placeholder': 'e.g. 25000', 'step': '0.01'})
+    )
+    Gender = forms.ChoiceField(
+        choices=[('0', 'Male'), ('1', 'Female')],
+        widget=forms.RadioSelect
+    )
+    Note = forms.CharField(
+        required=False,
+        widget=forms.Textarea(attrs={
+            'placeholder': 'e.g. Hair Stylist, specialises in fades...',
+            'rows': 4
+        })
+    )
 
-    Name = forms.CharField(widget=forms.TextInput(attrs={'placeholder': 'Name'}))
-    Email = forms.CharField(widget=forms.TextInput(attrs={'placeholder': 'Email'}))
-    PhoneNumber = forms.CharField(widget=forms.TextInput(attrs={'placeholder': 'Phone Number'}))
-    Note = forms.CharField(widget=forms.Textarea(attrs={'placeholder': 'Note'}))
-    JoiningDate = forms.DateField(widget=forms.DateInput(attrs={'placeholder': 'YYYY-MM-DD', 'type': 'date'}))
-    Salary = forms.DecimalField(widget=forms.NumberInput(attrs={'placeholder': 'Salary'}))  # Add this
-
-    class Meta:
-        model = Employee
-        fields = [
-            'JoiningDate',
-            'Salary',
-            'Note'
-        ]
-
-    def clean_Note(self):
+    def clean_email(self):
+        email = self.cleaned_data.get('email', '').strip().lower()
+        if not email:
+            raise forms.ValidationError("Email is required.")
+        if User.objects.filter(email__iexact=email).exists():
+            raise forms.ValidationError("A user with this email already exists.")
+        return email
+        
+    def clean_details(self):
         Note = self.cleaned_data.get('Note')
         if not Note:
             raise forms.ValidationError("Note required")
-        return Note
+        return Note 
 
+
+class EditUserForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ['username', 'email', 'first_name', 'last_name']
+        widgets = {
+            'username': forms.TextInput(attrs={'placeholder': 'e.g. john_doe'}),
+            'email': forms.EmailInput(attrs={'placeholder': 'e.g. john@example.com'}),
+            'first_name': forms.TextInput(attrs={'placeholder': 'First name'}),
+            'last_name': forms.TextInput(attrs={'placeholder': 'Last name'}),
+        }
+
+class EditEmployeeForm(forms.ModelForm):
+    class Meta:
+        model = Employee
+        fields = ['EmployeeID', 'JoiningDate', 'Salary', 'Store', 'IsActive', 'Note']
+        widgets = {
+            'JoiningDate': forms.DateInput(attrs={'type': 'date'}),
+            'Note': forms.Textarea(attrs={'placeholder': 'Any additional notes...', 'rows': 4}),
+            'EmployeeID': forms.TextInput(attrs={'placeholder': 'e.g. EMP-001'}),
+            'Salary': forms.NumberInput(attrs={'placeholder': 'e.g. 25000', 'step': '0.01'}),
+        }
+ 
 
 class AppointmentUpdateForm(forms.ModelForm):
 

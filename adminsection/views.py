@@ -17,6 +17,7 @@ from .forms import LoginForm
 import string
 from decimal import Decimal
 from django.db.models import Count
+from django.db import IntegrityError
 import json
 
 def signin(request):
@@ -288,26 +289,29 @@ def addcustomer(request):
 @staff_member_required
 def addemployee(request):
     active_store, user_stores, is_owner = get_active_store(request)
-
     form = AddEmployeeForm(request.POST or None)
 
-    if request.method == 'POST':
-        if form.is_valid():
-            email = form.cleaned_data['Email']
-            if User.objects.filter(username=email).exists():
-                form.add_error('Email', 'An employee with this email already exists.')
-            else:
-                employee = form.save(commit=False)
-                user = User.objects.create_user(
-                    username=email,
-                    email=email,
-                    first_name=form.cleaned_data['Name'],
-                )
-                employee.User = user
-                employee.EmployeeID = 'EMP' + str(User.objects.count()).zfill(4)
-                employee.Store = active_store
-                employee.save()
-                return redirect('employeelist')
+    if request.method == 'POST' and form.is_valid():
+        try:
+            user = User.objects.create_user(
+                username=form.cleaned_data['email'],
+                email=form.cleaned_data['email'],
+                first_name=form.cleaned_data['first_name'],
+                last_name=form.cleaned_data.get('last_name', ''),
+            )
+            Employee.objects.create(
+                User=user,
+                EmployeeID='EMP' + str(User.objects.count()).zfill(4),
+                JoiningDate=form.cleaned_data['JoiningDate'],
+                Salary=form.cleaned_data['Salary'],
+                Gender=form.cleaned_data['Gender'],
+                Note=form.cleaned_data.get('Note', ''),
+                Store=active_store,
+            )
+            return redirect('employeelist')
+
+        except IntegrityError:
+            form.add_error('email', 'A user with this email already exists.')
 
     return render(request, 'adminsection/add-employee.html', {
         'form': form,
@@ -329,31 +333,35 @@ def employeelist(request):
         'is_owner': is_owner,
     })
 
+
 @staff_member_required
 def editemployee(request, id):
-    """
-        Edit customer details.
-    """ 
-
-    customer = get_object_or_404(Customer, id=id)
-    form = AddCustomerForm(request.POST or None, instance=customer)
+    employee = get_object_or_404(Employee, id=id)
 
     if request.method == 'POST':
-        if form.is_valid():
-            form.save()
-            print(form)
+        user_form = EditUserForm(request.POST, instance=employee.User)
+        employee_form = EditEmployeeForm(request.POST, instance=employee)
+
+        if user_form.is_valid() and employee_form.is_valid():
+            user_form.save()
+            employee_form.save()
             return redirect('employeelist')
+    else:
+        user_form = EditUserForm(instance=employee.User)
+        employee_form = EditEmployeeForm(instance=employee)
 
     context = {
-        'form': form
+        'user_form': user_form,
+        'employee_form': employee_form,
+        'employee': employee,
     }
     return render(request, 'adminsection/edit-employee-detailed.html', context)
 
 
 @staff_member_required
 def deleteemployee(request, id):
-    customer = get_object_or_404(Customer, id=id)
-    customer.delete()
+    employee = get_object_or_404(Employee, id=id)
+    employee.delete()
     return redirect('employeelist')
 
 

@@ -1,21 +1,417 @@
 {% extends 'adminsection/base.html' %}
 {% load static %}
 {% block content %}
-<!-- //header-ends -->
-<!-- main content start-->
+
+<style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --blue:        #1f36e9;
+      --blue-dark:   #1629c4;
+      --blue-deeper: #0f1d8a;
+      --blue-light:  #eceffe;
+      --blue-mid:    #c5ccfb;
+      --text-main:   #0d1117;
+      --text-muted:  #5b6477;
+      --text-hint:   #9ba5b8;
+      --bg-page:     #f0f2ff;
+      --bg-card:     #ffffff;
+      --bg-input:    #f7f8fe;
+      --border:      #dde1f7;
+      --border-focus:#1f36e9;
+    }
+
+    body { display: block !important; padding: 0 !important; }
+
+    #page-wrapper {
+      max-width: 720px;
+      margin: 3rem auto 4rem auto;
+      padding: 0 1rem;
+    }
+
+    .page-label {
+      font-size: 11px; font-weight: 600;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--blue); margin-bottom: 8px;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .page-label::before {
+      content: ''; display: inline-block;
+      width: 6px; height: 6px;
+      border-radius: 50%; background: var(--blue);
+    }
+
+    .page-title {
+      font-size: 28px; font-weight: 700;
+      color: var(--text-main); margin-bottom: 1.75rem; line-height: 1.2;
+    }
+    .page-title span { color: var(--blue); }
+
+    /* ── Card ── */
+    .form-card {
+      background: var(--bg-card);
+      border-radius: 16px; border: 1px solid var(--border);
+      overflow: hidden; box-shadow: 0 4px 32px rgba(31,54,233,0.08);
+    }
+    .card-accent {
+      height: 4px;
+      background: linear-gradient(90deg, var(--blue-deeper), var(--blue), #6b80f5);
+    }
+
+    /* ── Card header ── */
+    .card-header {
+      padding: 1.5rem 2rem; border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; gap: 14px;
+      background: var(--blue-light);
+    }
+    .header-icon {
+      width: 44px; height: 44px; border-radius: 10px;
+      background: var(--blue);
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .header-icon svg {
+      width: 20px; height: 20px; fill: none; stroke: #fff;
+      stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round;
+    }
+    .header-text h4 { font-size: 16px; font-weight: 600; color: var(--text-main); }
+    .header-text p  { font-size: 12.5px; color: var(--text-muted); margin-top: 2px; }
+
+    /* ── Card body ── */
+    .card-body {
+      padding: 2rem; display: flex; flex-direction: column; gap: 1.5rem;
+    }
+
+    /* ── Section label ── */
+    .section-label {
+      font-size: 11px; font-weight: 700;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--blue); display: flex; align-items: center; gap: 8px;
+      margin-bottom: 1rem;
+    }
+    .section-label::after { content: ''; flex: 1; height: 1px; background: var(--blue-mid); }
+
+    .divider { height: 1px; background: var(--border); }
+
+    /* ── Grid rows ── */
+    .field-row {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;
+    }
+    .field-row-3 {
+      display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem;
+    }
+
+    /* ── Field group ── */
+    .field-group { display: flex; flex-direction: column; gap: 6px; }
+
+    .field-group label {
+      font-size: 11.5px; font-weight: 600;
+      letter-spacing: 0.07em; text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    .field-group input[type="text"],
+    .field-group input[type="tel"],
+    .field-group input[type="email"],
+    .field-group input[type="number"],
+    .field-group input[type="date"],
+    .field-group input[type="password"],
+    .field-group select,
+    .field-group textarea {
+      background: var(--bg-input); border: 1px solid var(--border);
+      border-radius: 8px; padding: 10px 13px;
+      font-size: 14px; font-family: 'Plus Jakarta Sans', sans-serif;
+      color: var(--text-main); outline: none;
+      transition: border-color 0.15s, box-shadow 0.15s, background 0.15s;
+      width: 100%; appearance: none; -webkit-appearance: none;
+    }
+    .field-group input:hover,
+    .field-group select:hover,
+    .field-group textarea:hover { border-color: var(--blue-mid); }
+    .field-group input:focus,
+    .field-group select:focus,
+    .field-group textarea:focus {
+      border-color: var(--border-focus); background: #fff;
+      box-shadow: 0 0 0 3px rgba(31,54,233,0.12);
+    }
+    .field-group input::placeholder,
+    .field-group textarea::placeholder { color: var(--text-hint); }
+    .field-group textarea { resize: vertical; min-height: 100px; line-height: 1.6; }
+
+    /* ── Toggle (IsActive) ── */
+    .toggle-group {
+      display: flex; flex-direction: column; gap: 6px;
+    }
+    .toggle-group > label {
+      font-size: 11.5px; font-weight: 600;
+      letter-spacing: 0.07em; text-transform: uppercase;
+      color: var(--text-muted);
+    }
+    .toggle-row {
+      display: flex; align-items: center; gap: 12px;
+      background: var(--bg-input); border: 1px solid var(--border);
+      border-radius: 8px; padding: 10px 13px;
+      transition: border-color 0.15s;
+    }
+    .toggle-row:hover { border-color: var(--blue-mid); }
+
+    .toggle-switch {
+      position: relative; width: 40px; height: 22px; flex-shrink: 0;
+    }
+    .toggle-switch input { opacity: 0; width: 0; height: 0; }
+    .toggle-slider {
+      position: absolute; inset: 0; cursor: pointer;
+      background: #d1d5e0; border-radius: 22px;
+      transition: background 0.2s;
+    }
+    .toggle-slider::before {
+      content: ''; position: absolute;
+      width: 16px; height: 16px; border-radius: 50%;
+      background: white; left: 3px; top: 3px;
+      transition: transform 0.2s;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    }
+    .toggle-switch input:checked + .toggle-slider { background: var(--blue); }
+    .toggle-switch input:checked + .toggle-slider::before { transform: translateX(18px); }
+
+    .toggle-text { font-size: 14px; color: var(--text-main); }
+    .toggle-text span { font-size: 12px; color: var(--text-muted); margin-left: 4px; }
+
+    /* ── Error ── */
+    .field-error { color: #e03a3a; font-size: 12px; margin-top: 4px; }
+
+    /* ── Card footer ── */
+    .card-footer {
+      padding: 1.25rem 2rem; border-top: 1px solid var(--border);
+      display: flex; align-items: center;
+      justify-content: space-between; gap: 1rem;
+      background: var(--blue-light);
+    }
+    .footer-note { font-size: 12px; color: var(--text-muted); }
+    .footer-note strong { color: var(--blue); }
+    .btn-group { display: flex; gap: 10px; }
+
+    .btn-submit {
+      background: var(--blue); color: #fff;
+      border: none; border-radius: 8px; padding: 11px 32px;
+      font-size: 14px; font-weight: 600;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      cursor: pointer; letter-spacing: 0.02em;
+      transition: background 0.15s, transform 0.1s;
+    }
+    .btn-submit:hover { background: var(--blue-dark); }
+    .btn-submit:active { transform: scale(0.98); }
+
+    .btn-secondary {
+      background: transparent; color: var(--text-muted);
+      border: 1px solid var(--border); border-radius: 8px;
+      padding: 10px 20px; font-size: 13px; font-weight: 500;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      cursor: pointer; text-decoration: none;
+      display: inline-flex; align-items: center; gap: 6px;
+      transition: border-color 0.15s, color 0.15s;
+    }
+    .btn-secondary:hover { border-color: var(--blue-mid); color: var(--blue); }
+
+    @media (max-width: 560px) {
+      .field-row, .field-row-3 { grid-template-columns: 1fr; }
+      .card-body { padding: 1.25rem; }
+      .card-header { padding: 1.25rem; }
+      .card-footer { padding: 1rem 1.25rem; flex-direction: column; align-items: stretch; }
+      .btn-group { flex-direction: column; }
+    }
+</style>
+
 <div id="page-wrapper">
-	<div class="main-page">
-		<div class="forms">
-			<h3 class="title1">Update Services</h3>
-			<div class="form-grids row widget-shadow" data-example-id="basic-forms">
-				<div class="form-title">
-					<h4>Update Parlour Services:</h4>
-				</div>
-				<div class="form-body">
-					{% include 'adminsection/edit-form.html' with form=form %}	
-				</div>
-			</div>
-		</div>
-	</div>
+  <p class="page-label">South Barber Admin</p>
+  <h1 class="page-title">Edit <span>Employee</span></h1>
+
+  <div class="form-card">
+    <div class="card-accent"></div>
+
+    <!-- Header -->
+    <div class="card-header">
+      <div class="header-icon">
+        <svg viewBox="0 0 24 24">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+          <circle cx="12" cy="7" r="4"/>
+        </svg>
+      </div>
+      <div class="header-text">
+        <h4>Update Employee Details</h4>
+        <p>Edit profile, employment info, and status for this employee</p>
+      </div>
+    </div>
+
+    <div class="card-body">
+      <form action="" method="POST" id="employeeForm">
+        {% csrf_token %}
+
+        <!-- ── Section 1: Account Info ── -->
+        <p class="section-label">Account Info</p>
+
+        <div class="field-row">
+          {% for field in user_form %}
+            {% if field.name == 'username' %}
+            <div class="field-group">
+              <label for="id_username">Username</label>
+              <input type="text" name="username" id="id_username"
+                placeholder="e.g. john_doe"
+                value="{{ field.value|default:'' }}"
+                {% if field.field.required %}required{% endif %}>
+              {% for error in field.errors %}<div class="field-error">{{ error }}</div>{% endfor %}
+            </div>
+            {% endif %}
+            {% if field.name == 'email' %}
+            <div class="field-group">
+              <label for="id_email">Email Address</label>
+              <input type="email" name="email" id="id_email"
+                placeholder="e.g. john@example.com"
+                value="{{ field.value|default:'' }}"
+                {% if field.field.required %}required{% endif %}>
+              {% for error in field.errors %}<div class="field-error">{{ error }}</div>{% endfor %}
+            </div>
+            {% endif %}
+          {% endfor %}
+        </div>
+
+        <div class="field-row">
+          {% for field in user_form %}
+            {% if field.name == 'first_name' %}
+            <div class="field-group">
+              <label for="id_first_name">First Name</label>
+              <input type="text" name="first_name" id="id_first_name"
+                placeholder="First name"
+                value="{{ field.value|default:'' }}">
+              {% for error in field.errors %}<div class="field-error">{{ error }}</div>{% endfor %}
+            </div>
+            {% endif %}
+            {% if field.name == 'last_name' %}
+            <div class="field-group">
+              <label for="id_last_name">Last Name</label>
+              <input type="text" name="last_name" id="id_last_name"
+                placeholder="Last name"
+                value="{{ field.value|default:'' }}">
+              {% for error in field.errors %}<div class="field-error">{{ error }}</div>{% endfor %}
+            </div>
+            {% endif %}
+          {% endfor %}
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- ── Section 2: Employment Info ── -->
+        <p class="section-label" style="margin-top:1.25rem;">Employment Info</p>
+
+        <div class="field-row-3">
+          {% for field in employee_form %}
+            {% if field.name == 'EmployeeID' %}
+            <div class="field-group">
+              <label for="id_EmployeeID">Employee ID</label>
+              <input type="text" name="EmployeeID" id="id_EmployeeID"
+                placeholder="e.g. EMP-001"
+                value="{{ field.value|default:'' }}"
+                {% if field.field.required %}required{% endif %}>
+              {% for error in field.errors %}<div class="field-error">{{ error }}</div>{% endfor %}
+            </div>
+            {% endif %}
+            {% if field.name == 'JoiningDate' %}
+            <div class="field-group">
+              <label for="id_JoiningDate">Joining Date</label>
+              <input type="date" name="JoiningDate" id="id_JoiningDate"
+                value="{{ field.value|default:'' }}"
+                {% if field.field.required %}required{% endif %}>
+              {% for error in field.errors %}<div class="field-error">{{ error }}</div>{% endfor %}
+            </div>
+            {% endif %}
+            {% if field.name == 'Salary' %}
+            <div class="field-group">
+              <label for="id_Salary">Salary (₹)</label>
+              <input type="number" name="Salary" id="id_Salary"
+                placeholder="e.g. 25000"
+                value="{{ field.value|default:'' }}"
+                step="0.01"
+                {% if field.field.required %}required{% endif %}>
+              {% for error in field.errors %}<div class="field-error">{{ error }}</div>{% endfor %}
+            </div>
+            {% endif %}
+          {% endfor %}
+        </div>
+
+        {% for field in employee_form %}
+          {% if field.name == 'Store' %}
+          <div class="field-group">
+            <label for="id_Store">Assigned Store</label>
+            {{ field }}
+            {% for error in field.errors %}<div class="field-error">{{ error }}</div>{% endfor %}
+          </div>
+          {% endif %}
+        {% endfor %}
+
+        <div class="divider"></div>
+
+        <!-- ── Section 3: Status & Notes ── -->
+        <p class="section-label" style="margin-top:1.25rem;">Status & Notes</p>
+
+        {% for field in employee_form %}
+          {% if field.name == 'IsActive' %}
+          <div class="toggle-group">
+            <label>Employment Status</label>
+            <div class="toggle-row">
+              <label class="toggle-switch">
+                <input type="checkbox" name="IsActive" id="id_IsActive"
+                  {% if field.value %}checked{% endif %}>
+                <span class="toggle-slider"></span>
+              </label>
+              <span class="toggle-text">
+                Active Employee
+                <span id="activeLabel">{{ field.value|yesno:"Currently active,Currently inactive" }}</span>
+              </span>
+            </div>
+            {% for error in field.errors %}<div class="field-error">{{ error }}</div>{% endfor %}
+          </div>
+          {% endif %}
+        {% endfor %}
+
+        {% for field in employee_form %}
+          {% if field.name == 'Note' %}
+          <div class="field-group">
+            <label for="id_Note">Notes</label>
+            <textarea name="Note" id="id_Note" rows="4"
+              placeholder="Any additional notes about this employee...">{{ field.value|default:'' }}</textarea>
+            {% for error in field.errors %}<div class="field-error">{{ error }}</div>{% endfor %}
+          </div>
+          {% endif %}
+        {% endfor %}
+
+      </form>
+    </div>
+
+    <!-- Footer -->
+    <div class="card-footer">
+      <span class="footer-note">Editing employee in <strong>South Barber</strong></span>
+      <div class="btn-group">
+        <a href="{% url 'employeelist' %}" class="btn-secondary">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="15 18 9 12 15 6"/>
+          </svg>
+          Cancel
+        </a>
+        <button type="submit" class="btn-submit" form="employeeForm">Update Employee</button>
+      </div>
+    </div>
+  </div>
 </div>
+
+<script>
+  // Live toggle label update
+  const toggle = document.getElementById('id_IsActive');
+  const label  = document.getElementById('activeLabel');
+  if (toggle && label) {
+    toggle.addEventListener('change', function() {
+      label.textContent = this.checked ? 'Currently active' : 'Currently inactive';
+    });
+  }
+</script>
+
 {% endblock %}

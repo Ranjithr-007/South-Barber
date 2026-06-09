@@ -36,10 +36,16 @@ class User(AbstractUser):
         return self.username
 
 class Employee(models.Model):
+    GENDER_CHOICES = (
+        ('M', 'Male'),
+        ('F', 'Female'),
+        ('O', 'Other'),
+    )
     User = models.OneToOneField(User, on_delete=models.CASCADE)
     EmployeeID = models.CharField(max_length=20, unique=True)
     JoiningDate = models.DateField()
     Salary = models.DecimalField(max_digits=10, decimal_places=2)
+    Gender = models.CharField(max_length=1, choices=GENDER_CHOICES, blank=True)
     Store = models.ForeignKey(Store, on_delete=models.SET_NULL, null=True, blank=True)
     IsActive = models.BooleanField(default=True)
     Note = models.TextField(blank=True)
