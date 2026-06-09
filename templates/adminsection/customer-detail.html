@@ -266,118 +266,114 @@
   }
 </style>
 
-<div id="page-wrapper">
-  <div class="main-page">
-    <div class="detail-wrapper">
+<div class="detail-wrapper">
 
-      <!-- Profile Card -->
-      <div class="profile-card">
-        <div class="profile-top">
-          <div class="avatar">{{ customer.Name|slice:":2"|upper }}</div>
-          <div>
-            <p class="profile-name">{{ customer.Name }}</p>
-            <div class="profile-meta">
-              <span>📞 {{ customer.PhoneNumber }}</span>
-              {% if customer.Note %}<span>📝 {{ customer.Note }}</span>{% endif %}
-              <span>Member since {{ customer.CreateDate|date:"d M Y" }}</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Stats -->
-        <div class="stats-grid">
-          <div class="stat-card purple">
-            <div class="stat-value">{{ customer.total_visits }}</div>
-            <div class="stat-label">Total Visits</div>
-          </div>
-          <div class="stat-card green">
-            <div class="stat-value">{{ customer.return_visits }}</div>
-            <div class="stat-label">Return Visits</div>
-          </div>
-          <div class="stat-card blue">
-            <div class="stat-value">{{ customer.retention_rate }}%</div>
-            <div class="stat-label">Retention</div>
-          </div>
-          <div class="stat-card amber">
-            <div class="stat-value">₹{{ customer.total_spent }}</div>
-            <div class="stat-label">Total Spent</div>
-          </div>
-          <div class="stat-card gray">
-            <div class="stat-value" style="font-size:1rem;">
-              {% if customer.last_visit %}{{ customer.last_visit|date:"d M Y" }}{% else %}—{% endif %}
-            </div>
-            <div class="stat-label">Last Visit</div>
-          </div>
-        </div>
-
-        <!-- Actions -->
-        <div class="profile-actions">
-          <a href="{% url 'editcustomer' customer.PhoneID %}" class="btn-action btn-primary-custom">✏️ Edit Customer</a>
-          <a href="{% url 'customerlist' %}" class="btn-action btn-secondary-custom">← Back to List</a>
+  <!-- Profile Card -->
+  <div class="profile-card">
+    <div class="profile-top">
+      <div class="avatar">{{ customer.Name|slice:":2"|upper }}</div>
+      <div>
+        <p class="profile-name">{{ customer.Name }}</p>
+        <div class="profile-meta">
+          <span>📞 {{ customer.PhoneNumber }}</span>
+          {% if customer.Note %}<span>📝 {{ customer.Note }}</span>{% endif %}
+          <span>Member since {{ customer.CreateDate|date:"d M Y" }}</span>
         </div>
       </div>
+    </div>
 
-      <!-- Visit History -->
-      <div class="section-header">
-        <h2 class="section-title">Visit History</h2>
-        <a href="{% url 'add_visit' customer.PhoneID %}" class="btn-add-visit">＋ Add Visit</a>
+    <!-- Stats -->
+    <div class="stats-grid">
+      <div class="stat-card purple">
+        <div class="stat-value">{{ customer.total_visits }}</div>
+        <div class="stat-label">Total Visits</div>
       </div>
-
-      <div class="visits-card">
-        <table class="visits-table">
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>Date</th>
-              <th>Services</th>
-              <th>Bill Amount</th>
-              <th>Discount</th>
-              <th>Final Amount</th>
-              <th>Note</th>
-            </tr>
-          </thead>
-          <tbody>
-            {% for visit in visits %}
-            <tr>
-              <td>{{ forloop.counter }}</td>
-              <td>
-                <span class="date-chip">📅 {{ visit.VisitDate|date:"d M Y" }}</span>
-              </td>
-              <td>
-                {% for svc in visit.Services.all %}
-                  <span style="display:inline-block; background:#ede9fd; color:#4b35c4;
-                              font-size:0.78rem; font-weight:600; padding:3px 10px;
-                              border-radius:20px; margin:2px;">
-                    {{ svc.ServiceName }}
-                  </span>
-                {% empty %}
-                  <span style="color:#c0c0d8;">—</span>
-                {% endfor %}
-              </td>
-              <td class="amount-bill">₹{{ visit.BillAmount }}</td>
-              <td>
-                {% if visit.DiscountType == 'PERCENT' %}
-                  <span class="discount-badge">{{ visit.DiscountValue }}% · ₹{{ visit.discount_amount }}</span>
-                {% elif visit.DiscountValue %}
-                  <span class="discount-badge">₹{{ visit.DiscountValue }}</span>
-                {% else %}
-                  <span style="color:#c0c0d8;">—</span>
-                {% endif %}
-              </td>
-              <td class="amount-final">₹{{ visit.final_amount }}</td>
-              <td class="note-text">{{ visit.Note|default:"—" }}</td>
-            </tr>
-            {% empty %}
-            <tr>
-              <td colspan="6" class="empty-state">No visits recorded yet. Add the first visit above.</td>
-            </tr>
-            {% endfor %}
-          </tbody>
-        </table>
+      <div class="stat-card green">
+        <div class="stat-value">{{ customer.return_visits }}</div>
+        <div class="stat-label">Return Visits</div>
       </div>
+      <div class="stat-card blue">
+        <div class="stat-value">{{ customer.retention_rate }}%</div>
+        <div class="stat-label">Retention</div>
+      </div>
+      <div class="stat-card amber">
+        <div class="stat-value">₹{{ customer.total_spent }}</div>
+        <div class="stat-label">Total Spent</div>
+      </div>
+      <div class="stat-card gray">
+        <div class="stat-value" style="font-size:1rem;">
+          {% if customer.last_visit %}{{ customer.last_visit|date:"d M Y" }}{% else %}—{% endif %}
+        </div>
+        <div class="stat-label">Last Visit</div>
+      </div>
+    </div>
 
+    <!-- Actions -->
+    <div class="profile-actions">
+      <a href="{% url 'editcustomer' customer.PhoneID %}" class="btn-action btn-primary-custom">✏️ Edit Customer</a>
+      <a href="{% url 'customerlist' %}" class="btn-action btn-secondary-custom">← Back to List</a>
     </div>
   </div>
+
+  <!-- Visit History -->
+  <div class="section-header">
+    <h2 class="section-title">Visit History</h2>
+    <a href="{% url 'add_visit' customer.PhoneID %}" class="btn-add-visit">＋ Add Visit</a>
+  </div>
+
+  <div class="visits-card">
+    <table class="visits-table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Date</th>
+          <th>Services</th>
+          <th>Bill Amount</th>
+          <th>Discount</th>
+          <th>Final Amount</th>
+          <th>Note</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for visit in visits %}
+        <tr>
+          <td>{{ forloop.counter }}</td>
+          <td>
+            <span class="date-chip">📅 {{ visit.VisitDate|date:"d M Y" }}</span>
+          </td>
+          <td>
+            {% for svc in visit.Services.all %}
+              <span style="display:inline-block; background:#ede9fd; color:#4b35c4;
+                          font-size:0.78rem; font-weight:600; padding:3px 10px;
+                          border-radius:20px; margin:2px;">
+                {{ svc.ServiceName }}
+              </span>
+            {% empty %}
+              <span style="color:#c0c0d8;">—</span>
+            {% endfor %}
+          </td>
+          <td class="amount-bill">₹{{ visit.BillAmount }}</td>
+          <td>
+            {% if visit.DiscountType == 'PERCENT' %}
+              <span class="discount-badge">{{ visit.DiscountValue }}% · ₹{{ visit.discount_amount }}</span>
+            {% elif visit.DiscountValue %}
+              <span class="discount-badge">₹{{ visit.DiscountValue }}</span>
+            {% else %}
+              <span style="color:#c0c0d8;">—</span>
+            {% endif %}
+          </td>
+          <td class="amount-final">₹{{ visit.final_amount }}</td>
+          <td class="note-text">{{ visit.Note|default:"—" }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="7" class="empty-state">No visits recorded yet. Add the first visit above.</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
 </div>
 
 {% endblock %}
