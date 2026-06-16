@@ -89,10 +89,14 @@ DATABASES = {
 }
 
 
-database_url = os.environ.get("DATABASE_URL", "")
-print("DATABASE_URL =", repr(database_url)) 
+database_url = os.environ.get("DATABASE_URL")
+
+if not database_url:
+    raise ValueError("DATABASE_URL environment variable is not set")
+
 database_url = database_url.replace("postgres://", "postgresql://", 1)
 DATABASES["default"] = dj_database_url.parse(database_url)
+
 
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
