@@ -10,6 +10,8 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
+import dj_database_url
+
 import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -87,17 +89,7 @@ DATABASES = {
     }
 }
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': 'dbparlour',                      
-#         'USER': 'postgres',
-#         'PASSWORD': '1234',
-#         'HOST': 'localhost',
-#         'PORT': '',
-#     }
-# }
-
+DATABASES["default"] = dj_database_url.parse("postgresql://southbarber_user:cm0JWXZZsUYXUb55Ugiuwoi2vuh0qTGn@dpg-d8o0u6c8aovs739lftn0-a.oregon-postgres.render.com/southbarber")
 
 
 # Password validation
