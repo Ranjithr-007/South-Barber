@@ -318,23 +318,81 @@
     color: #8890b5;
     font-size: 0.875rem;
   }
+  .phone-lookup-bar {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: #fff;
+  border: 2px solid #dde2f8;
+  border-radius: 10px;
+  padding: 9px 14px;
+  text-decoration: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  min-width: 260px;
+  box-shadow: 0 1px 4px rgba(31,54,233,0.07);
+  cursor: pointer;
+}
+
+.phone-lookup-bar:hover {
+  border-color: #1f36e9;
+  box-shadow: 0 0 0 3px rgba(31,54,233,0.1);
+  text-decoration: none;
+}
+
+.lookup-icon {
+  color: #8890b5;
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.phone-lookup-bar:hover .lookup-icon {
+  color: #1f36e9;
+}
+
+.lookup-text {
+  flex: 1;
+  font-size: 0.85rem;
+  color: #aab0cc;
+  font-weight: 400;
+  letter-spacing: 0.01em;
+}
+
+.lookup-kbd {
+  background: #eef0fd;
+  color: #1f36e9;
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 6px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  flex-shrink: 0;
+}
 </style>
 
     <div class="customers-wrapper">
 
       <div class="customers-header">
-        <h3>Manage Customers</h3>
-        <a href="{% url 'addcustomer' %}" class="btn-add-customer">
-          ＋ Add Customer
-        </a>
-      </div>
+      <h3>Manage Customers</h3>
 
-      <div class="customers-table-card">
+      <!-- Phone Lookup Search Bar -->
+      <a href="{% url 'phone_lookup' %}" class="phone-lookup-bar">
+        <span class="lookup-icon">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2.5"
+              stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+          </svg>
+        </span>
+        <span class="lookup-text">Search by phone number...</span>
+        <span class="lookup-kbd">Lookup</span>
+      </a>
 
-        <div class="customers-card-top">
-          <span>All Customers</span>
-          <span class="count-badge">{{ customers_with_letters|length }} total</span>
-        </div>
+      <a href="{% url 'addcustomer' %}" class="btn-add-customer">
+        ＋ Add Customer
+      </a>
+    </div>
 
         <table class="customers-table">
           <thead>

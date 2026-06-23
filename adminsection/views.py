@@ -18,6 +18,7 @@ import string
 from decimal import Decimal
 from django.db.models import Count
 from django.db import IntegrityError
+from django.http import JsonResponse
 import json
 
 def signin(request):
@@ -211,6 +212,33 @@ def switch_store(request, store_id):
     return redirect(next_url)
 
 
+@staff_member_required
+def check_customer_by_phone(request):
+    phone = request.GET.get('phone', '').strip()
+    if not phone:
+        return JsonResponse({'found': False})
+
+    try:
+        customer = Customer.objects.get(PhoneNumber=phone)
+        active_store, _, _ = get_active_store(request)
+        visit_count = customer.visits.filter(Store=active_store).count()
+        return JsonResponse({
+            'found': True,
+            'name': customer.Name,
+            'phone_id': str(customer.PhoneID),
+            'detail_url': reverse('customer_detail', args=[str(customer.PhoneID)]),
+            'add_visit_url': reverse('add_visit', args=[str(customer.PhoneID)]),
+            'visit_count': visit_count,
+            'is_returning': visit_count >= 1,
+        })
+    except Customer.DoesNotExist:
+        return JsonResponse({'found': False})
+
+@staff_member_required
+def phone_lookup_page(request):
+    return render(request, 'adminsection/phone-lookup.html')
+
+    
 @staff_member_required
 def addservice(request):
     """

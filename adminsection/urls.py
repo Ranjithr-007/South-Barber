@@ -7,13 +7,15 @@ urlpatterns = [
     path('', views.dashboard, name='dashboard'),
     path('signin/', views.signin, name='signin'),
     path('switch-store/<int:store_id>/', views.switch_store, name='switch_store'),
+    path('customers/check-phone/', views.check_customer_by_phone, name='check_customer_phone'),
+    path('customers/lookup/', views.phone_lookup_page, name='phone_lookup'),
 
-    
     path('service/', views.addservice, name='addservices'),
     path('manageservices/', views.manageservices, name='manageservices'),
     path('updateservice/<int:id>/', views.updateservice, name='updateservice'),
     path('delete-service/<int:service_id>/', views.delete_service, name='delete_service'),
     
+
     path('addemployee/', views.addemployee, name='addemployee'),
     path('employeelist/', views.employeelist, name='employeelist'),
     path('editemployee/<int:id>/', views.editemployee, name='editemployee'),
