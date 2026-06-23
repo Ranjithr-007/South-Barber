@@ -206,6 +206,70 @@
     transition: background 0.15s;
   }
   .btn-cancel:hover { background: #e4e4f0; color: #44446a; text-decoration: none; }
+
+  .svc-selector { position: relative; }
+  .svc-search-wrap { position: relative; }
+  .svc-search-wrap i.search-icon {
+    position: absolute; left: 12px; top: 50%;
+    transform: translateY(-50%);
+    font-size: 16px; color: #8888aa; pointer-events: none;
+  }
+  .svc-search {
+    width: 100%; padding: 10px 14px 10px 36px;
+    font-size: 14px; color: #1a1a2e;
+    background: #fafaff; border: 1px solid #e0e0ee;
+    border-radius: 8px; outline: none; box-sizing: border-box;
+  }
+  .svc-search:focus {
+    border-color: #4b35c4;
+    box-shadow: 0 0 0 3px rgba(75,53,196,0.1);
+    background: #fff;
+  }
+  .svc-dropdown {
+    position: absolute; top: calc(100% + 4px); left: 0; right: 0;
+    background: #fff; border: 1px solid #e0e0ee;
+    border-radius: 8px; max-height: 220px;
+    overflow-y: auto; z-index: 200; display: none;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+  }
+  .svc-dropdown.open { display: block; }
+  .svc-opt {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 10px 14px; cursor: pointer;
+    font-size: 14px; color: #1a1a2e;
+  }
+  .svc-opt:hover { background: #f5f5fb; }
+  .svc-opt.selected { background: #eeeaff; }
+  .svc-opt-left { display: flex; align-items: center; gap: 10px; }
+  .svc-check {
+    width: 16px; height: 16px; border-radius: 4px;
+    border: 1.5px solid #bbb; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .svc-opt.selected .svc-check {
+    background: #4b35c4; border-color: #4b35c4;
+  }
+  .svc-opt.selected .svc-check::after {
+    content: '✓'; color: #fff; font-size: 11px; line-height: 1;
+  }
+  .svc-opt-price { font-size: 13px; color: #4b35c4; font-weight: 600; }
+  .svc-empty { padding: 12px 14px; font-size: 13px; color: #8888aa; text-align: center; }
+
+  .svc-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+  .svc-tag {
+    display: inline-flex; align-items: center; gap: 5px;
+    background: #ede9fd; border-radius: 6px;
+    padding: 5px 10px; font-size: 12px;
+    color: #2e1fa8; font-weight: 600;
+  }
+  .svc-tag button {
+    background: none; border: none; cursor: pointer;
+    color: #7060c0; font-size: 15px; line-height: 1; padding: 0;
+  }
+  .svc-tag button:hover { color: #c04040; }
+  .svc-hint {
+    font-size: 12px; color: #8888aa; margin-top: 6px; display: none;
+  }
 </style>
 
 <div id="page-wrapper">
@@ -261,19 +325,20 @@
           </div>
 
           <hr class="form-divider">
-          <div class="form-group">
-            <label>Services</label>
-            <div style="display:flex; flex-wrap:wrap; gap:8px; margin-top:6px;">
-              {% for svc in services %}
-              <label style="display:flex; align-items:center; gap:5px; cursor:pointer;
-                            background:#f0f3ff; padding:6px 14px; border-radius:8px;
-                            font-size:13px; font-weight:500; color:#1f36e9;">
-                <input type="checkbox" name="services" value="{{ svc.id }}"
-                      style="accent-color:#1f36e9;">
-                {{ svc.ServiceName }} — ₹{{ svc.Cost }}
-              </label>
-              {% endfor %}
+          <div class="field-group">
+            <label class="field-label">Services</label>
+            <div class="svc-selector">
+              <div class="svc-search-wrap">
+                <span class="search-icon">🔍</span>
+                <input type="text" id="svc-search" class="svc-search"
+                      placeholder="Search services…" autocomplete="off">
+              </div>
+              <div class="svc-dropdown" id="svc-dropdown"></div>
             </div>
+            <div class="svc-tags" id="svc-tags"></div>
+            <p class="svc-hint" id="svc-hint">Bill updated from selected services — you can still edit it.</p>
+            <!-- Hidden checkboxes so POST data still works the same -->
+            <div id="svc-hidden-inputs"></div>
           </div>
           <!-- Live preview -->
           <div class="preview-box">
@@ -307,19 +372,97 @@
 </div>
 
 <script>
-  function calculate() {
-    const bill  = parseFloat(document.getElementById('bill_amount').value) || 0;
-    const type  = document.getElementById('discount_type').value;
-    const value = parseFloat(document.getElementById('discount_value').value) || 0;
+  const SERVICES = [
+    {% for svc in services %}
+    { id: {{ svc.id }}, name: "{{ svc.ServiceName }}", cost: {{ svc.Cost }} },
+    {% endfor %}
+  ];
 
-    let discount = type === 'PERCENT' ? bill * value / 100 : value;
-    const final  = Math.max(bill - discount, 0);
+  const selected = new Set();
+  const searchEl  = document.getElementById('svc-search');
+  const dropdown  = document.getElementById('svc-dropdown');
+  const tagsEl    = document.getElementById('svc-tags');
+  const hintEl    = document.getElementById('svc-hint');
+  const billEl    = document.getElementById('bill_amount');
+  const hiddenEl  = document.getElementById('svc-hidden-inputs');
 
-    document.getElementById('discount_amount').textContent = discount.toFixed(2);
-    document.getElementById('final_amount').textContent    = final.toFixed(2);
+  function renderDropdown(filter) {
+    const q = (filter || '').toLowerCase();
+    const matches = SERVICES.filter(s => s.name.toLowerCase().includes(q));
+    dropdown.innerHTML = '';
+    if (!matches.length) {
+      dropdown.innerHTML = '<div class="svc-empty">No services found</div>';
+      return;
+    }
+    matches.forEach(s => {
+      const div = document.createElement('div');
+      div.className = 'svc-opt' + (selected.has(s.id) ? ' selected' : '');
+      div.innerHTML = `
+        <div class="svc-opt-left">
+          <span class="svc-check"></span>
+          <span>${s.name}</span>
+        </div>
+        <span class="svc-opt-price">₹${s.cost}</span>`;
+      div.addEventListener('mousedown', e => { e.preventDefault(); toggleService(s.id); });
+      dropdown.appendChild(div);
+    });
   }
 
-  document.getElementById('bill_amount').addEventListener('input', calculate);
+  function renderTags() {
+    tagsEl.innerHTML = '';
+    hiddenEl.innerHTML = '';
+    selected.forEach(id => {
+      const s = SERVICES.find(x => x.id === id);
+      if (!s) return;
+      // Tag pill
+      const tag = document.createElement('div');
+      tag.className = 'svc-tag';
+      tag.innerHTML = `${s.name} — ₹${s.cost}
+        <button type="button" aria-label="Remove ${s.name}">×</button>`;
+      tag.querySelector('button').addEventListener('click', () => {
+        selected.delete(id);
+        syncBill(); renderTags(); renderDropdown(searchEl.value);
+      });
+      tagsEl.appendChild(tag);
+      // Hidden checkbox (keeps your POST handler working unchanged)
+      const inp = document.createElement('input');
+      inp.type = 'checkbox'; inp.name = 'services';
+      inp.value = id; inp.checked = true; inp.hidden = true;
+      hiddenEl.appendChild(inp);
+    });
+  }
+
+  function syncBill() {
+    const total = [...selected].reduce((sum, id) => {
+      const s = SERVICES.find(x => x.id === id);
+      return sum + (s ? parseFloat(s.cost) : 0);
+    }, 0);
+    billEl.value = total > 0 ? total.toFixed(2) : '';
+    hintEl.style.display = selected.size > 0 ? 'block' : 'none';
+    calculate();
+  }
+
+  function toggleService(id) {
+    selected.has(id) ? selected.delete(id) : selected.add(id);
+    syncBill(); renderTags(); renderDropdown(searchEl.value);
+  }
+
+  function calculate() {
+    const bill  = parseFloat(billEl.value) || 0;
+    const type  = document.getElementById('discount_type').value;
+    const value = parseFloat(document.getElementById('discount_value').value) || 0;
+    const disc  = type === 'PERCENT' ? bill * value / 100 : value;
+    const fin   = Math.max(bill - disc, 0);
+    document.getElementById('discount_amount').textContent = disc.toFixed(2);
+    document.getElementById('final_amount').textContent    = fin.toFixed(2);
+  }
+
+  searchEl.addEventListener('focus', () => { renderDropdown(searchEl.value); dropdown.classList.add('open'); });
+  searchEl.addEventListener('input', () => { renderDropdown(searchEl.value); dropdown.classList.add('open'); });
+  document.addEventListener('click', e => {
+    if (!e.target.closest('.svc-selector')) dropdown.classList.remove('open');
+  });
+  billEl.addEventListener('input', calculate);
   document.getElementById('discount_type').addEventListener('change', calculate);
   document.getElementById('discount_value').addEventListener('input', calculate);
 </script>
