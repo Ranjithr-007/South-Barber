@@ -10,14 +10,53 @@
 	<meta charset="utf-8">
 	<meta name="keywords" content="Barber Responsive web template, Bootstrap Web Templates, Flat Web Templates, Android Compatible web template, 
 	Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, SonyEricsson, Motorola web design" />
-	<script type="application/x-javascript">
-		addEventListener("load", function () {
-			setTimeout(hideURLbar, 0);
-		}, false);
-
-		function hideURLbar() {
-			window.scrollTo(0, 1);
+	
+	<style>
+		#loader {
+			position: fixed; inset: 0; background: #0b0b0b;
+			display: flex; align-items: center; justify-content: center;
+			z-index: 9999;
+			transition: opacity 0.3s ease;
 		}
+		#loader.hide {
+			opacity: 0;
+			pointer-events: none;
+		}
+		#grid {
+			position: absolute; inset: 0;
+			background-image:
+			linear-gradient(to right, #1a1a1a 1px, transparent 1px),
+			linear-gradient(to bottom, #1a1a1a 1px, transparent 1px);
+			background-size: 10% 12.5%;
+		}
+		#fill {
+			height: 100%; width: 0%;
+			background: #c8a96e;
+			animation: fillbar 1.2s ease-out forwards;
+		}
+		@keyframes fillbar {
+			to { width: 100%; }
+		}
+		@media (prefers-reduced-motion: reduce) {
+			#fill { animation: none; width: 100%; }
+		}
+	</style>
+	
+	<script>
+		(function () {
+			var loader = document.getElementById('loader');
+			var removed = false;
+
+			function hideLoader() {
+			if (removed) return;
+			removed = true;
+			loader.classList.add('hide');
+			setTimeout(function () { loader.remove(); }, 300);
+			}
+
+			window.addEventListener('load', hideLoader);
+			setTimeout(hideLoader, 2000); // safety net — never blocks longer than 2s
+		})();
 	</script>
 	<!--// Meta tag Keywords -->
 	
@@ -47,26 +86,15 @@
 
 <body>
 <!-- 1. LOADER — shown first, covers the page -->
-  <div id="loader" style="
-    position: fixed; inset: 0; background: #0b0b0b;
-    display: flex; align-items: center; justify-content: center;
-    z-index: 9999;
-  ">
-    <!-- Grid tiles -->
-    <div id="grid" style="position:absolute; inset:0; display:grid;
-      grid-template-columns: repeat(10,1fr);
-      grid-template-rows: repeat(8,1fr); gap:1px; background:#1a1a1a;">
+  <div id="loader">
+  <div id="grid"></div>
+  <div style="position:relative; z-index:2; text-align:center; color:#fff;">
+    <h1 style="font-size:60px; letter-spacing:8px;">South Barber</h1>
+    <div style="width:200px; height:1px; background:#333; margin:16px auto;">
+      <div id="fill"></div>
     </div>
-
-    <!-- Your brand name in the center -->
-    <div style="position:relative; z-index:2; text-align:center; color:#fff;">
-      <h1 style="font-size:60px; letter-spacing:8px;">South Barber</h1>
-      <div id="bar" style="width:200px; height:1px; background:#333; margin:16px auto;">
-        <div id="fill" style="height:100%; width:0%; background:#c8a96e;"></div>
-      </div>
-      <p id="pct" style="font-size:11px; color:#666; letter-spacing:3px;">Loading 0%</p>
-    </div>
-  </div>
+  	</div>
+	</div>
 
   
 <!--/header-->
