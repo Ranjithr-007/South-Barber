@@ -93,6 +93,7 @@
     <div style="width:200px; height:1px; background:#333; margin:16px auto;">
       <div id="fill"></div>
     </div>
+	<p id="pct" style="font-size:11px; color:#666; letter-spacing:3px;">Loading 0%</p>
   	</div>
 	</div>
 
@@ -893,18 +894,17 @@
 	</div>
 </section>
 <!-- 3. THE MAGIC SCRIPT -->
-  <script>
+ 	<script>
     // Build grid cells
     const grid = document.getElementById('grid');
     const cells = [];
     for (let i = 0; i < 80; i++) {
       const c = document.createElement('div');
       c.style.background = '#0b0b0b';
-      c.style.transition = 'opacity 0.5s ease';
+      c.style.transition = 'opacity 0.3s ease';
       grid.appendChild(c);
       cells.push(c);
     }
-
     // Shuffle helper
     function shuffle(a) {
       for (let i=a.length-1;i>0;i--){
@@ -913,29 +913,26 @@
       }
       return a;
     }
-
     // Progress bar
     let p = 0;
     const fill = document.getElementById('fill');
     const pct  = document.getElementById('pct');
     const pi = setInterval(() => {
-      p = Math.min(p + Math.random()*4+1, 100);
+      p = Math.min(p + Math.random()*8+3, 100);
       fill.style.width = Math.round(p) + '%';
       pct.textContent  = 'Loading ' + Math.round(p) + '%';
       if (p >= 100) clearInterval(pi);
-    }, 65);
-
+    }, 40);
     // Dissolve grid, then show landing
     window.addEventListener('load', () => {
       const order = shuffle([...Array(cells.length).keys()]);
       order.forEach((idx, i) => {
-        setTimeout(() => { cells[idx].style.opacity = '0'; }, 1600 + i * 18);
+        setTimeout(() => { cells[idx].style.opacity = '0'; }, 400 + i * 6);
       });
-
       setTimeout(() => {
         document.getElementById('loader').style.display = 'none';
         document.getElementById('landing').style.display = 'block';
-      }, 1600 + cells.length * 18 + 400);
+      }, 400 + cells.length * 6 + 300);
     });
   </script>
 <!-- //footer section -->
@@ -985,7 +982,7 @@
 </body>
 
 	<!-- js -->
-	<script type="text/javascript" src="{% static 'js/jquery-2.2.3.min.js' %}"></script>
+	<script type="text/javascript" src="{% static 'js/jquery-2.2.3.min.js' %}"></>
 	<script type="text/javascript" src="{% static 'js/bootstrap.js' %}"></script> 
 	<!-- Necessary-JavaScript-File-For-Bootstrap --> 
 	<!-- //js -->
