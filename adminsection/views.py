@@ -531,16 +531,14 @@ def add_visit(request, id):
 
 @staff_member_required
 def export_visits_csv(request):
-    """
-    Export visit-data + daily sales summary as CSV.
-
-    """
+    """Export daily visit details + sales summary as CSV."""
     active_store, user_stores, is_owner = get_active_store(request)
+    if not active_store:
+        return HttpResponse("No active store selected.", status=400)
 
     from_date = request.GET.get('from_date')
     to_date = request.GET.get('to_date')
 
-    # Default to today if no range given
     if not from_date and not to_date:
         today = timezone.now().date()
         from_date = to_date = today.isoformat()
@@ -549,25 +547,25 @@ def export_visits_csv(request):
         Visit.objects
         .filter(Store=active_store)
         .select_related('Customer')
-        .prefetch_related('Services')  
+        .prefetch_related('Services')
         .order_by('VisitDate')
     )
-    
     if from_date:
         visits = visits.filter(VisitDate__date__gte=from_date)
     if to_date:
         visits = visits.filter(VisitDate__date__lte=to_date)
 
-    response = HttpResponse(content_type='text/csv')
-    # filename uses today's date the file was generated/downloaded on
+    visits_list = list(visits)
+
+    response = HttpResponse(content_type='text/csv; charset=utf-8')
     filename = f"southbarber-{timezone.now().date().isoformat()}.csv"
     response['Content-Disposition'] = f'attachment; filename="{filename}"'
+    response.write('\ufeff')  # BOM so Excel renders ₹ correctly
 
-    writer = csv.writer(response)
+    writer = csv.writer(response, lineterminator='\r\n')
 
-    # --- Visits detail ---
+    # --- Visit details ---
     writer.writerow(['Date', 'Customer', 'Phone', 'Bill Amount', 'Discount', 'Final Amount', 'Services', 'Note'])
-    visits_list = list(visits)
     for v in visits_list:
         writer.writerow([
             v.VisitDate.strftime('%Y-%m-%d %H:%M'),
@@ -580,6 +578,7 @@ def export_visits_csv(request):
             v.Note,
         ])
 
+    # --- Daily summary ---
     writer.writerow([])
     writer.writerow(['--- Daily Summary ---'])
     writer.writerow(['Date', 'Total Visits', 'Net Sales'])
@@ -587,7 +586,7 @@ def export_visits_csv(request):
     visits_list.sort(key=lambda v: v.VisitDate.date())
     for day, group in groupby(visits_list, key=lambda v: v.VisitDate.date()):
         group = list(group)
-        net = sum(v.final_amount for v in group)
+        net = sum((v.final_amount or 0) for v in group)
         writer.writerow([day, len(group), net])
 
     return response
