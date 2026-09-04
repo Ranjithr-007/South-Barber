@@ -20,6 +20,9 @@ from django.db.models import Count
 from django.db import IntegrityError
 from django.http import JsonResponse
 import json
+import csv
+from datetime import date
+from itertools import groupby
 
 def signin(request):
     """
@@ -525,6 +528,62 @@ def add_visit(request, id):
         'retention_rate': retention_rate,
     })
 
+
+@staff_member_required
+def export_visits_csv(request):
+    """
+    Export visit-data + daily sales summary as CSV.
+
+    """
+    active_store, user_stores, is_owner = get_active_store(request)
+
+    from_date = request.GET.get('from_date')
+    to_date = request.GET.get('to_date')
+
+    # Default to today if no range given
+    if not from_date and not to_date:
+        today = timezone.now().date()
+        from_date = to_date = today.isoformat()
+
+    visits = Visit.objects.filter(Store=active_store).select_related('Customer').order_by('VisitDate')
+    if from_date:
+        visits = visits.filter(VisitDate__date__gte=from_date)
+    if to_date:
+        visits = visits.filter(VisitDate__date__lte=to_date)
+
+    response = HttpResponse(content_type='text/csv')
+    # filename uses today's date the file was generated/downloaded on
+    filename = f"southbarber-{timezone.now().date().isoformat()}.csv"
+    response['Content-Disposition'] = f'attachment; filename="{filename}"'
+
+    writer = csv.writer(response)
+
+    # --- Visits detail ---
+    writer.writerow(['Date', 'Customer', 'Phone', 'Bill Amount', 'Discount', 'Final Amount', 'Services', 'Note'])
+    visits_list = list(visits)
+    for v in visits_list:
+        writer.writerow([
+            v.VisitDate.strftime('%Y-%m-%d %H:%M'),
+            v.Customer.Name,
+            v.Customer.PhoneNumber,
+            v.BillAmount,
+            v.discount_amount,
+            v.final_amount,
+            ", ".join(s.ServiceName for s in v.Services.all()),
+            v.Note,
+        ])
+
+    writer.writerow([])
+    writer.writerow(['--- Daily Summary ---'])
+    writer.writerow(['Date', 'Total Visits', 'Net Sales'])
+
+    visits_list.sort(key=lambda v: v.VisitDate.date())
+    for day, group in groupby(visits_list, key=lambda v: v.VisitDate.date()):
+        group = list(group)
+        net = sum(v.final_amount for v in group)
+        writer.writerow([day, len(group), net])
+
+    return response
 
 @staff_member_required
 def lookup_customer(request):

@@ -9,6 +9,7 @@ urlpatterns = [
     path('switch-store/<int:store_id>/', views.switch_store, name='switch_store'),
     path('customers/check-phone/', views.check_customer_by_phone, name='check_customer_phone'),
     path('customers/lookup/', views.phone_lookup_page, name='phone_lookup'),
+    path('export/visits/', views.export_visits_csv, name='export_visits_csv'),
 
     path('service/', views.addservice, name='addservices'),
     path('manageservices/', views.manageservices, name='manageservices'),
