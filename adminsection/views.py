@@ -23,6 +23,7 @@ import json
 import csv
 from datetime import date
 from itertools import groupby
+from django.http import HttpResponse
 
 def signin(request):
     """
