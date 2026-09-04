@@ -545,7 +545,14 @@ def export_visits_csv(request):
         today = timezone.now().date()
         from_date = to_date = today.isoformat()
 
-    visits = Visit.objects.filter(Store=active_store).select_related('Customer').order_by('VisitDate')
+    visits = (
+        Visit.objects
+        .filter(Store=active_store)
+        .select_related('Customer')
+        .prefetch_related('Services')  
+        .order_by('VisitDate')
+    )
+    
     if from_date:
         visits = visits.filter(VisitDate__date__gte=from_date)
     if to_date:
