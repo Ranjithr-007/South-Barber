@@ -193,30 +193,216 @@ a.navbar-brand {
     }
 }
 
-/* ── DESKTOP / LAPTOP ── */
-@media (min-width: 769px) {
-    .bs-slider-overlay {
-        display: flex;
-        flex-direction: column;        /* stack logo above text */
-        align-items: flex-start;
-        justify-content: center;       /* vertically centred — away from dots */
-        padding: 80px 60px !important;
+/* =====================================
+   SOUTH BARBER LOGO - DESKTOP & LAPTOP
+===================================== */
+
+.custom-logo {
+    display: block;
+    width: 100% !important;
+    max-width: 850px !important;
+    height: auto !important;
+    object-fit: contain;
+}
+
+/* Logo container */
+.logo {
+    width: 100%;
+    max-width: 100%;
+    text-align: left !important;
+    padding: 0;
+    margin: 0;
+}
+
+/* Logo link */
+.logo .navbar-brand {
+    display: block;
+    width: 100%;
+    padding: 0;
+    margin: 0;
+}
+
+/* Desktop and laptop screens */
+:root {
+    --banner-left: 7.7%;
+}
+
+.banner-content {
+    position: absolute;
+    top: 45%;
+    left: var(--banner-left);
+    transform: translateY(-50%);
+    z-index: 10;
+}
+
+@media (min-width: 969px) {
+    .logo {
+        width: 100%;
+        text-align: left !important;
+        padding-left: var(--banner-left);  /* aligns with AURA > EVERYTHING */
     }
 
     .custom-logo {
-        width: 550px !important;
+        width: 100% !important;
+        max-width: 850px !important;
         height: auto !important;
-        max-width: 60vw !important;
-        display: block;
-        margin-bottom: 24px;           /* gap between logo and heading */
-        order: -1;
+        margin: 0;
+    }
+}
+@media (min-width: 969px) {
+
+    .logo {
+        width: 100%;
+        text-align: left !important;
     }
 
-    .banner-text.container {
-        padding: 0 !important;
-        margin: 0 !important;
-        width: auto !important;
-        max-width: 700px !important;
+    .custom-logo {
+        width: 100% !important;
+        max-width: 850px !important;
+        height: auto !important;
+        margin: 0;
+    }
+}
+
+.banner-content {
+    position: absolute;
+    top: 45%;
+    left: 9.7%;
+    transform: translateY(-50%);
+    z-index: 10;
+}
+
+.banner-content .agile-title {
+    font-size: 45px;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 20px;
+    line-height: 1.2;
+    letter-spacing: 2px;
+}
+
+.book-appointment {
+    display: inline-block;
+    color: #fff;
+    font-size: 56px;
+    font-weight: 900;
+    letter-spacing: 2px;
+    text-decoration: none;
+    border-bottom: 1px solid #fff;
+    padding-bottom: 5px;
+}
+
+.book-appointment:hover {
+    color: #ddd;
+    text-decoration: none;
+}
+/* Banner text positioning */
+.banner-text {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    transform: translateY(-50%);
+    z-index: 5;
+    padding-left: 30px;
+}
+
+/* Aura > Everything heading */
+.banner-text .agile-title {
+    font-size: 62px;
+    font-weight: 700;
+    color: #fff;
+    text-align: left;
+    margin: 0 0 15px;
+    line-height: 1.2;
+    letter-spacing: 2px;
+}
+
+/* Description text */
+.banner-text p {
+    color: #fff;
+    font-size: 16px;
+    margin-bottom: 10px;
+}
+
+/* Book Appointment link */
+.banner-text .appointment-link {
+    margin-top: 20px;
+}
+
+.banner-text .appointment-link a {
+    display: inline-block;
+    color: #fff;
+    font-size: 56px;
+    font-weight: 900;
+    letter-spacing: 2px;
+    text-decoration: none;
+    border-bottom: 1px solid #fff;
+    padding-bottom: 5px;
+}
+
+.banner-text .appointment-link a:hover {
+    color: #ddd;
+    border-color: #ddd;
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+    .banner-text {
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+
+    .banner-text .agile-title {
+        font-size: 28px;
+        letter-spacing: 1px;
+    }
+
+    .banner-text p {
+        font-size: 14px;
+    }
+}
+/* Mobile responsive */
+@media (max-width: 768px) {
+    .banner-content {
+        left: 5%;
+        right: 5%;
+        top: 45%;
+    }
+
+    .banner-content .agile-title {
+        font-size: 30px;
+        letter-spacing: 1px;
+        margin-bottom: 15px;
+    }
+
+    .book-appointment {
+        font-size: 14px;
+    }
+}
+/* Tablet screens */
+@media (min-width: 481px) and (max-width: 768px) {
+
+    .custom-logo {
+        width: 90% !important;
+        max-width: 650px !important;
+        height: auto !important;
+        margin: 0 auto;
+    }
+}
+
+/* Mobile screens */
+@media (max-width: 480px) {
+
+    .custom-logo {
+        width: 100% !important;
+        max-width: 100% !important;
+        height: auto !important;
+        margin: 0 auto;
+    }
+
+    .logo {
+        padding: 0 10px;
     }
 }
 
