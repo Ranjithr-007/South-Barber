@@ -235,11 +235,11 @@ a.navbar-brand {
     z-index: 10;
 }
 
-@media (min-width: 969px) {
+@media (min-width: 769px) {
     .logo {
         width: 100%;
         text-align: left !important;
-        padding-left: var(--banner-left);  /* aligns with AURA > EVERYTHING */
+        padding-left: var(--banner-left);  
     }
 
     .custom-logo {
@@ -249,7 +249,7 @@ a.navbar-brand {
         margin: 0;
     }
 }
-@media (min-width: 969px) {
+@media (min-width: 769px) {
 
     .logo {
         width: 100%;
@@ -436,6 +436,29 @@ a.navbar-brand {
     width: 320px;
     height: auto;
     max-width: 90%;            
+}
+
+.footer-logo {
+	display: block;          
+	width: 455px;
+	max-width: 100%;        
+	margin: 0 auto;
+}
+
+.footer-tagline {
+	width: 455px;           
+	max-width: 100%;
+	margin: 0 auto;        
+	padding: 0 20px;         
+}
+
+.footer-tagline h5 {
+	color: #fff;
+	margin: 0 0 10px;        
+}
+
+.footer-tagline h5:first-child {
+	margin-top: 15px;       
 }
 
 body{
@@ -1578,7 +1601,7 @@ h5.tag {
 }
 .barber-grids p {
     font-size: 15px;
-    color: #777;
+    color: #5467ff;
     letter-spacing: 1px;
 }
 
