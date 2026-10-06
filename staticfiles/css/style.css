@@ -200,6 +200,86 @@ a.navbar-brand {
 .custom-logo {
     display: block;
     width: 100% !important;
+    max-width: 950px !important;
+    height: auto !important;
+    object-fit: contain;
+    margin: 0;
+}
+
+/* Banner text */
+.banner-content {
+    position: absolute;
+    top: 45%;
+    left: var(--banner-left);
+    transform: translateY(-50%);
+    z-index: 10;
+}
+
+.banner-content .agile-title {
+    font-size: 45px;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 20px;
+    line-height: 1.2;
+    letter-spacing: 2px;
+}
+
+.book-appointment {
+    display: inline-block;
+    color: #fff;
+    font-size: 56px;
+    font-weight: 900;
+    letter-spacing: 2px;
+    text-decoration: none;
+    border-bottom: 1px solid #fff;
+    padding-bottom: 5px;
+}
+
+.book-appointment:hover {
+    color: #ddd;
+    text-decoration: none;
+}
+
+/* ── TABLET (769–1024px) ── */
+@media (min-width: 769px) and (max-width: 1024px) {
+    :root { --banner-left: 6vw; }
+
+    .custom-logo {
+        width: 550px !important;
+        max-width: 90% !important;
+    }
+
+    .bs-slider-overlay {
+        padding: 60px 40px 80px !important;
+    }
+}
+
+/* ── MOBILE (≤768px) ── */
+@media (max-width: 768px) {
+    :root { --banner-left: 20px; }
+
+    .custom-logo {
+        width: 90% !important;
+        max-width: 650px !important;
+    }
+
+    .banner-content {
+        right: 5%;
+    }
+
+    .banner-content .agile-title {
+        font-size: 30px;
+        letter-spacing: 1px;
+        margin-bottom: 15px;
+    }
+
+    .book-appointment {
+        font-size: 14px;
+    }
+}
+.custom-logo {
+    display: block;
+    width: 100% !important;
     max-width: 850px !important;
     height: auto !important;
     object-fit: contain;
@@ -235,7 +315,7 @@ a.navbar-brand {
     z-index: 10;
 }
 
-@media (min-width: 769px) {
+@media (min-width: 969px) {
     .logo {
         width: 100%;
         text-align: left !important;
@@ -249,7 +329,7 @@ a.navbar-brand {
         margin: 0;
     }
 }
-@media (min-width: 769px) {
+@media (min-width: 969px) {
 
     .logo {
         width: 100%;
@@ -429,6 +509,53 @@ a.navbar-brand {
         padding-bottom: 80px !important;
     }
 }
+/* One shared left edge for logo + banner text */
+:root {
+    --content-left: clamp(24px, 6vw, 110px);
+}
+
+/* Tablet, laptop and desktop */
+@media (min-width: 769px) {
+
+    /* Logo */
+    .logo {
+        text-align: left !important;
+        padding-left: var(--content-left) !important;
+        padding-right: 0;
+    }
+
+    .logo .navbar-brand {
+        padding: 0;
+        margin: 0;
+    }
+
+    .custom-logo {
+        width: clamp(380px, 48vw, 850px) !important;
+        max-width: 100% !important;
+        height: auto !important;
+        margin: 0 !important;
+    }
+
+    /* Banner text: stop Bootstrap's .container from centering it */
+    .banner-text.container {
+        width: 100%;
+        max-width: none;
+        margin: 0;
+        padding-left: var(--content-left) !important;
+        padding-right: var(--content-left);
+    }
+
+    .banner-text .agile-title {
+        font-size: clamp(36px, 4.2vw, 62px);
+    }
+
+    /* Keep the text below the logo on shorter screens */
+    .banner-text {
+        top: auto;
+        bottom: 15%;
+        transform: none;
+    }
+}
 /* ── FOOTER LOGO ── */
 .footer-logo {
     display: block;
@@ -445,20 +572,26 @@ a.navbar-brand {
 	margin: 0 auto;
 }
 
-.footer-tagline {
-	width: 455px;           
-	max-width: 100%;
-	margin: 0 auto;        
-	padding: 0 20px;         
+.footer-tagline,          
+.footer-content p {
+  text-align: center;
+  margin: 0 auto;
+  max-width: 100%;
+}
+
+.footer-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
 }
 
 .footer-tagline h5 {
-	color: #fff;
-	margin: 0 0 10px;        
+    color: #fff;  
 }
 
 .footer-tagline h5:first-child {
-	margin-top: 15px;       
+	margin-top: 15px; 
 }
 
 body{
