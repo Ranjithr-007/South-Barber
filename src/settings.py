@@ -30,7 +30,7 @@ SECRET_KEY = os.environ.get("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['.vercel.app','southbarber.in','www.southbarber.in']
+ALLOWED_HOSTS = ['.vercel.app','southbarber.in','www.southbarber.in', '127.0.0.1']
 
 # Application definition
 INSTALLED_APPS = [
