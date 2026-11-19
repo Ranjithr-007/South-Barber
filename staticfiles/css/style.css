@@ -248,8 +248,9 @@ a.navbar-brand {
   max-width: 92%;
   display: flex;
   flex-direction: column;
-  align-items: flex-start;       /* tagline + button start at the logo's left edge */
-  gap: clamp(10px, 1.8vw, 26px);
+  align-items: center;              
+  text-align: center;
+  gap: clamp(6px, 1vw, 14px);       
 }
 
 .hero-logo {
@@ -261,40 +262,23 @@ a.navbar-brand {
 .hero-tagline {
   margin: 0;
   color: #fff;
-  font-size: clamp(1.05rem, 3.1vw, 3rem);
-  line-height: 1.1;
+  font-size: clamp(0.8rem, 1.4vw, 1.25rem);  
+  letter-spacing: 0.25em;                    
+  line-height: 1.2;
   white-space: nowrap;
 }
 
 .hero-link {
   color: #fff;
-  font-size: clamp(0.75rem, 1.3vw, 1rem);
+  font-size: clamp(0.7rem, 1vw, 0.9rem);
   border-bottom: 1px solid #fff;
   padding-bottom: 2px;
   text-decoration: none;
+  margin-top: 6px;
 }
 
 @media (max-width: 576px) {
-  .hero-content { align-items: center; text-align: center; }
-  .hero-tagline { white-space: normal; }
-}
-
-/* Banner text */
-.banner-content {
-    position: absolute;
-    top: 45%;
-    left: var(--banner-left);
-    transform: translateY(-50%);
-    z-index: 10;
-}
-
-.banner-content .agile-title {
-    font-size: 45px;
-    font-weight: 700;
-    color: #fff;
-    margin-bottom: 20px;
-    line-height: 1.2;
-    letter-spacing: 2px;
+  .hero-tagline { letter-spacing: 0.15em; white-space: normal; }
 }
 
 .book-appointment {
@@ -630,6 +614,43 @@ a.navbar-brand {
     }
 }
 /* ── FOOTER ── */
+.sb-footer-brand {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	text-align: center;
+	position: static;      /* cancels any inherited absolute/fixed */
+}
+
+.sb-footer-brand__link {
+	display: inline-block;
+	line-height: 0;
+}
+
+.sb-footer-logo {
+	display: block;
+	width: 500px;
+	max-width: 90%;
+	height: auto;
+	margin: 0 auto 3.5rem;
+	position: static;
+	transform: none;
+}
+
+.sb-footer-tagline h5 {
+	color: #fff;
+	font-family: "Courier New", Courier, monospace;
+	font-size: 1.4rem;
+	font-weight: 600;
+	line-height: 1.6;
+	margin: 0 0 .6rem;
+}
+
+@media (max-width: 576px) {
+	.sb-footer-logo { width: 280px; margin-bottom: 2rem; }
+	.sb-footer-tagline h5 { font-size: 1.05rem; }
+}
+
 .newsletter .container {
   display: flex;
   flex-direction: column;

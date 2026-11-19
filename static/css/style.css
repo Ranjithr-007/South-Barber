@@ -614,6 +614,43 @@ a.navbar-brand {
     }
 }
 /* ── FOOTER ── */
+.sb-footer-brand {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	text-align: center;
+	position: static;      /* cancels any inherited absolute/fixed */
+}
+
+.sb-footer-brand__link {
+	display: inline-block;
+	line-height: 0;
+}
+
+.sb-footer-logo {
+	display: block;
+	width: 500px;
+	max-width: 90%;
+	height: auto;
+	margin: 0 auto 3.5rem;
+	position: static;
+	transform: none;
+}
+
+.sb-footer-tagline h5 {
+	color: #fff;
+	font-family: "Courier New", Courier, monospace;
+	font-size: 1.4rem;
+	font-weight: 600;
+	line-height: 1.6;
+	margin: 0 0 .6rem;
+}
+
+@media (max-width: 576px) {
+	.sb-footer-logo { width: 280px; margin-bottom: 2rem; }
+	.sb-footer-tagline h5 { font-size: 1.05rem; }
+}
+
 .newsletter .container {
   display: flex;
   flex-direction: column;
